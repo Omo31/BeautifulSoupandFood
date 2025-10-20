@@ -1,3 +1,4 @@
+import { CustomOrderForm } from "@/components/custom-order/custom-order-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function CustomOrderPage() {
@@ -11,9 +12,7 @@ export default function CustomOrderPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-center text-muted-foreground py-12">
-            [Custom order form will be here]
-          </p>
+          <CustomOrderForm />
         </CardContent>
       </Card>
     </div>
