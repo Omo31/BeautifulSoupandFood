@@ -1,3 +1,6 @@
+'use client';
+
+import * as React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,6 +9,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 
 export default function SignupPage() {
+  const handleNameInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    event.target.value = value.charAt(0).toUpperCase() + value.slice(1);
+  };
+
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
       <Card className="w-full max-w-sm">
@@ -14,9 +22,15 @@ export default function SignupPage() {
           <CardDescription>Create your BeautifulSoup&Food account.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="full-name">Full Name</Label>
-            <Input id="full-name" placeholder="John Doe" required />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="first-name">First Name</Label>
+              <Input id="first-name" placeholder="John" required onChange={handleNameInputChange} />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="last-name">Last Name</Label>
+              <Input id="last-name" placeholder="Doe" required onChange={handleNameInputChange} />
+            </div>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
