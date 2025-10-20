@@ -3,10 +3,17 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
+    <div className="relative flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
+       <Button variant="ghost" className="absolute top-8 left-8" asChild>
+          <Link href="/">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Go back
+          </Link>
+        </Button>
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="font-headline text-2xl">Login</CardTitle>
