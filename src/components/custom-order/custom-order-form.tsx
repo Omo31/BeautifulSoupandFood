@@ -24,16 +24,23 @@ import {
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Minus, Plus } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const formSchema = z.object({
   itemName: z.string().min(2, 'Item name is required.'),
   quantity: z.number().min(1, 'Quantity must be at least 1.'),
   customMeasure: z.string().min(1, 'Please select a measurement unit.'),
+  services: z.array(z.string()).optional(),
   notes: z.string().optional(),
 });
 
 // Mock data, in a real app this would come from admin settings.
 const customMeasures = ['Grams', 'Kilograms', 'Pieces', 'Bunches', 'Litres'];
+const additionalServices = [
+  { id: 'gift-wrapping', label: 'Gift Wrapping' },
+  { id: 'special-packaging', label: 'Special Packaging' },
+  { id: 'rush-delivery', label: 'Rush Delivery' },
+];
 
 export function CustomOrderForm() {
   const { toast } = useToast();
@@ -42,12 +49,14 @@ export function CustomOrderForm() {
     defaultValues: {
       itemName: '',
       quantity: 1,
+      services: [],
       notes: '',
     },
   });
 
   const { setValue, watch } = form;
   const quantity = watch('quantity');
+  const selectedServices = watch('services') || [];
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
@@ -137,23 +146,74 @@ export function CustomOrderForm() {
             )}
           />
         </div>
-
+        
         <FormField
           control={form.control}
-          name="notes"
-          render={({ field }) => (
+          name="services"
+          render={() => (
             <FormItem>
-              <FormLabel>Additional Notes (Optional)</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Any specific requirements, like ripeness, brand, or origin..." {...field} />
-              </FormControl>
-              <FormDescription>
-                Provide any extra details that will help us fulfill your request.
-              </FormDescription>
+              <div className="mb-4">
+                <FormLabel className="text-base">Additional Services</FormLabel>
+                <FormDescription>
+                  Select any additional services you require.
+                </FormDescription>
+              </div>
+              {additionalServices.map((item) => (
+                <FormField
+                  key={item.id}
+                  control={form.control}
+                  name="services"
+                  render={({ field }) => {
+                    return (
+                      <FormItem
+                        key={item.id}
+                        className="flex flex-row items-start space-x-3 space-y-0"
+                      >
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value?.includes(item.id)}
+                            onCheckedChange={(checked) => {
+                              return checked
+                                ? field.onChange([...(field.value || []), item.id])
+                                : field.onChange(
+                                    field.value?.filter(
+                                      (value) => value !== item.id
+                                    )
+                                  )
+                            }}
+                          />
+                        </FormControl>
+                        <FormLabel className="font-normal">
+                          {item.label}
+                        </FormLabel>
+                      </FormItem>
+                    )
+                  }}
+                />
+              ))}
               <FormMessage />
             </FormItem>
           )}
         />
+
+        {selectedServices.length > 0 && (
+          <FormField
+            control={form.control}
+            name="notes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Additional Notes</FormLabel>
+                <FormControl>
+                  <Textarea placeholder="Provide more details about your selected services..." {...field} />
+                </FormControl>
+                <FormDescription>
+                  Please provide any extra details related to the services you've selected.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         
         <div className="flex justify-end">
             <Button type="submit">Submit Request</Button>
