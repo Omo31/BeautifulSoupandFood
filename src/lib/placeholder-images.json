@@ -1,3 +1,46 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-1",
+      "description": "A lush, gourmet food spread on a rustic table.",
+      "imageUrl": "https://images.unsplash.com/photo-1642942002989-b11ba2164626?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxnb3VybWV0JTIwZm9vZCUyMHNwcmVhZHxlbnwwfHx8fDE3NjA5ODg0MTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gourmet food spread"
+    },
+    {
+      "id": "product-1",
+      "description": "A loaf of freshly baked artisan bread.",
+      "imageUrl": "https://images.unsplash.com/photo-1744217083335-8b57ec3826ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhcnRpc2FuJTIwYnJlYWR8ZW58MHx8fHwxNzYwOTY4NDE5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "artisan bread"
+    },
+    {
+      "id": "product-2",
+      "description": "A basket of colorful organic vegetables.",
+      "imageUrl": "https://images.unsplash.com/photo-1562437243-4117943e59b8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxvcmdhbmljJTIwdmVnZXRhYmxlc3xlbnwwfHx8fDE3NjA5NDE5NTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "organic vegetables"
+    },
+    {
+      "id": "product-3",
+      "description": "A large wheel of aged cheese.",
+      "imageUrl": "https://images.unsplash.com/photo-1654184750621-1110fe5afcdc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjaGVlc2UlMjB3aGVlbHxlbnwwfHx8fDE3NjA5ODg0MTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cheese wheel"
+    },
+    {
+      "id": "product-4",
+      "description": "A glass bottle of extra virgin olive oil.",
+      "imageUrl": "https://images.unsplash.com/photo-1612879988258-0d819c297621?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxvbGl2ZSUyMG9pbHxlbnwwfHx8fDE3NjA5NDg4OTN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "olive oil"
+    },
+    {
+      "id": "product-5",
+      "description": "A bowl of assorted fresh fruits.",
+      "imageUrl": "https://images.unsplash.com/photo-1517260739337-6799d239ce83?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxmcmVzaCUyMGZydWl0c3xlbnwwfHx8fDE3NjA4NzAxNDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "fresh fruits"
+    },
+    {
+      "id": "product-6",
+      "description": "A glass of red wine next to a bottle.",
+      "imageUrl": "https://images.unsplash.com/photo-1581106047572-b22b8d26203a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cmVkJTIwd2luZXxlbnwwfHx8fDE3NjA5NjQzMTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "red wine"
+    }
+  ]
 }
