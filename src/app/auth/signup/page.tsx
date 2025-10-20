@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
+import { Textarea } from '@/components/ui/textarea';
 
 export default function SignupPage() {
   const handleNameInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -16,7 +17,7 @@ export default function SignupPage() {
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
-      <Card className="w-full max-w-sm">
+      <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="font-headline text-2xl">Sign Up</CardTitle>
           <CardDescription>Create your BeautifulSoup&Food account.</CardDescription>
@@ -35,6 +36,17 @@ export default function SignupPage() {
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input id="email" type="email" placeholder="m@example.com" required />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="phone">Phone Number</Label>
+            <div className="flex items-center">
+              <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-background text-sm text-muted-foreground">+234</span>
+              <Input id="phone" type="tel" placeholder="8012345678" required className="rounded-l-none" />
+            </div>
+          </div>
+           <div className="grid gap-2">
+            <Label htmlFor="address">Address</Label>
+            <Textarea id="address" placeholder="Enter your full address" required />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
