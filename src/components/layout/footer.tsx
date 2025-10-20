@@ -33,7 +33,7 @@ export function Footer() {
         </div>
         <Separator className="my-8" />
         <div className="flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} GourmetBasket. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} BeautifulSoup&Food. All rights reserved.</p>
           {/* Add social media icons here if needed */}
         </div>
       </div>

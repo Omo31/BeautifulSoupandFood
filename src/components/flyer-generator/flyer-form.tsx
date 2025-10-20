@@ -29,7 +29,7 @@ import { useToast } from '@/hooks/use-toast';
 const formSchema = z.object({
   productName: z.string().min(2, 'Product name is required.'),
   productDescription: z.string().min(10, 'Description must be at least 10 characters.'),
-  storeName: z.string().default('GourmetBasket'),
+  storeName: z.string().default('BeautifulSoup&Food'),
   storeSlogan: z.string().default('Exceptional Quality, Delivered Fresh'),
   primaryColor: z.string().default('#3D9951'),
   accentColor: z.string().default('#26BFA8'),
@@ -53,7 +53,7 @@ export function FlyerForm({ setResult, setLoading, loading }: FlyerFormProps) {
     defaultValues: {
       productName: '',
       productDescription: '',
-      storeName: 'GourmetBasket',
+      storeName: 'BeautifulSoup&Food',
       storeSlogan: 'Exceptional Quality, Delivered Fresh',
       primaryColor: '#3D9951',
       accentColor: '#26BFA8',

@@ -11,7 +11,7 @@ export default function SignupPage() {
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="font-headline text-2xl">Sign Up</CardTitle>
-          <CardDescription>Create your GourmetBasket account.</CardDescription>
+          <CardDescription>Create your BeautifulSoup&Food account.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
           <div className="grid gap-2">
