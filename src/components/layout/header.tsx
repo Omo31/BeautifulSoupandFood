@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, ShoppingCart, User, Bell } from "lucide-react";
+import { Menu, ShoppingCart, User, Bell, Heart } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -13,6 +13,7 @@ const navLinks = [
   { href: "/shop", label: "Shop" },
   { href: "/custom-order", label: "Custom Orders" },
   { href: "/my-orders", label: "My Orders" },
+  { href: "/wishlist", label: "Wishlist" },
 ];
 
 const mockNotifications = [
