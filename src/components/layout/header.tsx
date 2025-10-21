@@ -3,15 +3,59 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, ShoppingCart, User } from "lucide-react";
+import { Menu, ShoppingCart, User, Bell } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 
 const navLinks = [
   { href: "/shop", label: "Shop" },
   { href: "/custom-order", label: "Custom Orders" },
   { href: "/my-orders", label: "My Orders" },
 ];
+
+const mockNotifications = [
+    { id: 1, title: "Your order has shipped!", description: "Order #12345 is on its way.", time: "5m ago" },
+    { id: 2, title: "New product available", description: "Fresh truffles are now in stock.", time: "1h ago" },
+    { id: 3, title: "Welcome to BeautifulSoup&Food!", description: "Thanks for signing up.", time: "1d ago" },
+];
+
+function NotificationBell() {
+    return (
+        <Popover>
+            <PopoverTrigger asChild>
+                <Button variant="ghost" size="icon">
+                    <Bell />
+                    <span className="sr-only">Notifications</span>
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80">
+                <div className="grid gap-4">
+                    <div className="space-y-2">
+                        <h4 className="font-medium leading-none">Notifications</h4>
+                        <p className="text-sm text-muted-foreground">
+                            You have {mockNotifications.length} unread messages.
+                        </p>
+                    </div>
+                    <Separator />
+                    <div className="grid gap-2">
+                        {mockNotifications.map((notification) => (
+                            <div key={notification.id} className="grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
+                                <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
+                                <div className="grid gap-1">
+                                    <p className="text-sm font-medium">{notification.title}</p>
+                                    <p className="text-sm text-muted-foreground">{notification.description}</p>
+                                    <p className="text-xs text-muted-foreground">{notification.time}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </PopoverContent>
+        </Popover>
+    );
+}
 
 export function Header() {
   const isMobile = useIsMobile();
@@ -56,6 +100,7 @@ export function Header() {
 
   const authButtons = isAuthenticated ? (
     <div className="flex items-center gap-2">
+      <NotificationBell />
       <Button variant="ghost" size="icon" asChild>
         <Link href="/cart">
           <ShoppingCart />
