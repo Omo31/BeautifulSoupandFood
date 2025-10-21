@@ -147,28 +147,6 @@ export function CustomOrderForm() {
             )}
           />
         </div>
-
-        <FormField
-            control={form.control}
-            name="shippingMethod"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Shipping Method</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a shipping method" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="pickup">Pickup</SelectItem>
-                    <SelectItem value="set-shipping-fee">Set Shipping Fee</SelectItem>
-                  </SelectContent>
-                </Select>
-                 <FormMessage />
-              </FormItem>
-            )}
-          />
         
         <FormField
           control={form.control}
@@ -218,6 +196,28 @@ export function CustomOrderForm() {
             </FormItem>
           )}
         />
+
+        <FormField
+            control={form.control}
+            name="shippingMethod"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Shipping Method</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a shipping method" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="pickup">Pickup</SelectItem>
+                    <SelectItem value="set-shipping-fee">Set Shipping Fee</SelectItem>
+                  </SelectContent>
+                </Select>
+                 <FormMessage />
+              </FormItem>
+            )}
+          />
 
         {selectedServices.length > 0 && (
           <FormField
