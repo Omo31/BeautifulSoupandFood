@@ -10,6 +10,7 @@ import { OrderList } from "@/components/my-orders/order-list";
 // Mock data for orders, in a real app this would come from a database.
 const mockOrders = [
     { id: 'ORD001', date: '2023-10-26', status: 'Delivered', total: 43.50, items: 2 },
+    { id: 'ORD006', date: '2023-10-27', status: 'Awaiting Confirmation', total: 95.50, items: 1, isCustom: true },
     { id: 'ORD002', date: '2023-10-24', status: 'Pending', total: 85.00, items: 1, isCustom: true },
     { id: 'ORD003', date: '2023-10-22', status: 'Rejected', total: 22.00, items: 1 },
     { id: 'ORD004', date: '2023-10-20', status: 'Delivered', total: 15.75, items: 1, needsReview: true },
@@ -20,7 +21,7 @@ export default function MyOrdersPage() {
   const router = useRouter();
 
   const deliveredOrders = mockOrders.filter(o => o.status === 'Delivered');
-  const pendingOrders = mockOrders.filter(o => o.status === 'Pending');
+  const pendingOrders = mockOrders.filter(o => ['Pending', 'Awaiting Confirmation'].includes(o.status));
   const cancelledOrders = mockOrders.filter(o => o.status === 'Rejected');
   const reviewOrders = mockOrders.filter(o => o.needsReview);
 

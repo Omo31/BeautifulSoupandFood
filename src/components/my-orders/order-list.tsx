@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 type Order = {
     id: string;
     date: string;
-    status: 'Delivered' | 'Pending' | 'Rejected';
+    status: 'Delivered' | 'Pending' | 'Rejected' | 'Awaiting Confirmation';
     total: number;
     items: number;
     isCustom?: boolean;
@@ -30,26 +30,33 @@ export function OrderList({ orders, emptyMessage = "You have no past orders." }:
         );
     }
 
+    const getStatusBadge = (status: Order['status']) => {
+        switch (status) {
+            case 'Delivered':
+                return <Badge className="bg-green-100 text-green-800 hover:bg-green-100/80">Delivered</Badge>;
+            case 'Pending':
+                return <Badge variant="secondary">Pending</Badge>;
+            case 'Awaiting Confirmation':
+                return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100/80">Awaiting Confirmation</Badge>;
+            case 'Rejected':
+                return <Badge variant="destructive">Rejected</Badge>;
+            default:
+                return <Badge variant="outline">{status}</Badge>;
+        }
+    };
+
     return (
         <div className="space-y-4">
             {orders.map((order) => (
                 <Card key={order.id}>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardHeader className="flex flex-row items-start justify-between pb-2">
                         <div>
                             <CardTitle className="text-lg">Order {order.id}</CardTitle>
                             <CardDescription>
                                 Date: {new Date(order.date).toLocaleDateString()}
                             </CardDescription>
                         </div>
-                         <Badge 
-                            variant={
-                                order.status === 'Delivered' ? 'default' : 
-                                order.status === 'Pending' ? 'secondary' : 'destructive'
-                            }
-                            className="capitalize bg-green-100 text-green-800"
-                         >
-                            {order.status}
-                         </Badge>
+                         {getStatusBadge(order.status)}
                     </CardHeader>
                     <CardContent className="pt-2">
                         <Separator className="mb-4" />
@@ -62,9 +69,16 @@ export function OrderList({ orders, emptyMessage = "You have no past orders." }:
                         </div>
                     </CardContent>
                     <CardFooter className="flex gap-2">
-                        <Button variant="outline" size="sm">View Details</Button>
+                         <Button variant="outline" size="sm">View Details</Button>
                         {order.status === 'Delivered' && !order.needsReview && <Button variant="secondary" size="sm">Track Order</Button>}
                         {order.needsReview && <Button size="sm">Write a Review</Button>}
+                        {order.status === 'Awaiting Confirmation' && (
+                           <>
+                             <Button size="sm">Accept</Button>
+                             <Button variant="destructive" size="sm">Reject</Button>
+                             <Button variant="outline" size="sm">Edit</Button>
+                           </>
+                        )}
                     </CardFooter>
                 </Card>
             ))}
