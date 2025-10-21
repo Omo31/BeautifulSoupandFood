@@ -30,6 +30,7 @@ const formSchema = z.object({
   itemName: z.string().min(2, 'Item name is required.'),
   quantity: z.number().min(1, 'Quantity must be at least 1.'),
   customMeasure: z.string().min(1, 'Please select a measurement unit.'),
+  shippingMethod: z.string().min(1, 'Please select a shipping method.'),
   services: z.array(z.string()).optional(),
   notes: z.string().optional(),
 });
@@ -146,6 +147,28 @@ export function CustomOrderForm() {
             )}
           />
         </div>
+
+        <FormField
+            control={form.control}
+            name="shippingMethod"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Shipping Method</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a shipping method" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="pickup">Pickup</SelectItem>
+                    <SelectItem value="set-shipping-fee">Set Shipping Fee</SelectItem>
+                  </SelectContent>
+                </Select>
+                 <FormMessage />
+              </FormItem>
+            )}
+          />
         
         <FormField
           control={form.control}
