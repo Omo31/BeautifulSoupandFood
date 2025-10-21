@@ -1,11 +1,17 @@
+
+'use client';
+
+import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div className="relative flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
        <Button variant="ghost" className="absolute top-8 left-8" asChild>
@@ -31,7 +37,19 @@ export default function LoginPage() {
                 Forgot your password?
               </Link>
             </div>
-            <Input id="password" type="password" required />
+            <div className="relative">
+              <Input id="password" type={showPassword ? "text" : "password"} required />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute inset-y-0 right-0 h-full px-3"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff /> : <Eye />}
+                <span className="sr-only">{showPassword ? 'Hide password' : 'Show password'}</span>
+              </Button>
+            </div>
           </div>
           <Button type="submit" className="w-full">Login</Button>
           <Button variant="outline" className="w-full">Login with Google</Button>

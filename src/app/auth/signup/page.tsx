@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -8,9 +9,11 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 
 export default function SignupPage() {
+  const [showPassword, setShowPassword] = React.useState(false);
+
   const handleNameInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     event.target.value = value.charAt(0).toUpperCase() + value.slice(1);
@@ -57,7 +60,19 @@ export default function SignupPage() {
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" required />
+            <div className="relative">
+              <Input id="password" type={showPassword ? 'text' : 'password'} required />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute inset-y-0 right-0 h-full px-3"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff /> : <Eye />}
+                <span className="sr-only">{showPassword ? 'Hide password' : 'Show password'}</span>
+              </Button>
+            </div>
           </div>
            <div className="flex items-center space-x-2">
             <Checkbox id="terms" required />
