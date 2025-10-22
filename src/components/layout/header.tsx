@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, ShoppingCart, User, Bell, Heart } from "lucide-react";
+import { Menu, ShoppingCart, User, Bell } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -13,8 +13,6 @@ const navLinks = [
   { href: "/shop", label: "Shop" },
   { href: "/soup", label: "Soup" },
   { href: "/custom-order", label: "Custom Orders" },
-  { href: "/my-orders", label: "My Orders" },
-  { href: "/wishlist", label: "Wishlist" },
 ];
 
 const mockNotifications = [
@@ -62,7 +60,13 @@ function NotificationBell() {
 export function Header() {
   const isMobile = useIsMobile();
   // TODO: Replace with actual auth state
-  const isAuthenticated = false;
+  const isAuthenticated = true;
+
+  const mobileNavLinks = [
+      ...navLinks,
+      { href: "/my-orders", label: "My Orders" },
+      { href: "/wishlist", label: "Wishlist" },
+  ];
 
   const desktopNav = (
     <nav className="hidden md:flex items-center gap-6">
@@ -89,7 +93,7 @@ export function Header() {
         <div className="flex flex-col gap-6 pt-8">
           <Logo />
           <nav className="flex flex-col gap-4">
-            {navLinks.map((link) => (
+            {mobileNavLinks.map((link) => (
               <Button key={link.href} variant="ghost" className="justify-start" asChild>
                 <Link href={link.href}>{link.label}</Link>
               </Button>
@@ -110,7 +114,7 @@ export function Header() {
         </Link>
       </Button>
       <Button variant="ghost" size="icon" asChild>
-        <Link href="/admin/dashboard">
+        <Link href="/account/profile">
           <User />
           <span className="sr-only">My Account</span>
         </Link>

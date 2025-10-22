@@ -8,8 +8,7 @@ import {
   Book,
   Settings,
   MessageSquare,
-  Soup,
-  Library,
+  User as UserIcon,
 } from 'lucide-react';
 
 export const adminNavItems = [
@@ -28,4 +27,9 @@ export const adminSettingsNavItems = [
     { href: '/admin/settings/homepage', label: 'Homepage' },
     { href: '/admin/settings/footer', label: 'Footer' },
     { href: '/admin/settings/roles', label: 'Roles' },
+];
+
+export const accountNavItems = [
+    { href: '/account/profile', label: 'My Profile', icon: UserIcon },
+    { href: '/account/orders', label: 'My Orders', icon: ShoppingCart },
 ]
