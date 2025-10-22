@@ -4,7 +4,9 @@ import { useState } from 'react';
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { ProductCard } from "@/components/shared/product-card";
 import { ShopFilters } from '@/components/shop/shop-filters';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
 
 const allProducts = [
   { id: "1", name: "Artisan Sourdough", price: 8.50, stock: 20, image: PlaceHolderImages.find(img => img.id === 'product-1')!, rating: 4.8, reviewCount: 25, category: 'Shop' },
@@ -18,6 +20,7 @@ const allProducts = [
 ];
 
 export default function ShopPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('q') || '';
 
@@ -43,6 +46,10 @@ export default function ShopPage() {
 
   return (
     <div className="container py-12">
+       <Button variant="ghost" onClick={() => router.back()} className="mb-4">
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Go back
+      </Button>
       <div className="mb-8">
         <h1 className="text-4xl font-headline font-bold">Our Collection</h1>
         <p className="text-muted-foreground mt-2">Browse our hand-picked selection of gourmet products.</p>
