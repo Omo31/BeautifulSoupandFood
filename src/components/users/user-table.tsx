@@ -5,8 +5,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { cn } from "@/lib/utils";
 
 type User = {
   id: string;
@@ -15,9 +16,16 @@ type User = {
   role: 'Customer' | 'Administrator' | 'Content Manager' | 'Support Agent';
   joined: string;
   avatar?: string;
+  status: 'Active' | 'Disabled';
 };
 
-export function UserTable({ users }: { users: User[] }) {
+type UserTableProps = {
+  users: User[];
+  onToggleStatus: (userId: string) => void;
+};
+
+
+export function UserTable({ users, onToggleStatus }: UserTableProps) {
 
   const getRoleBadge = (role: User['role']) => {
     switch (role) {
@@ -32,11 +40,21 @@ export function UserTable({ users }: { users: User[] }) {
     }
   };
 
+  const getStatusBadge = (status: User['status']) => {
+    switch (status) {
+        case 'Active':
+            return <Badge className="bg-green-100 text-green-800 hover:bg-green-100/80">Active</Badge>;
+        case 'Disabled':
+            return <Badge variant="destructive">Disabled</Badge>;
+    }
+  };
+
   return (
     <Table>
       <TableHeader>
         <TableRow>
           <TableHead>User</TableHead>
+          <TableHead>Status</TableHead>
           <TableHead>Role</TableHead>
           <TableHead className="hidden md:table-cell">Date Joined</TableHead>
           <TableHead>
@@ -46,7 +64,7 @@ export function UserTable({ users }: { users: User[] }) {
       </TableHeader>
       <TableBody>
         {users.map((user) => (
-          <TableRow key={user.id}>
+          <TableRow key={user.id} className={cn(user.status === 'Disabled' && 'bg-muted/50 text-muted-foreground')}>
             <TableCell>
                 <div className="flex items-center gap-3">
                     <Avatar className="h-9 w-9">
@@ -55,10 +73,11 @@ export function UserTable({ users }: { users: User[] }) {
                     </Avatar>
                     <div className="font-medium">
                         <div>{user.name}</div>
-                        <div className="text-sm text-muted-foreground">{user.email}</div>
+                        <div className={cn("text-sm", user.status === 'Active' ? 'text-muted-foreground' : '')}>{user.email}</div>
                     </div>
                 </div>
             </TableCell>
+            <TableCell>{getStatusBadge(user.status)}</TableCell>
             <TableCell>{getRoleBadge(user.role)}</TableCell>
             <TableCell className="hidden md:table-cell">{new Date(user.joined).toLocaleDateString()}</TableCell>
             <TableCell>
@@ -72,7 +91,11 @@ export function UserTable({ users }: { users: User[] }) {
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuItem>Delete</DropdownMenuItem>
+                   <DropdownMenuItem onClick={() => onToggleStatus(user.id)}>
+                    {user.status === 'Active' ? 'Disable' : 'Enable'}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>

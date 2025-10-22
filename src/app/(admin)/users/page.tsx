@@ -15,6 +15,7 @@ const initialUsers = [
     role: 'Customer',
     joined: '2023-10-01',
     avatar: 'https://picsum.photos/seed/jane-doe/40/40',
+    status: 'Active',
   },
   {
     id: 'usr2',
@@ -23,6 +24,7 @@ const initialUsers = [
     role: 'Customer',
     joined: '2023-09-15',
      avatar: 'https://picsum.photos/seed/john-smith/40/40',
+     status: 'Active',
   },
   {
     id: 'usr3',
@@ -31,6 +33,7 @@ const initialUsers = [
     role: 'Content Manager',
     joined: '2023-08-20',
     avatar: 'https://picsum.photos/seed/alice-j/40/40',
+    status: 'Disabled',
   },
     {
     id: 'usr4',
@@ -39,12 +42,19 @@ const initialUsers = [
     role: 'Administrator',
     joined: '2023-01-15',
     avatar: 'https://picsum.photos/seed/admin-user/40/40',
+    status: 'Active',
   },
 ];
 
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState(initialUsers);
+
+  const toggleUserStatus = (userId: string) => {
+    setUsers(users.map(user =>
+      user.id === userId ? { ...user, status: user.status === 'Active' ? 'Disabled' : 'Active' } : user
+    ));
+  };
 
   return (
      <Card>
@@ -59,7 +69,7 @@ export default function AdminUsersPage() {
         </Button>
       </CardHeader>
       <CardContent>
-        <UserTable users={users} />
+        <UserTable users={users} onToggleStatus={toggleUserStatus} />
       </CardContent>
     </Card>
   );
