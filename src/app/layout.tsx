@@ -5,6 +5,7 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'BeautifulSoup&Food',
   description: 'Gourmet and fresh produce, delivered.',
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
