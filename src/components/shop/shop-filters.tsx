@@ -6,7 +6,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '../ui/button';
 import { ListFilter } from 'lucide-react';
-import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
 
 type ShopFiltersProps = {
   filters: {
@@ -126,6 +126,9 @@ export function ShopFilters({ filters, setFilters }: ShopFiltersProps) {
                 </Button>
             </SheetTrigger>
             <SheetContent side="left">
+                <SheetHeader>
+                    <SheetTitle>Filters</SheetTitle>
+                </SheetHeader>
                 <FiltersContent filters={filters} setFilters={setFilters} />
             </SheetContent>
         </Sheet>
