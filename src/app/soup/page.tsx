@@ -11,12 +11,14 @@ const soupProducts = [
     id: '7',
     name: 'Tomato Basil Soup',
     price: 7.5,
+    stock: 25,
     image: PlaceHolderImages.find((img) => img.id === 'product-7')!,
   },
   {
     id: '8',
     name: 'Chicken Noodle Soup',
     price: 9.0,
+    stock: 4,
     image: PlaceHolderImages.find((img) => img.id === 'product-8')!,
   },
 ];

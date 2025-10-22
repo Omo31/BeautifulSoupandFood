@@ -3,10 +3,10 @@ import { ProductCard } from "@/components/shared/product-card";
 
 // Mock data, to be replaced with data from a database
 const featuredProducts = [
-  { id: "1", name: "Artisan Sourdough", price: 8.50, image: PlaceHolderImages.find(img => img.id === 'product-1')! },
-  { id: "2", name: "Organic Vegetable Box", price: 35.00, image: PlaceHolderImages.find(img => img.id === 'product-2')! },
-  { id: "3", name: "Aged Parmesan Wheel", price: 22.00, image: PlaceHolderImages.find(img => img.id === 'product-3')! },
-  { id: "4", name: "Extra Virgin Olive Oil", price: 15.75, image: PlaceHolderImages.find(img => img.id === 'product-4')! },
+  { id: "1", name: "Artisan Sourdough", price: 8.50, stock: 20, image: PlaceHolderImages.find(img => img.id === 'product-1')! },
+  { id: "2", name: "Organic Vegetable Box", price: 35.00, stock: 15, image: PlaceHolderImages.find(img => img.id === 'product-2')! },
+  { id: "3", name: "Aged Parmesan Wheel", price: 22.00, stock: 3, image: PlaceHolderImages.find(img => img.id === 'product-3')! },
+  { id: "4", name: "Extra Virgin Olive Oil", price: 15.75, stock: 30, image: PlaceHolderImages.find(img => img.id === 'product-4')! },
 ];
 
 export function FeaturedProducts() {

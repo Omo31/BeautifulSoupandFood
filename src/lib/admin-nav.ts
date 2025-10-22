@@ -8,6 +8,7 @@ import {
   Book,
   Settings,
   MessageSquare,
+  Soup,
 } from 'lucide-react';
 
 export const adminNavItems = [
