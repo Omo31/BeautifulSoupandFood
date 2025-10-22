@@ -6,7 +6,7 @@ if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
-const FROM_EMAIL = 'support@beautifulsoupandfood.com'; // Replace with your verified sender email
+const FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || 'support@beautifulsoupandfood.com';
 
 type EmailData = {
   to: string;
@@ -15,11 +15,11 @@ type EmailData = {
 };
 
 async function sendEmail(data: EmailData) {
-  if (!process.env.SENDGRID_API_KEY) {
-    console.error('SENDGRID_API_KEY is not set. Email not sent.');
+  if (!process.env.SENDGRID_API_KEY || !process.env.SENDGRID_FROM_EMAIL) {
+    console.error('SENDGRID_API_KEY or SENDGRID_FROM_EMAIL is not set. Email not sent.');
     // In a real app, you might want to throw an error or handle this more gracefully.
     // For now, we'll just log it and simulate a success response for UI testing.
-    return { success: true, message: 'Email sending is disabled (no API key).' };
+    return { success: true, message: 'Email sending is disabled (missing API key or From Email).' };
   }
 
   const msg = {
