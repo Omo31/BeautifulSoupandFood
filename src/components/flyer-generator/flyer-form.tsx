@@ -25,6 +25,7 @@ import {
 import { GenerateMarketingFlyerInput, generateMarketingFlyer } from '@/ai/flows/generate-marketing-flyers';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
   productName: z.string().min(2, 'Product name is required.'),
@@ -171,7 +172,14 @@ export function FlyerForm({ setResult, setLoading, loading }: FlyerFormProps) {
             />
             
             <Button type="submit" disabled={loading}>
-              {loading ? 'Generating...' : 'Generate Flyer'}
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                'Generate Flyer'
+              )}
             </Button>
           </form>
         </Form>
