@@ -3,8 +3,11 @@ import { Toaster } from "@/components/ui/toaster";
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'BeautifulSoup&Food',
-  description: 'Gourmet and fresh produce, delivered.',
+  title: {
+    default: 'BeautifulSoup&Food - Gourmet Foods & Fresh Produce',
+    template: '%s | BeautifulSoup&Food',
+  },
+  description: 'Discover and order from a curated selection of gourmet produce, artisan goods, pantry essentials, and delicious soups, delivered fresh to your door.',
   manifest: '/manifest.json',
 };
 

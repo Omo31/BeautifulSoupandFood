@@ -4,6 +4,7 @@ import { ReviewForm } from '@/components/product/review-form';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import type { Metadata } from 'next';
 
 // MOCK DATA - In a real app, this would be fetched from Firestore
 const allProducts = [
@@ -41,7 +42,38 @@ async function getReviewsByProductId(id: string) {
   return (mockReviews as any)[id] || [];
 }
 
-export default async function ProductDetailPage({ params }: { params: { id: string } }) {
+type Props = {
+  params: { id: string }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const product = await getProductById(params.id);
+
+  if (!product) {
+    return {
+      title: 'Product not found',
+    }
+  }
+
+  return {
+    title: product.name,
+    description: product.description,
+    openGraph: {
+      title: product.name,
+      description: product.description,
+      images: [
+        {
+          url: product.image.imageUrl,
+          width: 800,
+          height: 600,
+          alt: product.name,
+        },
+      ],
+    },
+  }
+}
+
+export default async function ProductDetailPage({ params }: Props) {
   const product = await getProductById(params.id);
   const reviews = await getReviewsByProductId(params.id);
   
