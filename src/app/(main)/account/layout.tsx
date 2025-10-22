@@ -4,7 +4,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { accountNavItems } from "@/lib/admin-nav";
-import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -17,20 +16,17 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                     <Card className="p-4">
                         <nav className="flex flex-col gap-1">
                             {accountNavItems.map(item => (
-                                <Link
-                                    href={item.href}
+                                <Button
                                     key={item.href}
-                                    passHref
-                                    legacyBehavior
+                                    variant={pathname === item.href ? "default" : "ghost"}
+                                    className="justify-start gap-2"
+                                    asChild
                                 >
-                                    <Button
-                                        variant={pathname === item.href ? "default" : "ghost"}
-                                        className="justify-start gap-2"
-                                    >
+                                    <Link href={item.href}>
                                         <item.icon className="h-4 w-4" />
                                         {item.label}
-                                    </Button>
-                                </Link>
+                                    </Link>
+                                </Button>
                             ))}
                         </nav>
                     </Card>
