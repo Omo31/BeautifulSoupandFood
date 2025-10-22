@@ -13,6 +13,8 @@ const soupProducts = [
     price: 7.5,
     stock: 25,
     image: PlaceHolderImages.find((img) => img.id === 'product-7')!,
+    rating: 4.7, 
+    reviewCount: 38,
   },
   {
     id: '8',
@@ -20,6 +22,8 @@ const soupProducts = [
     price: 9.0,
     stock: 4,
     image: PlaceHolderImages.find((img) => img.id === 'product-8')!,
+    rating: 4.8, 
+    reviewCount: 45,
   },
 ];
 
