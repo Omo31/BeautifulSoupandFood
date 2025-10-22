@@ -1,14 +1,17 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { OrderTable } from "@/components/orders/order-table";
+import { mockOrders } from "@/app/(main)/account/orders/page";
 
 export default function AdminOrdersPage() {
   return (
     <Card>
       <CardHeader>
         <CardTitle>Order Management</CardTitle>
-        <CardDescription>View and process customer orders.</CardDescription>
+        <CardDescription>View and process all customer orders.</CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="text-center text-muted-foreground py-12">[Order table with approval flow will be here]</p>
+        <OrderTable orders={mockOrders} />
       </CardContent>
     </Card>
   );

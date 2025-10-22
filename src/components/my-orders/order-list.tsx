@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -68,7 +69,7 @@ export function OrderList({ orders, emptyMessage = "You have no past orders." }:
                             <p className="text-xl font-semibold">${order.total.toFixed(2)}</p>
                         </div>
                     </CardContent>
-                    <CardFooter className="flex gap-2">
+                    <CardFooter className="flex gap-2 flex-wrap">
                          <Button variant="outline" size="sm">View Details</Button>
                         {order.status === 'Delivered' && !order.needsReview && <Button variant="secondary" size="sm">Track Order</Button>}
                         {order.needsReview && <Button size="sm">Write a Review</Button>}
