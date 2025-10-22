@@ -7,6 +7,8 @@ import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import { ShoppingCart, Ban, Star } from "lucide-react";
 import type { ImagePlaceholder } from "@/lib/placeholder-images";
 import { Badge } from "@/components/ui/badge";
+import { useCart } from "@/hooks/use-cart";
+import { useToast } from "@/hooks/use-toast";
 
 interface Product {
   id: string;
@@ -20,7 +22,18 @@ interface Product {
 }
 
 export function ProductCard({ product }: { product: Product }) {
+  const { addToCart } = useCart();
+  const { toast } = useToast();
   const isOutOfStock = product.stock === 0;
+
+  const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addToCart({ ...product, quantity: 1 });
+    toast({
+      title: `${product.name} added to cart.`,
+    });
+  };
 
   return (
     <Card className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-lg relative group">
@@ -52,7 +65,7 @@ export function ProductCard({ product }: { product: Product }) {
           <p className="text-xl font-semibold text-primary">
             ${product.price.toFixed(2)}
           </p>
-          <Button size="sm" disabled={isOutOfStock} onClick={(e) => { e.preventDefault(); /* TODO: Add to cart logic */ }}>
+          <Button size="sm" disabled={isOutOfStock} onClick={handleAddToCart}>
             {isOutOfStock ? <Ban className="mr-2 h-4 w-4" /> : <ShoppingCart className="mr-2 h-4 w-4" />}
             {isOutOfStock ? 'Unavailable' : 'Add to Cart'}
           </Button>

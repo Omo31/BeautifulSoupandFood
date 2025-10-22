@@ -11,6 +11,8 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { useCart } from "@/hooks/use-cart";
+import { Badge } from "@/components/ui/badge";
 
 const navLinks = [
   { href: "/shop", label: "Shop" },
@@ -83,6 +85,28 @@ function SearchBar() {
   )
 }
 
+function CartButton() {
+  const { cartCount } = useCart();
+  return (
+    <Button variant="ghost" size="icon" asChild>
+      <Link href="/cart">
+        <div className="relative">
+          <ShoppingCart />
+          {cartCount > 0 && (
+            <Badge 
+              variant="destructive"
+              className="absolute -top-2 -right-2 h-5 w-5 p-0 flex items-center justify-center text-xs"
+            >
+              {cartCount}
+            </Badge>
+          )}
+        </div>
+        <span className="sr-only">Cart</span>
+      </Link>
+    </Button>
+  )
+}
+
 export function Header() {
   const isMobile = useIsMobile();
   // TODO: Replace with actual auth state
@@ -133,12 +157,7 @@ export function Header() {
   const authButtons = isAuthenticated ? (
     <div className="flex items-center gap-1">
       <NotificationBell />
-      <Button variant="ghost" size="icon" asChild>
-        <Link href="/cart">
-          <ShoppingCart />
-          <span className="sr-only">Cart</span>
-        </Link>
-      </Button>
+      <CartButton />
       <Button variant="ghost" size="icon" asChild>
         <Link href="/account/profile">
           <User />
@@ -148,12 +167,7 @@ export function Header() {
     </div>
   ) : (
     <div className="flex items-center gap-2">
-       <Button variant="ghost" size="icon" asChild>
-        <Link href="/cart">
-          <ShoppingCart />
-          <span className="sr-only">Cart</span>
-        </Link>
-      </Button>
+      <CartButton />
       <Button variant="ghost" asChild>
         <Link href="/auth/login">Login</Link>
       </Button>

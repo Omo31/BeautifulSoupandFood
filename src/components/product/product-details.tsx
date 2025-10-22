@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { ShoppingCart, Ban, Minus, Plus, Star, Heart } from 'lucide-react';
+import { useCart } from '@/hooks/use-cart';
+import { useToast } from '@/hooks/use-toast';
 
 type Product = {
   id: string;
@@ -16,15 +18,28 @@ type Product = {
   image: (typeof PlaceHolderImages)[0];
   rating?: number;
   reviewCount?: number;
+  category: string;
 };
 
 export function ProductDetails({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart();
+  const { toast } = useToast();
   const isOutOfStock = product.stock === 0;
 
   const handleAddToCart = () => {
-    // TODO: Add to cart logic
-    console.log(`Added ${quantity} of ${product.name} to cart.`);
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity,
+      image: product.image,
+      stock: product.stock,
+      category: product.category,
+    });
+    toast({
+      title: `${quantity} x ${product.name} added to cart.`,
+    });
   };
 
   return (
