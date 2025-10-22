@@ -1,6 +1,7 @@
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { CookieConsentBanner } from "@/components/cookie-consent-banner";
+import { FloatingChatWidget } from "@/components/shared/floating-chat-widget";
 
 export default function MainLayout({
   children,
@@ -13,6 +14,7 @@ export default function MainLayout({
       <main className="flex-1">{children}</main>
       <Footer />
       <CookieConsentBanner />
+      <FloatingChatWidget />
     </div>
   );
 }
