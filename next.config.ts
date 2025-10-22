@@ -1,6 +1,8 @@
 import type {NextConfig} from 'next';
 import withPWAInit from "@ducanh2912/next-pwa";
 
+require('dotenv').config({ path: './.env.local' });
+
 const withPWA = withPWAInit({
   dest: "public",
   disable: process.env.NODE_ENV === "development",
@@ -39,6 +41,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  env: {
+    NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
+    PAYSTACK_SECRET_KEY: process.env.PAYSTACK_SECRET_KEY,
+  }
 };
 
 export default withPWA(nextConfig);
