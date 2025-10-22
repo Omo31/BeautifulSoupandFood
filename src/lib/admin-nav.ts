@@ -9,6 +9,7 @@ import {
   Settings,
   MessageSquare,
   Soup,
+  Library,
 } from 'lucide-react';
 
 export const adminNavItems = [
@@ -22,3 +23,9 @@ export const adminNavItems = [
   { href: '/admin/accounting', label: 'Accounting', icon: Book },
   { href: '/admin/settings/homepage', label: 'Settings', icon: Settings },
 ];
+
+export const adminSettingsNavItems = [
+    { href: '/admin/settings/homepage', label: 'Homepage' },
+    { href: '/admin/settings/footer', label: 'Footer' },
+    { href: '/admin/settings/roles', label: 'Roles' },
+]
