@@ -28,6 +28,8 @@ const homepageSettingsSchema = z.object({
   heroTitle: z.string().min(1, 'Hero title is required.'),
   heroSubtitle: z.string().min(1, 'Hero subtitle is required.'),
   youtubeVideoId: z.string().optional(),
+  youtubeVideoTitle: z.string().optional(),
+  youtubeVideoDescription: z.string().optional(),
 });
 
 export default function AdminHomepageSettingsPage() {
@@ -38,6 +40,8 @@ export default function AdminHomepageSettingsPage() {
     heroTitle: 'Exceptional Quality, Delivered Fresh',
     heroSubtitle: 'Discover the finest selection of gourmet produce, artisan goods, and pantry essentials from local and global sources.',
     youtubeVideoId: 'dQw4w9WgXcQ', // Default example video
+    youtubeVideoTitle: 'Our Commitment to Quality',
+    youtubeVideoDescription: 'Watch how we source the freshest ingredients and prepare our products with love and care. From our family to yours, we are committed to delivering nothing but the best.',
   };
 
   const form = useForm<z.infer<typeof homepageSettingsSchema>>({
@@ -100,7 +104,7 @@ export default function AdminHomepageSettingsPage() {
                 </FormItem>
               )}
             />
-            <FormField
+             <FormField
               control={form.control}
               name="youtubeVideoId"
               render={({ field }) => (
@@ -110,7 +114,39 @@ export default function AdminHomepageSettingsPage() {
                     <Input placeholder="e.g., dQw4w9WgXcQ" {...field} />
                   </FormControl>
                   <FormDescription>
-                    Paste the ID of the YouTube video you want to feature (e.g., the part after 'v=' in the URL). Leave blank to hide the video.
+                    Paste the ID of the YouTube video you want to feature (e.g., the part after 'v=' in the URL). Leave blank to hide the video section.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="youtubeVideoTitle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Video Title</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Our Story" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    The title to display next to the video.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="youtubeVideoDescription"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Video Description</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Describe what your video is about..." {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    A short description to show next to the video.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

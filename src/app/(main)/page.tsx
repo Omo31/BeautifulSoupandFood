@@ -10,7 +10,11 @@ export default function HomePage() {
       <HeroSection />
       <FeaturedProducts />
       {homepageSettings.youtubeVideoId && (
-        <YouTubeVideoSection videoId={homepageSettings.youtubeVideoId} />
+        <YouTubeVideoSection 
+            videoId={homepageSettings.youtubeVideoId}
+            title={homepageSettings.youtubeVideoTitle}
+            description={homepageSettings.youtubeVideoDescription}
+        />
       )}
     </div>
   );
