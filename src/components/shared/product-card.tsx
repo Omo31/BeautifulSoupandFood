@@ -16,6 +16,7 @@ interface Product {
   image: ImagePlaceholder;
   rating?: number;
   reviewCount?: number;
+  category: string;
 }
 
 export function ProductCard({ product }: { product: Product }) {

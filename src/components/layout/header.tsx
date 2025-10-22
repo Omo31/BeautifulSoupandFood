@@ -3,11 +3,14 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, ShoppingCart, User, Bell } from "lucide-react";
+import { Menu, ShoppingCart, User, Bell, Search } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
+import React from "react";
 
 const navLinks = [
   { href: "/shop", label: "Shop" },
@@ -57,6 +60,29 @@ function NotificationBell() {
     );
 }
 
+function SearchBar() {
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const query = formData.get('search') as string;
+    router.push(`/shop?q=${encodeURIComponent(query)}`);
+  };
+
+  return (
+    <form onSubmit={handleSearch} className="relative w-full max-w-md hidden md:block">
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <Input
+        type="search"
+        name="search"
+        placeholder="Search for products..."
+        className="w-full bg-background pl-9"
+      />
+    </form>
+  )
+}
+
 export function Header() {
   const isMobile = useIsMobile();
   // TODO: Replace with actual auth state
@@ -69,7 +95,7 @@ export function Header() {
   ];
 
   const desktopNav = (
-    <nav className="hidden md:flex items-center gap-6">
+    <nav className="hidden md:flex items-center gap-2">
       {navLinks.map((link) => (
         <Button key={link.href} variant="link" asChild>
           <Link href={link.href}>{link.label}</Link>
@@ -105,7 +131,7 @@ export function Header() {
   );
 
   const authButtons = isAuthenticated ? (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1">
       <NotificationBell />
       <Button variant="ghost" size="icon" asChild>
         <Link href="/cart">
@@ -139,12 +165,14 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-16 items-center justify-between gap-4">
         <div className="flex items-center gap-6">
           {isMobile ? mobileNav : <Logo />}
           {!isMobile && desktopNav}
         </div>
-        {isMobile && <Logo />}
+        
+        {isMobile ? <Logo /> : <SearchBar />}
+        
         {authButtons}
       </div>
     </header>
