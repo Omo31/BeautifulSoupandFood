@@ -9,7 +9,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { cn } from "@/lib/utils";
 
-type User = {
+export type User = {
   id: string;
   name: string;
   email: string;
@@ -22,10 +22,11 @@ type User = {
 type UserTableProps = {
   users: User[];
   onToggleStatus: (userId: string) => void;
+  onEdit: (user: User) => void;
 };
 
 
-export function UserTable({ users, onToggleStatus }: UserTableProps) {
+export function UserTable({ users, onToggleStatus, onEdit }: UserTableProps) {
 
   const getRoleBadge = (role: User['role']) => {
     switch (role) {
@@ -90,7 +91,7 @@ export function UserTable({ users, onToggleStatus }: UserTableProps) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onEdit(user)}>Edit</DropdownMenuItem>
                    <DropdownMenuItem onClick={() => onToggleStatus(user.id)}>
                     {user.status === 'Active' ? 'Disable' : 'Enable'}
                   </DropdownMenuItem>
