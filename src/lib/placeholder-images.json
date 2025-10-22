@@ -21,26 +21,38 @@
     {
       "id": "product-3",
       "description": "A large wheel of aged cheese.",
-      "imageUrl": "https://images.unsplash.com/photo-1654184750621-1110fe5afcdc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjaGVlc2UlMjB3aGVlbHxlbnwwfHx8fDE3NjA5ODg0MTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1654184750621-1110fe5afcdc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjaGVlc2UlMjB3aGVlbHxlbnwwfHx8fDE3NjA5ODg0MTV8MA&ixlib.rb-4.1.0&q=80&w=1080",
       "imageHint": "cheese wheel"
     },
     {
       "id": "product-4",
       "description": "A glass bottle of extra virgin olive oil.",
-      "imageUrl": "https://images.unsplash.com/photo-1612879988258-0d819c297621?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxvbGl2ZSUyMG9pbHxlbnwwfHx8fDE3NjA5NDg4OTN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1612879988258-0d819c297621?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxvbGl2ZSUyMG9pbHxlbnwwfHx8fDE3NjA5NDg4OTN8MA&ixlib.rb-4.1.0&q=80&w=1080",
       "imageHint": "olive oil"
     },
     {
       "id": "product-5",
       "description": "A bowl of assorted fresh fruits.",
-      "imageUrl": "https://images.unsplash.com/photo-1517260739337-6799d239ce83?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxmcmVzaCUyMGZydWl0c3xlbnwwfHx8fDE3NjA4NzAxNDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1517260739337-6799d239ce83?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxmcmVzaCUyMGZydWl0c3xlbnwwfHx8fDE3NjA4NzAxNDd8MA&ixlib.rb-4.1.0&q=80&w=1080",
       "imageHint": "fresh fruits"
     },
     {
       "id": "product-6",
       "description": "A glass of red wine next to a bottle.",
-      "imageUrl": "https://images.unsplash.com/photo-1581106047572-b22b8d26203a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cmVkJTIwd2luZXxlbnwwfHx8fDE3NjA5NjQzMTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1581106047572-b22b8d26203a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cmVkJTIwd2luZXxlbnwwfHx8fDE3NjA5NjQzMTV8MA&ixlib.rb-4.1.0&q=80&w=1080",
       "imageHint": "red wine"
+    },
+    {
+      "id": "product-7",
+      "description": "A bowl of tomato basil soup.",
+      "imageUrl": "https://images.unsplash.com/photo-1673021889619-0677506b56ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8dG9tYXRvJTIwc291cHxlbnwwfHx8fDE3NjExMTAwOTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "tomato soup"
+    },
+    {
+      "id": "product-8",
+      "description": "A comforting bowl of chicken noodle soup.",
+      "imageUrl": "https://images.unsplash.com/photo-1574885198468-488944bf9b89?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjaGlja2VuJTIwc291cHxlbnwwfHx8fDE3NjEwNjYzODl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "chicken soup"
     }
   ]
 }

@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 
 const navLinks = [
   { href: "/shop", label: "Shop" },
+  { href: "/soup", label: "Soup" },
   { href: "/custom-order", label: "Custom Orders" },
   { href: "/my-orders", label: "My Orders" },
   { href: "/wishlist", label: "Wishlist" },
