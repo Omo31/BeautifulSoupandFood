@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -44,6 +45,8 @@ type AddProductDialogProps = {
   onAddProduct: (product: z.infer<typeof formSchema>) => void;
 };
 
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+
 export function AddProductDialog({ isOpen, setIsOpen, onAddProduct }: AddProductDialogProps) {
   const { toast } = useToast();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -62,6 +65,14 @@ export function AddProductDialog({ isOpen, setIsOpen, onAddProduct }: AddProduct
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      if (file.size > MAX_FILE_SIZE) {
+        toast({
+          title: 'File Too Large',
+          description: 'The selected image exceeds the 2MB size limit. Please choose a smaller file.',
+          variant: 'destructive',
+        });
+        return;
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
@@ -117,7 +128,7 @@ export function AddProductDialog({ isOpen, setIsOpen, onAddProduct }: AddProduct
                           <div className="flex flex-col items-center justify-center pt-5 pb-6">
                             <Upload className="w-8 h-8 mb-4 text-muted-foreground" />
                             <p className="mb-2 text-sm text-muted-foreground"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                            <p className="text-xs text-muted-foreground">PNG, JPG (MAX. 800x400px)</p>
+                            <p className="text-xs text-muted-foreground">PNG, JPG (MAX. 2MB)</p>
                           </div>
                         )}
                         <Input id="dropzone-file" type="file" className="hidden" onChange={handleImageChange} accept="image/png, image/jpeg" />
