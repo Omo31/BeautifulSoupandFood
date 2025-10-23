@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 export type User = {
   id: string;
@@ -27,6 +28,7 @@ type UserTableProps = {
 
 
 export function UserTable({ users, onToggleStatus, onEdit }: UserTableProps) {
+  const { toast } = useToast();
 
   const getRoleBadge = (role: User['role']) => {
     switch (role) {
@@ -96,7 +98,12 @@ export function UserTable({ users, onToggleStatus, onEdit }: UserTableProps) {
                     {user.status === 'Active' ? 'Disable' : 'Enable'}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                  <DropdownMenuItem 
+                    className="text-destructive"
+                    onClick={() => toast({ title: 'Simulated Action', description: `Deleting user: ${user.name}`})}
+                  >
+                    Delete
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>

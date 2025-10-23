@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Skeleton } from '@/components/ui/skeleton';
 import { Download, BarChart2 } from 'lucide-react';
 import type { GenerateMarketingFlyerOutput } from '@/ai/flows/generate-marketing-flyers';
+import { useToast } from '@/hooks/use-toast';
 
 type FlyerDisplayProps = {
   result: GenerateMarketingFlyerOutput | null;
@@ -13,6 +14,15 @@ type FlyerDisplayProps = {
 };
 
 export function FlyerDisplay({ result, loading }: FlyerDisplayProps) {
+  const { toast } = useToast();
+
+  const handleAction = (message: string) => {
+    toast({
+      title: 'Action Triggered (Simulated)',
+      description: message,
+    });
+  };
+
   if (loading) {
     return (
       <Card className="mt-8">
@@ -69,11 +79,11 @@ export function FlyerDisplay({ result, loading }: FlyerDisplayProps) {
         </div>
       </CardContent>
       <CardFooter className="flex gap-2 bg-muted/30 p-4">
-         <Button>
+         <Button onClick={() => handleAction('Downloading flyer assets.')}>
           <Download className="mr-2 h-4 w-4" />
           Download Assets
         </Button>
-        <Button variant="outline">
+        <Button variant="outline" onClick={() => handleAction('Navigating to performance analytics.')}>
           <BarChart2 className="mr-2 h-4 w-4" />
           Monitor Performance
         </Button>

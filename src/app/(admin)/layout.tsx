@@ -22,6 +22,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { adminNavItems } from '@/lib/admin-nav';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
+import { useToast } from '@/hooks/use-toast';
 
 
 const mockNotifications = [
@@ -68,6 +69,16 @@ function AdminNotificationBell() {
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { toast } = useToast();
+
+  const handleLogout = () => {
+    toast({
+      title: 'Logged Out (Simulated)',
+      description: "You have been successfully logged out.",
+    });
+    // In a real app, you'd redirect to the login page here.
+    // router.push('/auth/login');
+  }
 
   return (
     <SidebarProvider>
@@ -103,7 +114,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <span className='text-muted-foreground'>admin@gourmet.com</span>
               </div>
             </div>
-            <Button variant='ghost' size='icon'>
+            <Button variant='ghost' size='icon' onClick={handleLogout}>
                 <LogOut/>
             </Button>
         </SidebarFooter>

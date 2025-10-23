@@ -42,6 +42,13 @@ export function ProductDetails({ product }: { product: Product }) {
     });
   };
 
+  const handleWishlist = () => {
+    toast({
+        title: 'Added to Wishlist (Simulated)',
+        description: `${product.name} has been added to your wishlist.`,
+    });
+  }
+
   return (
     <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
       <div className="relative aspect-square w-full overflow-hidden rounded-lg border">
@@ -110,7 +117,7 @@ export function ProductDetails({ product }: { product: Product }) {
             {isOutOfStock ? <Ban className="mr-2 h-5 w-5" /> : <ShoppingCart className="mr-2 h-5 w-5" />}
             {isOutOfStock ? 'Unavailable' : 'Add to Cart'}
           </Button>
-          <Button variant="outline" size="lg">
+          <Button variant="outline" size="lg" onClick={handleWishlist}>
               <Heart className="mr-2 h-5 w-5" />
               Wishlist
           </Button>

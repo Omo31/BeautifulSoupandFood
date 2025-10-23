@@ -107,11 +107,19 @@ export default function SignupPage() {
                 htmlFor="terms"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                I agree to the <Link href="#" className="underline">Terms of Service</Link>
+                I agree to the <Link href="/terms-of-service" className="underline">Terms of Service</Link>
               </label>
             </div>
             <Button type="submit" className="w-full">Create Account</Button>
           </form>
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+            </div>
+          </div>
           <Button variant="outline" className="w-full" onClick={handleGoogleSignup}>Sign up with Google</Button>
         </CardContent>
         <CardFooter className="text-center text-sm">

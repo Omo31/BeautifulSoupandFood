@@ -7,6 +7,7 @@ import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import type { ImagePlaceholder } from '@/lib/placeholder-images';
+import { useToast } from '@/hooks/use-toast';
 
 type Product = {
   id: string;
@@ -19,6 +20,15 @@ type Product = {
 };
 
 export function ProductTable({ products }: { products: Product[] }) {
+  const { toast } = useToast();
+
+  const handleAction = (message: string) => {
+    toast({
+      title: 'Action Triggered (Simulated)',
+      description: message,
+    });
+  };
+
   const getStockStatus = (stock: number, threshold?: number) => {
     if (stock === 0) return <Badge variant="destructive">Out of Stock</Badge>;
     if (threshold && stock <= threshold) return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100/80">Low Stock</Badge>;
@@ -71,8 +81,8 @@ export function ProductTable({ products }: { products: Product[] }) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuItem>Delete</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleAction(`Editing product: ${product.name}`)}>Edit</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleAction(`Deleting product: ${product.name}`)}>Delete</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>

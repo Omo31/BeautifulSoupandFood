@@ -7,6 +7,7 @@ import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
+import { useToast } from "@/hooks/use-toast";
 
 export type Order = {
   id: string;
@@ -27,6 +28,14 @@ type OrderTableProps = {
 };
 
 export function OrderTable({ orders }: OrderTableProps) {
+  const { toast } = useToast();
+
+  const handleAction = (message: string) => {
+    toast({
+      title: 'Action Triggered (Simulated)',
+      description: message,
+    });
+  };
 
   const getStatusBadge = (status: Order['status']) => {
     switch (status) {
@@ -88,10 +97,10 @@ export function OrderTable({ orders }: OrderTableProps) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuItem>View Details</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleAction(`Viewing details for order ${order.id}.`)}>View Details</DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>Approve</DropdownMenuItem>
-                  <DropdownMenuItem>Reject</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleAction(`Approving order ${order.id}.`)}>Approve</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleAction(`Rejecting order ${order.id}.`)}>Reject</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>
@@ -101,4 +110,3 @@ export function OrderTable({ orders }: OrderTableProps) {
     </Table>
   );
 }
-

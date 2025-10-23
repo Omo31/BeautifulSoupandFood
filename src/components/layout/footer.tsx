@@ -1,13 +1,29 @@
+'use client';
+
 import { Facebook, Instagram, Youtube } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { Button } from '../ui/button';
 import { footerSettings } from '@/lib/settings';
+import { useToast } from '@/hooks/use-toast';
 
 export function Footer() {
   const { facebookUrl, instagramUrl, youtubeUrl, openingHours, termsUrl, privacyUrl, cookiePolicyUrl } = footerSettings;
   const hasSocials = facebookUrl || instagramUrl || youtubeUrl;
+  const { toast } = useToast();
+
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, label: string) => {
+    const href = e.currentTarget.getAttribute('href');
+    if (href === '#') {
+      e.preventDefault();
+      toast({
+        title: 'Coming Soon!',
+        description: `The ${label} page is under construction.`,
+      });
+    }
+  };
+
 
   return (
     <footer className="bg-muted text-muted-foreground">
@@ -33,21 +49,21 @@ export function Footer() {
             <Link href="/custom-order" className="text-sm hover:text-primary">
               Custom Orders
             </Link>
-            <Link href="#" className="text-sm hover:text-primary">
+            <a href="#" className="text-sm hover:text-primary" onClick={(e) => handleLinkClick(e, 'Featured Products')}>
               Featured
-            </Link>
+            </a>
           </div>
           <div className="flex flex-col gap-3">
             <h4 className="font-semibold text-card-foreground">Support</h4>
-            <Link href="#" className="text-sm hover:text-primary">
+            <a href="#" className="text-sm hover:text-primary" onClick={(e) => handleLinkClick(e, 'Contact Us')}>
               Contact Us
-            </Link>
-            <Link href="#" className="text-sm hover:text-primary">
+            </a>
+            <a href="#" className="text-sm hover:text-primary" onClick={(e) => handleLinkClick(e, 'FAQ')}>
               FAQ
-            </Link>
-            <Link href="#" className="text-sm hover:text-primary">
+            </a>
+            <a href="#" className="text-sm hover:text-primary" onClick={(e) => handleLinkClick(e, 'Shipping & Returns')}>
               Shipping & Returns
-            </Link>
+            </a>
           </div>
           <div className="flex flex-col gap-3">
             <h4 className="font-semibold text-card-foreground">Legal</h4>
