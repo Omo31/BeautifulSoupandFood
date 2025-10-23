@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
 
 type Order = {
     id: string;
@@ -22,6 +23,8 @@ type OrderListProps = {
 };
 
 export function OrderList({ orders, emptyMessage = "You have no past orders." }: OrderListProps) {
+    const { toast } = useToast();
+
     if (orders.length === 0) {
         return (
             <div className="text-center text-muted-foreground py-12 rounded-lg bg-muted/50">
@@ -44,6 +47,13 @@ export function OrderList({ orders, emptyMessage = "You have no past orders." }:
             default:
                 return <Badge variant="outline">{status}</Badge>;
         }
+    };
+    
+    const handleActionClick = (message: string) => {
+        toast({
+            title: 'Action Triggered (Simulated)',
+            description: message,
+        });
     };
 
     return (
@@ -70,14 +80,14 @@ export function OrderList({ orders, emptyMessage = "You have no past orders." }:
                         </div>
                     </CardContent>
                     <CardFooter className="flex gap-2 flex-wrap">
-                         <Button variant="outline" size="sm">View Details</Button>
-                        {order.status === 'Delivered' && !order.needsReview && <Button variant="secondary" size="sm">Track Order</Button>}
-                        {order.needsReview && <Button size="sm">Write a Review</Button>}
+                         <Button variant="outline" size="sm" onClick={() => handleActionClick(`Displaying details for order ${order.id}.`)}>View Details</Button>
+                        {order.status === 'Delivered' && !order.needsReview && <Button variant="secondary" size="sm" onClick={() => handleActionClick(`Opening tracking information for order ${order.id}.`)}>Track Order</Button>}
+                        {order.needsReview && <Button size="sm" onClick={() => handleActionClick(`Navigating to review page for order ${order.id}.`)}>Write a Review</Button>}
                         {order.status === 'Awaiting Confirmation' && (
                            <>
-                             <Button size="sm">Accept</Button>
-                             <Button variant="destructive" size="sm">Reject</Button>
-                             <Button variant="outline" size="sm">Edit</Button>
+                             <Button size="sm" onClick={() => handleActionClick(`Accepting quote for order ${order.id}.`)}>Accept</Button>
+                             <Button variant="destructive" size="sm" onClick={() => handleActionClick(`Rejecting quote for order ${order.id}.`)}>Reject</Button>
+                             <Button variant="outline" size="sm" onClick={() => handleActionClick(`Requesting edit for order ${order.id}.`)}>Edit</Button>
                            </>
                         )}
                     </CardFooter>
