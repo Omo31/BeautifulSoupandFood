@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OrderList } from "@/components/my-orders/order-list";
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious, PaginationLink } from '@/components/ui/pagination';
+import { OrderFilterDialog, type OrderFilters } from '@/components/my-orders/order-filter-dialog';
+import { DateRange } from 'react-day-picker';
 
 
 // Mock data for orders, in a real app this would come from a database.
@@ -27,6 +29,8 @@ const ITEMS_PER_PAGE = 4;
 export default function MyOrdersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentTab, setCurrentTab] = useState('all');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filters, setFilters] = useState<OrderFilters>({ statuses: [], dateRange: undefined });
 
   const deliveredOrders = mockOrders.filter(o => o.status === 'Delivered');
   const pendingOrders = mockOrders.filter(o => ['Pending', 'Awaiting Confirmation'].includes(o.status));
@@ -47,7 +51,19 @@ export default function MyOrdersPage() {
     }
   }
 
-  const activeOrders = getOrdersForTab(currentTab);
+  const filteredOrdersByTab = getOrdersForTab(currentTab);
+
+  const applyAllFilters = (orders: typeof mockOrders) => {
+    return orders.filter(order => {
+      const statusMatch = filters.statuses.length === 0 || filters.statuses.includes(order.status);
+      const dateMatch = !filters.dateRange?.from || 
+        (new Date(order.date) >= filters.dateRange.from && (!filters.dateRange.to || new Date(order.date) <= filters.dateRange.to));
+      return statusMatch && dateMatch;
+    });
+  }
+  
+  const activeOrders = applyAllFilters(filteredOrdersByTab);
+
   const totalPages = Math.ceil(activeOrders.length / ITEMS_PER_PAGE);
   const paginatedOrders = activeOrders.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
@@ -62,6 +78,11 @@ export default function MyOrdersPage() {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+  
+  const handleApplyFilters = (newFilters: OrderFilters) => {
+    setFilters(newFilters);
+    setCurrentPage(1);
+  };
 
 
   return (
@@ -72,7 +93,7 @@ export default function MyOrdersPage() {
                 <CardDescription>View your standard and custom order history.</CardDescription>
             </div>
             <div className="flex items-center gap-2 mt-4 md:mt-0">
-                <Button variant="outline">
+                <Button variant="outline" onClick={() => setIsFilterOpen(true)}>
                     <ListFilter className="mr-2 h-4 w-4" />
                     Filter Orders
                 </Button>
@@ -125,6 +146,12 @@ export default function MyOrdersPage() {
                  <OrderList orders={reviewOrders} emptyMessage="You have no orders waiting for review." />
             </div>
         </CardContent>
+         <OrderFilterDialog 
+            isOpen={isFilterOpen} 
+            setIsOpen={setIsFilterOpen} 
+            onApplyFilters={handleApplyFilters}
+            currentFilters={filters}
+        />
       </Card>
   );
 }
