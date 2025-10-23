@@ -58,9 +58,9 @@ export function Footer() {
             <a href="#" className="text-sm hover:text-primary" onClick={(e) => handleLinkClick(e, 'Contact Us')}>
               Contact Us
             </a>
-            <a href="#" className="text-sm hover:text-primary" onClick={(e) => handleLinkClick(e, 'FAQ')}>
+            <Link href="/faq" className="text-sm hover:text-primary">
               FAQ
-            </a>
+            </Link>
             <a href="#" className="text-sm hover:text-primary" onClick={(e) => handleLinkClick(e, 'Shipping & Returns')}>
               Shipping & Returns
             </a>
