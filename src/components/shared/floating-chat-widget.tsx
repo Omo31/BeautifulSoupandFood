@@ -73,10 +73,10 @@ export function FloatingChatWidget() {
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button
-          size="lg"
-          className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-lg z-50"
+          size="icon"
+          className="fixed bottom-24 right-6 h-14 w-14 rounded-full shadow-lg z-50"
         >
-          <MessageSquare className="h-8 w-8" />
+          <MessageSquare className="h-7 w-7" />
           <span className="sr-only">Open Chat</span>
         </Button>
       </PopoverTrigger>
