@@ -2,16 +2,16 @@
 
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Minus, Plus, Trash2 } from 'lucide-react';
+import { Minus, Plus, Trash2, Bookmark } from 'lucide-react';
 import { useCart } from '@/hooks/use-cart';
 import type { CartItem as CartItemType } from '@/hooks/use-cart';
 
 export function CartItem({ item }: { item: CartItemType }) {
-  const { updateQuantity, removeFromCart } = useCart();
+  const { updateQuantity, removeFromCart, saveForLater } = useCart();
 
   return (
-    <div className="flex items-center gap-4 py-4">
-      <div className="relative h-24 w-24 overflow-hidden rounded-md border">
+    <div className="flex items-start sm:items-center gap-4 py-4 flex-col sm:flex-row">
+      <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border">
         <Image
           src={item.image.imageUrl}
           alt={item.name}
@@ -45,17 +45,28 @@ export function CartItem({ item }: { item: CartItemType }) {
           </Button>
         </div>
       </div>
-      <div className="flex flex-col items-end gap-2">
-        <p className="font-bold">${(item.price * item.quantity).toFixed(2)}</p>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-muted-foreground hover:text-destructive"
-          onClick={() => removeFromCart(item.id)}
-        >
-          <Trash2 className="h-4 w-4" />
-          <span className="sr-only">Remove item</span>
-        </Button>
+      <div className="flex flex-col items-end gap-2 self-end sm:self-center">
+        <p className="font-bold text-lg">${(item.price * item.quantity).toFixed(2)}</p>
+        <div className="flex gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground hover:text-primary"
+            onClick={() => saveForLater(item.id)}
+          >
+            <Bookmark className="h-4 w-4 mr-1" />
+            Save for Later
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-muted-foreground hover:text-destructive h-9 w-9"
+            onClick={() => removeFromCart(item.id)}
+          >
+            <Trash2 className="h-4 w-4" />
+            <span className="sr-only">Remove item</span>
+          </Button>
+        </div>
       </div>
     </div>
   );
