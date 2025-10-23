@@ -2,6 +2,9 @@
 'use client';
 
 import * as React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,21 +15,48 @@ import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+
+const signupSchema = z.object({
+  firstName: z.string().min(1, 'First name is required.'),
+  lastName: z.string().min(1, 'Last name is required.'),
+  email: z.string().email('Please enter a valid email address.'),
+  phone: z.string().min(10, 'Please enter a valid phone number.'),
+  address: z.string().min(5, 'Address is required.'),
+  password: z.string().min(8, 'Password must be at least 8 characters long.'),
+  terms: z.boolean().refine(value => value === true, {
+    message: 'You must accept the terms and conditions.',
+  }),
+});
+
 
 export default function SignupPage() {
   const [showPassword, setShowPassword] = React.useState(false);
   const { toast } = useToast();
   const router = useRouter();
 
-  const handleNameInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const form = useForm<z.infer<typeof signupSchema>>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      address: '',
+      password: '',
+      terms: false,
+    },
+  });
+
+  const handleNameInputChange = (event: React.ChangeEvent<HTMLInputElement>, field: any) => {
     const { value } = event.target;
-    event.target.value = value.charAt(0).toUpperCase() + value.slice(1);
+    const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1);
+    field.onChange(capitalizedValue);
   };
   
-  const handleSignup = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSignup = (values: z.infer<typeof signupSchema>) => {
     // TODO: Implement Firebase email/password signup
-    console.log('Signing up...');
+    console.log('Signing up with:', values);
     toast({
       title: 'Account Created (Simulated)',
       description: "We're redirecting you to verify your email.",
@@ -59,59 +89,126 @@ export default function SignupPage() {
           <CardDescription>Create your BeautifulSoup&Food account.</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSignup} className="grid gap-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="first-name">First Name</Label>
-                <Input id="first-name" placeholder="John" required onChange={handleNameInputChange} />
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSignup)} className="grid gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="John" {...field} onChange={(e) => handleNameInputChange(e, field)} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Doe" {...field} onChange={(e) => handleNameInputChange(e, field)} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="last-name">Last Name</Label>
-                <Input id="last-name" placeholder="Doe" required onChange={handleNameInputChange} />
-              </div>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="m@example.com" required />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="phone">Phone Number</Label>
-              <div className="flex items-center">
-                <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-background text-sm text-muted-foreground">+234</span>
-                <Input id="phone" type="tel" placeholder="8012345678" required className="rounded-l-none" />
-              </div>
-            </div>
-             <div className="grid gap-2">
-              <Label htmlFor="address">Address</Label>
-              <Textarea id="address" placeholder="Enter your full address" required />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Input id="password" type={showPassword ? 'text' : 'password'} required />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="absolute inset-y-0 right-0 h-full px-3"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? <EyeOff /> : <Eye />}
-                </Button>
-              </div>
-            </div>
-             <div className="flex items-center space-x-2">
-              <Checkbox id="terms" required />
-              <label
-                htmlFor="terms"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                I agree to the <Link href="/terms-of-service" className="underline">Terms of Service</Link>
-              </label>
-            </div>
-            <Button type="submit" className="w-full">Create Account</Button>
-          </form>
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="m@example.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone Number</FormLabel>
+                     <div className="flex items-center">
+                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-background text-sm text-muted-foreground">+234</span>
+                        <FormControl>
+                            <Input type="tel" placeholder="8012345678" {...field} className="rounded-l-none" />
+                        </FormControl>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+                />
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Address</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter your full address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <div className="relative">
+                      <FormControl>
+                        <Input type={showPassword ? 'text' : 'password'} {...field} />
+                      </FormControl>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute inset-y-0 right-0 h-full px-3"
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showPassword ? <EyeOff /> : <Eye />}
+                      </Button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="terms"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                     <FormControl>
+                       <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                     </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>
+                         I agree to the <Link href="/terms-of-service" className="underline">Terms of Service</Link>
+                      </FormLabel>
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full">Create Account</Button>
+            </form>
+          </Form>
           <div className="relative my-4">
             <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
