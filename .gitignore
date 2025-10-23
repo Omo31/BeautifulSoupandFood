@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+.pnp.cjs
 
 # Testing
 /coverage
@@ -19,55 +20,27 @@
 .DS_Store
 *.pem
 
-# Debug
+# Local .env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# genkit
+.genkit/
+
+# Log files
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Local Env Files
-.env
-.env*.local
-.env.development
-.env.test
-.env.production
-.env.local
-
-# Turbopack
-.turbo
-
-# Genkit
-.genkit/cache
-.genkit/log
-.genkit/traces
-
-# IDE
+# Editor directories and files
+.vscode
 .idea
-.vscode/settings.json
-
-# WebStorm
-.idea
-*.iws
-
-# esLint
-.eslintcache
-
-# Dumps
-*.dmp
-*.exr
-*.log
-*.max
-*.mdmp
-*.mkv
-*.mp4
-*.obj
-*.ogg
-*.ogv
-*.mov
 *.suo
-*.tga
-*.webm
-*.webp
-
-# Patch-package
-/patches
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
