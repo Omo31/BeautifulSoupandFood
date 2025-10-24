@@ -1,12 +1,15 @@
 'use server';
 
-import sgMail from '@sendgrid/mail';
+import * as SibApiV3Sdk from '@sendinblue/client';
 
-if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+
+if (process.env.BREVO_API_KEY) {
+    apiInstance.setApiKey(SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY);
 }
 
 const FROM_EMAIL = 'support@beautifulsoupandfood.com';
+const FROM_NAME = 'BeautifulSoup&Food';
 
 type EmailData = {
   to: string;
@@ -15,26 +18,24 @@ type EmailData = {
 };
 
 async function sendEmail(data: EmailData) {
-  if (!process.env.SENDGRID_API_KEY) {
-    console.error('SENDGRID_API_KEY is not set. Email not sent.');
-    // In a real app, you might want to throw an error or handle this more gracefully.
-    // For now, we'll just log it and simulate a success response for UI testing.
+  if (!process.env.BREVO_API_KEY) {
+    console.error('BREVO_API_KEY is not set. Email not sent.');
+    // For UI testing, simulate success even if the key is missing.
     return { success: true, message: 'Email sending is disabled (missing API key).' };
   }
 
-  const msg = {
-    ...data,
-    from: FROM_EMAIL,
-  };
+  let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+
+  sendSmtpEmail.subject = data.subject;
+  sendSmtpEmail.htmlContent = data.html;
+  sendSmtpEmail.sender = { name: FROM_NAME, email: FROM_EMAIL };
+  sendSmtpEmail.to = [{ email: data.to }];
 
   try {
-    await sgMail.send(msg);
+    await apiInstance.sendTransacEmail(sendSmtpEmail);
     return { success: true, message: 'Email sent successfully.' };
   } catch (error: any) {
-    console.error('Error sending email with SendGrid:', error);
-    if (error.response) {
-      console.error(error.response.body);
-    }
+    console.error('Error sending email with Brevo:', error);
     return { success: false, message: 'Failed to send email.' };
   }
 }

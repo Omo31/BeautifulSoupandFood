@@ -44,7 +44,7 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
     PAYSTACK_SECRET_KEY: process.env.PAYSTACK_SECRET_KEY,
-    SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
+    BREVO_API_KEY: process.env.BREVO_API_KEY,
   }
 };
 
