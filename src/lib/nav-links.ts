@@ -13,6 +13,7 @@ import {
   ShoppingBag,
   Soup,
   Pencil,
+  Bell,
 } from 'lucide-react';
 
 export const adminNavItems = [
@@ -42,6 +43,7 @@ export const mainNavLinks = [
 export const accountNavItems = [
     { href: '/account/profile', label: 'My Profile', icon: UserIcon },
     { href: '/account/orders', label: 'My Orders', icon: ShoppingCart },
+    { href: '/account/notifications', label: 'Notifications', icon: Bell },
     { href: '/wishlist', label: 'Wishlist', icon: Heart },
 ];
 
