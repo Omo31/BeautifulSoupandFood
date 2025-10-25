@@ -14,7 +14,6 @@ import Link from "next/link";
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 const signupSchema = z.object({
@@ -33,7 +32,7 @@ const signupSchema = z.object({
 export default function SignupPage() {
   const [showPassword, setShowPassword] = React.useState(false);
   const { toast } = useToast();
-  const router = useRouter();
+  const [isSignedUp, setIsSignedUp] = React.useState(false);
 
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
@@ -61,7 +60,7 @@ export default function SignupPage() {
       title: 'Account Created (Simulated)',
       description: "We're redirecting you to verify your email.",
     });
-    router.push('/auth/verify-email');
+    setIsSignedUp(true);
   };
 
   const handleGoogleSignup = () => {
@@ -71,9 +70,27 @@ export default function SignupPage() {
       title: 'Account Created with Google (Simulated)',
       description: 'You can now log in.',
     });
-    router.push('/auth/login');
+    setIsSignedUp(true);
   };
 
+
+  if (isSignedUp) {
+    return (
+       <div className="relative flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+           <CardHeader>
+              <CardTitle className="font-headline text-2xl">Account Created</CardTitle>
+              <CardDescription>Your account has been created. In a real app, you would be asked to verify your email.</CardDescription>
+           </CardHeader>
+           <CardContent>
+              <Button asChild className="w-full">
+                <Link href="/auth/login">Proceed to Login</Link>
+              </Button>
+           </CardContent>
+        </Card>
+      </div>
+    )
+  }
 
   return (
     <div className="relative flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
