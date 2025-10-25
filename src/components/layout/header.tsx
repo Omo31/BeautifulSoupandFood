@@ -13,12 +13,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useCart } from "@/hooks/use-cart";
 import { Badge } from "@/components/ui/badge";
-
-const navLinks = [
-  { href: "/shop", label: "Shop" },
-  { href: "/soup", label: "Soup" },
-  { href: "/custom-order", label: "Custom Orders" },
-];
+import { mainNavLinks, mobileNavLinks } from "@/lib/nav-links";
 
 const mockNotifications = [
     { id: 1, title: "Your order has shipped!", description: "Order #12345 is on its way.", time: "5m ago" },
@@ -154,11 +149,6 @@ function AuthButtons() {
 }
 
 export function Header() {
-  const mobileNavLinks = [
-      ...navLinks,
-      { href: "/my-orders", label: "My Orders" },
-      { href: "/wishlist", label: "Wishlist" },
-  ];
   
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
@@ -168,7 +158,7 @@ export function Header() {
         <div className="hidden md:flex items-center gap-6">
             <Logo />
             <nav className="flex items-center gap-2">
-                {navLinks.map((link) => (
+                {mainNavLinks.map((link) => (
                     <Button key={link.href} variant="link" asChild>
                         <Link href={link.href}>{link.label}</Link>
                     </Button>

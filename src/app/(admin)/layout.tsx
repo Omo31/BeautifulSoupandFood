@@ -11,7 +11,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarInset,
   SidebarTrigger,
   SidebarFooter
 } from '@/components/ui/sidebar';
@@ -19,12 +18,13 @@ import { LogOut, Bell, Menu } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { adminNavItems, accountNavItems } from '@/lib/admin-nav';
+import { adminNavItems, accountNavItems, mainNavLinks } from '@/lib/nav-links';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast.tsx';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { SidebarSeparator } from '@/components/ui/sidebar';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 
 const mockNotifications = [
@@ -82,50 +82,65 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     // router.push('/auth/login');
   }
 
-  const mobileNavLinks = [
-    ...adminNavItems,
-    ...accountNavItems
-  ]
-
   return (
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
           <Logo />
         </SidebarHeader>
-        <SidebarContent>
-          <SidebarMenu>
-            {adminNavItems.map((item) => (
-              <SidebarMenuItem key={item.href}>
-                <Link href={item.href}>
-                  <SidebarMenuButton
-                    isActive={pathname.startsWith(item.href)}
-                    tooltip={item.label}
-                  >
-                    <item.icon />
-                    <span>{item.label}</span>
-                  </SidebarMenuButton>
-                </Link>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-          <SidebarSeparator className='my-4' />
-          <SidebarMenu>
-            {accountNavItems.map((item) => (
+        <ScrollArea className="flex-1">
+            <SidebarContent>
+            <SidebarMenu>
+                {adminNavItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
                     <Link href={item.href}>
-                        <SidebarMenuButton
-                            isActive={pathname.startsWith(item.href)}
-                            tooltip={item.label}
-                        >
-                            <item.icon />
-                            <span>{item.label}</span>
-                        </SidebarMenuButton>
+                    <SidebarMenuButton
+                        isActive={pathname.startsWith(item.href)}
+                        tooltip={item.label}
+                    >
+                        <item.icon />
+                        <span>{item.label}</span>
+                    </SidebarMenuButton>
                     </Link>
                 </SidebarMenuItem>
-            ))}
-           </SidebarMenu>
-        </SidebarContent>
+                ))}
+            </SidebarMenu>
+            <SidebarSeparator className='my-4' />
+            <SidebarMenu>
+                <p className="text-xs text-muted-foreground px-4 py-2">Storefront</p>
+                {mainNavLinks.map((item) => (
+                    <SidebarMenuItem key={item.href}>
+                        <Link href={item.href}>
+                            <SidebarMenuButton
+                                isActive={pathname.startsWith(item.href)}
+                                tooltip={item.label}
+                            >
+                                <item.icon />
+                                <span>{item.label}</span>
+                            </SidebarMenuButton>
+                        </Link>
+                    </SidebarMenuItem>
+                ))}
+            </SidebarMenu>
+            <SidebarSeparator className='my-4' />
+            <SidebarMenu>
+                <p className="text-xs text-muted-foreground px-4 py-2">My Account</p>
+                {accountNavItems.map((item) => (
+                    <SidebarMenuItem key={item.href}>
+                        <Link href={item.href}>
+                            <SidebarMenuButton
+                                isActive={pathname.startsWith(item.href)}
+                                tooltip={item.label}
+                            >
+                                <item.icon />
+                                <span>{item.label}</span>
+                            </SidebarMenuButton>
+                        </Link>
+                    </SidebarMenuItem>
+                ))}
+            </SidebarMenu>
+            </SidebarContent>
+        </ScrollArea>
         <SidebarFooter>
             <div className='flex items-center gap-2'>
               <Avatar className='h-8 w-8'>
@@ -144,12 +159,37 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </Sidebar>
       <div className="flex flex-col flex-1">
         <header className="flex h-14 items-center gap-4 border-b bg-background px-6">
+          <Sheet>
+              <SheetTrigger asChild>
+              <Button variant="outline" size="icon" className="md:hidden">
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Open navigation menu</span>
+              </Button>
+              </SheetTrigger>
+              <SheetContent side="left">
+                  <SheetHeader>
+                      <SheetTitle><Logo /></SheetTitle>
+                  </SheetHeader>
+                  <ScrollArea className="flex-1 -mx-6 px-6">
+                    <nav className="flex flex-col gap-4 pt-4">
+                        {[...adminNavItems, ...mainNavLinks, ...accountNavItems].map((item) => (
+                            <Button key={item.href} variant={pathname.startsWith(item.href) ? 'default': 'ghost'} className="justify-start" asChild>
+                                <Link href={item.href}>
+                                    <item.icon className='mr-2 h-4 w-4' />
+                                    {item.label}
+                                </Link>
+                            </Button>
+                        ))}
+                    </nav>
+                  </ScrollArea>
+              </SheetContent>
+          </Sheet>
           <div className="flex items-center gap-2">
-            <SidebarTrigger className="md:hidden"/>
-            <div className="md:hidden"><Logo/></div>
+            <SidebarTrigger className="hidden md:flex"/>
+            <div className="hidden md:block"><Logo/></div>
           </div>
           <h1 className="text-lg font-semibold md:text-xl flex-1">
-            {adminNavItems.find(item => pathname.startsWith(item.href))?.label || 'Admin'}
+            {[...adminNavItems, ...mainNavLinks, ...accountNavItems].find(item => pathname.startsWith(item.href))?.label || 'Admin'}
           </h1>
           <AdminNotificationBell />
         </header>
