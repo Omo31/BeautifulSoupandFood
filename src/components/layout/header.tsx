@@ -124,66 +124,64 @@ export function Header() {
       { href: "/my-orders", label: "My Orders" },
       { href: "/wishlist", label: "Wishlist" },
   ];
+  
+  const desktopNav = (
+      <div className="flex items-center gap-6">
+          <Logo />
+          <nav className="flex items-center gap-2">
+              {navLinks.map((link) => (
+                  <Button key={link.href} variant="link" asChild>
+                  <Link href={link.href}>{link.label}</Link>
+                  </Button>
+              ))}
+          </nav>
+          <SearchBar />
+      </div>
+  );
 
-  if (!isClient) {
-    // Render a placeholder on the server and initial client render to avoid hydration mismatch
-    return (
-        <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
-            <div className="container flex h-16 items-center justify-between gap-6">
+  const mobileNav = (
+      <>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Open navigation menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left">
+              <SheetHeader className="sr-only">
+                <SheetTitle>Navigation Menu</SheetTitle>
+              </SheetHeader>
+              <div className="flex flex-col gap-6 pt-8">
                 <Logo />
-                <div className="flex items-center gap-2"></div>
-            </div>
-        </header>
-    );
-  }
+                <nav className="flex flex-col gap-4">
+                  {mobileNavLinks.map((link) => (
+                    <Button key={link.href} variant="ghost" className="justify-start" asChild>
+                      <Link href={link.href}>{link.label}</Link>
+                    </Button>
+                  ))}
+                </nav>
+              </div>
+            </SheetContent>
+          </Sheet>
+          <Logo />
+      </>
+  );
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
       <div className="container flex h-16 items-center justify-between gap-4">
-        {isMobile ? (
-            <>
-                <Sheet>
-                  <SheetTrigger asChild>
-                    <Button variant="outline" size="icon">
-                      <Menu className="h-5 w-5" />
-                      <span className="sr-only">Open navigation menu</span>
-                    </Button>
-                  </SheetTrigger>
-                  <SheetContent side="left">
-                    <SheetHeader className="sr-only">
-                      <SheetTitle>Navigation Menu</SheetTitle>
-                    </SheetHeader>
-                    <div className="flex flex-col gap-6 pt-8">
-                      <Logo />
-                      <nav className="flex flex-col gap-4">
-                        {mobileNavLinks.map((link) => (
-                          <Button key={link.href} variant="ghost" className="justify-start" asChild>
-                            <Link href={link.href}>{link.label}</Link>
-                          </Button>
-                        ))}
-                      </nav>
-                    </div>
-                  </SheetContent>
-                </Sheet>
-                <Logo />
-            </>
-        ) : (
-            <div className="flex items-center gap-6">
-                <Logo />
-                <nav className="flex items-center gap-2">
-                    {navLinks.map((link) => (
-                        <Button key={link.href} variant="link" asChild>
-                        <Link href={link.href}>{link.label}</Link>
-                        </Button>
-                    ))}
-                </nav>
-                <SearchBar />
-            </div>
+        
+        {isClient ? (isMobile ? mobileNav : desktopNav) : (
+          // Placeholder for server-render and initial client render
+          <div className="flex items-center gap-6">
+            <Logo />
+          </div>
         )}
         
         <div className="flex items-center gap-1">
             <CartButton />
-            {isAuthenticated ? (
+            {isClient && isAuthenticated ? (
                 <>
                 <NotificationBell />
                 <Button variant="ghost" size="icon" asChild>
@@ -193,7 +191,7 @@ export function Header() {
                     </Link>
                 </Button>
                 </>
-            ) : (
+            ) : isClient && !isAuthenticated ? (
                 <>
                 <Button variant="ghost" asChild>
                     <Link href="/auth/login">Login</Link>
@@ -202,6 +200,16 @@ export function Header() {
                     <Link href="/auth/signup">Sign Up</Link>
                 </Button>
                 </>
+            ) : (
+              // Another placeholder to match server render
+              <>
+                <Button variant="ghost" asChild>
+                    <Link href="/auth/login">Login</Link>
+                </Button>
+                <Button asChild>
+                    <Link href="/auth/signup">Sign Up</Link>
+                </Button>
+              </>
             )}
         </div>
       </div>
