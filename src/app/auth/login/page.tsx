@@ -15,18 +15,15 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [email, setEmail] = useState('');
+  const [redirectPath, setRedirectPath] = useState('');
   const { toast } = useToast();
   const router = useRouter();
 
   useEffect(() => {
-    if (isLoggedIn) {
-      if (email === 'admin@gourmet.com') {
-        router.push('/admin/dashboard');
-      } else {
-        router.push('/account/profile');
-      }
+    if (isLoggedIn && redirectPath) {
+        router.push(redirectPath);
     }
-  }, [isLoggedIn, router, email]);
+  }, [isLoggedIn, redirectPath, router]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +33,12 @@ export default function LoginPage() {
       title: 'Login Successful (Simulated)',
       description: 'Redirecting you to your dashboard...',
     });
+    
+    if (email === 'admin@gourmet.com') {
+      setRedirectPath('/admin/dashboard');
+    } else {
+      setRedirectPath('/account/profile');
+    }
     setIsLoggedIn(true);
   };
 
@@ -47,6 +50,7 @@ export default function LoginPage() {
       description: 'Redirecting you to your account...',
     });
     // For simplicity, Google login will go to the user dashboard
+    setRedirectPath('/account/profile');
     setIsLoggedIn(true);
   };
 
