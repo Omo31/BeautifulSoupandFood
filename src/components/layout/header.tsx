@@ -73,7 +73,7 @@ function SearchBar() {
   };
 
   return (
-    <form onSubmit={handleSearch} className="relative w-full max-w-md hidden md:block">
+    <form onSubmit={handleSearch} className="relative w-full max-w-md">
       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
       <Input
         type="search"
@@ -118,9 +118,9 @@ function AuthButtons() {
     const isAuthenticated = false;
 
     if (!isClient) {
-        // Render a placeholder or null on the server to prevent mismatch
+        // Render a placeholder on the server to prevent hydration mismatch
         return (
-            <div className="flex items-center">
+            <div className="flex items-center gap-1">
                  <div className="h-10 w-20" />
                  <div className="h-10 w-24" />
             </div>
@@ -128,7 +128,7 @@ function AuthButtons() {
     }
 
     return (
-        <div className="flex items-center">
+        <div className="flex items-center gap-1">
             {isAuthenticated ? (
                 <>
                     <NotificationBell />
@@ -205,7 +205,7 @@ export function Header() {
             <Logo />
         </div>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center">
             <CartButton />
             <AuthButtons />
         </div>

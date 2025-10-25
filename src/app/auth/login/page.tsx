@@ -13,21 +13,19 @@ import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const [email, setEmail] = useState('');
-  const [redirectPath, setRedirectPath] = useState('');
   const { toast } = useToast();
   const router = useRouter();
 
   useEffect(() => {
-    if (isLoggedIn && redirectPath) {
-        router.push(redirectPath);
-    }
-  }, [isLoggedIn, redirectPath, router]);
+    setIsClient(true);
+  }, []);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement Firebase email/password login
+    if (!isClient) return;
+
     console.log('Logging in...');
     toast({
       title: 'Login Successful (Simulated)',
@@ -35,23 +33,21 @@ export default function LoginPage() {
     });
     
     if (email === 'admin@gourmet.com') {
-      setRedirectPath('/admin/dashboard');
+      router.push('/admin/dashboard');
     } else {
-      setRedirectPath('/account/profile');
+      router.push('/account/profile');
     }
-    setIsLoggedIn(true);
   };
 
   const handleGoogleLogin = () => {
-    // TODO: Implement Firebase Google login
+    if (!isClient) return;
+
     console.log('Logging in with Google...');
     toast({
       title: 'Login with Google (Simulated)',
       description: 'Redirecting you to your account...',
     });
-    // For simplicity, Google login will go to the user dashboard
-    setRedirectPath('/account/profile');
-    setIsLoggedIn(true);
+    router.push('/account/profile');
   };
 
   return (
@@ -103,9 +99,9 @@ export default function LoginPage() {
                 </Button>
               </div>
             </div>
-            <Button type="submit" className="w-full">Login</Button>
+            <Button type="submit" className="w-full" disabled={!isClient}>Login</Button>
           </form>
-          <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>Login with Google</Button>
+          <Button variant="outline" className="w-full" onClick={handleGoogleLogin} disabled={!isClient}>Login with Google</Button>
         </CardContent>
         <CardFooter className="text-center text-sm">
             Don&apos;t have an account?{" "}

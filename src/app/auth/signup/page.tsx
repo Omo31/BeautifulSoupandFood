@@ -32,8 +32,12 @@ const signupSchema = z.object({
 export default function SignupPage() {
   const [showPassword, setShowPassword] = React.useState(false);
   const { toast } = useToast();
-  const [isSignedUp, setIsSignedUp] = React.useState(false);
+  const [isClient, setIsClient] = React.useState(false);
   const router = useRouter();
+
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
@@ -48,12 +52,6 @@ export default function SignupPage() {
     },
   });
 
-  React.useEffect(() => {
-    if (isSignedUp) {
-      router.push('/auth/verify-email');
-    }
-  }, [isSignedUp, router]);
-
   const handleNameInputChange = (event: React.ChangeEvent<HTMLInputElement>, field: any) => {
     const { value } = event.target;
     const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1);
@@ -61,23 +59,25 @@ export default function SignupPage() {
   };
   
   const handleSignup = (values: z.infer<typeof signupSchema>) => {
+    if (!isClient) return;
     // TODO: Implement Firebase email/password signup
     console.log('Signing up with:', values);
     toast({
       title: 'Account Created (Simulated)',
       description: "We're redirecting you to verify your email.",
     });
-    setIsSignedUp(true);
+    router.push('/auth/verify-email');
   };
 
   const handleGoogleSignup = () => {
+    if (!isClient) return;
     // TODO: Implement Firebase Google signup
     console.log('Signing up with Google...');
     toast({
       title: 'Account Created with Google (Simulated)',
       description: "We're redirecting you to verify your email.",
     });
-    setIsSignedUp(true);
+    router.push('/auth/verify-email');
   };
 
   return (
@@ -211,7 +211,7 @@ export default function SignupPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">Create Account</Button>
+              <Button type="submit" className="w-full" disabled={!isClient}>Create Account</Button>
             </form>
           </Form>
           <div className="relative my-4">
@@ -222,7 +222,7 @@ export default function SignupPage() {
                 <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
             </div>
           </div>
-          <Button variant="outline" className="w-full" onClick={handleGoogleSignup}>Sign up with Google</Button>
+          <Button variant="outline" className="w-full" onClick={handleGoogleSignup} disabled={!isClient}>Sign up with Google</Button>
         </CardContent>
         <CardFooter className="text-center text-sm">
           Already have an account?{" "}
