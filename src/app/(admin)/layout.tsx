@@ -121,7 +121,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </Sidebar>
       <SidebarInset>
         <header className="flex h-14 items-center gap-4 border-b bg-background px-6">
-          <SidebarTrigger className="md:hidden" />
+          <SidebarTrigger />
           <div className="flex-1">
             <h1 className="text-lg font-semibold md:text-xl">
               {adminNavItems.find(item => pathname.startsWith(item.href))?.label || 'Admin'}
