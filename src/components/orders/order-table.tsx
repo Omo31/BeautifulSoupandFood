@@ -7,7 +7,7 @@ import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast.tsx";
 
 export type Order = {
   id: string;

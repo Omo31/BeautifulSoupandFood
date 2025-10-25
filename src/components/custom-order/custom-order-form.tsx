@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast.tsx';
 import { Minus, Plus, Home } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ShippingAddressDialog } from '../shared/shipping-address-dialog';

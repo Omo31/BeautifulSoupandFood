@@ -12,7 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast.tsx';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useRouter } from 'next/navigation';
 

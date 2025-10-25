@@ -1,12 +1,7 @@
 "use client"
 
-// Inspired by react-hot-toast library
 import * as React from "react"
-
-import type {
-  ToastActionElement,
-  ToastProps,
-} from "@/components/ui/toast"
+import type { ToastActionElement, ToastProps } from "@/components/ui/toast"
 
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
@@ -58,7 +53,7 @@ interface State {
 
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>()
 
-const addToRemoveQueue = (toastId: string) => {
+const addToRemoveQueue = (toastId: string, dispatch: React.Dispatch<Action>) => {
   if (toastTimeouts.has(toastId)) {
     return
   }
@@ -96,10 +91,10 @@ export const reducer = (state: State, action: Action): State => {
       // ! Side effects ! - This could be extracted into a dismissToast() action,
       // but I'll keep it here for simplicity
       if (toastId) {
-        addToRemoveQueue(toastId)
+        addToRemoveQueue(toastId, () => {})
       } else {
         state.toasts.forEach((toast) => {
-          addToRemoveQueue(toast.id)
+          addToRemoveQueue(toast.id, () => {})
         })
       }
 
@@ -124,7 +119,7 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        toasts: state.toasts.filter((t) => t.id !== action.toastId),
+        toasts: state.toaths.filter((t) => t.id !== action.toastId),
       }
   }
 }
@@ -142,7 +137,7 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">
 
-function toast({ ...props }: Toast) {
+function toast(props: Toast) {
   const id = genId()
 
   const update = (props: ToasterToast) =>
@@ -191,4 +186,22 @@ function useToast() {
   }
 }
 
-export { useToast, toast }
+interface ToastContextType {
+    toasts: ToasterToast[];
+    toast: (props: Toast) => void;
+    dismiss: (toastId?: string) => void;
+  }
+  
+  const ToastContext = React.createContext<ToastContextType | undefined>(undefined);
+  
+  const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const { toasts, toast, dismiss } = useToast();
+    
+    return (
+      <ToastContext.Provider value={{ toasts, toast: (props) => toast(props), dismiss }}>
+        {children}
+      </ToastContext.Provider>
+    );
+  };
+
+export { useToast, toast, ToastProvider }

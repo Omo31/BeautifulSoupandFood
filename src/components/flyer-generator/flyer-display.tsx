@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Skeleton } from '@/components/ui/skeleton';
 import { Download, BarChart2 } from 'lucide-react';
 import type { GenerateMarketingFlyerOutput } from '@/ai/flows/generate-marketing-flyers';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast.tsx';
 
 type FlyerDisplayProps = {
   result: GenerateMarketingFlyerOutput | null;

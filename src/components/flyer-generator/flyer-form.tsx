@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/select';
 import { GenerateMarketingFlyerInput, generateMarketingFlyer } from '@/ai/flows/generate-marketing-flyers';
 import { Card, CardContent } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast.tsx';
 import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({

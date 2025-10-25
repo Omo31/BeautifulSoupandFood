@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from 'lucide-react';
 import { AddRoleDialog } from '@/components/roles/add-role-dialog';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast.tsx';
 
 const initialUserRoles = [
   { name: "Administrator", isSuperAdmin: true, permissions: {} },

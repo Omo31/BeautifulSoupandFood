@@ -8,7 +8,7 @@ import { ShoppingCart, Ban, Star } from "lucide-react";
 import type { ImagePlaceholder } from "@/lib/placeholder-images";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/hooks/use-cart";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast.tsx";
 
 interface Product {
   id: string;

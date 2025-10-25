@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { ShoppingCart, Ban, Minus, Plus, Star, Heart } from 'lucide-react';
 import { useCart } from '@/hooks/use-cart';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast.tsx';
 
 type Product = {
   id: string;

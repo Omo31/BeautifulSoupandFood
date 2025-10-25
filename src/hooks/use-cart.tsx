@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import type { ImagePlaceholder } from '@/lib/placeholder-images';
-import { useToast } from './use-toast';
+import { useToast } from './use-toast.tsx';
 
 export type CartItem = {
   id: string;

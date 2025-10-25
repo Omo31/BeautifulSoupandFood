@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Toaster } from "@/components/ui/toaster";
 import { CartProvider } from '@/hooks/use-cart';
+import { ToastProvider } from '@/hooks/use-toast.tsx';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -27,10 +28,12 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
-        <CartProvider>
-          {children}
-        </CartProvider>
-        <Toaster />
+        <ToastProvider>
+          <CartProvider>
+            {children}
+          </CartProvider>
+          <Toaster />
+        </ToastProvider>
       </body>
     </html>
   );

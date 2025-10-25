@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { Button } from '../ui/button';
 import { footerSettings } from '@/lib/settings';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast.tsx';
 
 export function Footer() {
   const { facebookUrl, instagramUrl, youtubeUrl, openingHours, termsUrl, privacyUrl, cookiePolicyUrl } = footerSettings;
