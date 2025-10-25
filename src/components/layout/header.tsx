@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -124,82 +125,87 @@ export function Header() {
       { href: "/wishlist", label: "Wishlist" },
   ];
 
-  const desktopNav = (
-    <nav className="hidden md:flex items-center gap-2">
-      {navLinks.map((link) => (
-        <Button key={link.href} variant="link" asChild>
-          <Link href={link.href}>{link.label}</Link>
-        </Button>
-      ))}
-    </nav>
-  );
+  if (!isClient) {
+    return (
+        <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
+            <div className="container flex h-16 items-center justify-between gap-4">
+                <Logo />
+                <div className="flex items-center gap-1"></div>
+            </div>
+        </header>
+    );
+  }
 
-  const mobileNav = (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline" size="icon" className="md:hidden">
-          <Menu className="h-5 w-5" />
-          <span className="sr-only">Open navigation menu</span>
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="left">
-        <SheetHeader className="sr-only">
-          <SheetTitle>Navigation Menu</SheetTitle>
-        </SheetHeader>
-        <div className="flex flex-col gap-6 pt-8">
-          <Logo />
-          <nav className="flex flex-col gap-4">
-            {mobileNavLinks.map((link) => (
-              <Button key={link.href} variant="ghost" className="justify-start" asChild>
-                <Link href={link.href}>{link.label}</Link>
-              </Button>
-            ))}
-          </nav>
-        </div>
-      </SheetContent>
-    </Sheet>
-  );
-
-  const authButtons = isAuthenticated ? (
-    <>
-      <NotificationBell />
-      <Button variant="ghost" size="icon" asChild>
-        <Link href="/account/profile">
-          <User />
-          <span className="sr-only">My Account</span>
-        </Link>
-      </Button>
-    </>
-  ) : (
-    <>
-      <Button variant="ghost" asChild>
-        <Link href="/auth/login">Login</Link>
-      </Button>
-      <Button asChild>
-        <Link href="/auth/signup">Sign Up</Link>
-      </Button>
-    </>
-  );
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
       <div className="container flex h-16 items-center justify-between gap-4">
-        <div className="flex items-center gap-6">
-          {isClient && isMobile ? mobileNav : <Logo />}
-          {isClient && !isMobile && desktopNav}
-        </div>
-        
-        {isClient && (isMobile ? <Logo /> : <SearchBar />)}
+        {isMobile ? (
+            <>
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button variant="outline" size="icon">
+                      <Menu className="h-5 w-5" />
+                      <span className="sr-only">Open navigation menu</span>
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="left">
+                    <SheetHeader className="sr-only">
+                      <SheetTitle>Navigation Menu</SheetTitle>
+                    </SheetHeader>
+                    <div className="flex flex-col gap-6 pt-8">
+                      <Logo />
+                      <nav className="flex flex-col gap-4">
+                        {mobileNavLinks.map((link) => (
+                          <Button key={link.href} variant="ghost" className="justify-start" asChild>
+                            <Link href={link.href}>{link.label}</Link>
+                          </Button>
+                        ))}
+                      </nav>
+                    </div>
+                  </SheetContent>
+                </Sheet>
+                <Logo />
+            </>
+        ) : (
+            <>
+                <Logo />
+                <nav className="flex items-center gap-2">
+                    {navLinks.map((link) => (
+                        <Button key={link.href} variant="link" asChild>
+                        <Link href={link.href}>{link.label}</Link>
+                        </Button>
+                    ))}
+                </nav>
+                <SearchBar />
+            </>
+        )}
         
         <div className="flex items-center gap-1">
-          {isClient && (
-            <>
-              <CartButton />
-              {authButtons}
-            </>
-          )}
+            <CartButton />
+            {isAuthenticated ? (
+                <>
+                <NotificationBell />
+                <Button variant="ghost" size="icon" asChild>
+                    <Link href="/account/profile">
+                    <User />
+                    <span className="sr-only">My Account</span>
+                    </Link>
+                </Button>
+                </>
+            ) : (
+                <>
+                <Button variant="ghost" asChild>
+                    <Link href="/auth/login">Login</Link>
+                </Button>
+                <Button asChild>
+                    <Link href="/auth/signup">Sign Up</Link>
+                </Button>
+                </>
+            )}
         </div>
       </div>
     </header>
   );
 }
+
