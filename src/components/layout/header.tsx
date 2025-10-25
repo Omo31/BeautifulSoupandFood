@@ -126,16 +126,16 @@ export function Header() {
   ];
 
   if (!isClient) {
+    // Render a placeholder on the server and initial client render to avoid hydration mismatch
     return (
         <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
-            <div className="container flex h-16 items-center justify-between gap-4">
+            <div className="container flex h-16 items-center justify-between gap-6">
                 <Logo />
-                <div className="flex items-center gap-1"></div>
+                <div className="flex items-center gap-2"></div>
             </div>
         </header>
     );
   }
-
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
@@ -168,7 +168,7 @@ export function Header() {
                 <Logo />
             </>
         ) : (
-            <>
+            <div className="flex items-center gap-6">
                 <Logo />
                 <nav className="flex items-center gap-2">
                     {navLinks.map((link) => (
@@ -178,7 +178,7 @@ export function Header() {
                     ))}
                 </nav>
                 <SearchBar />
-            </>
+            </div>
         )}
         
         <div className="flex items-center gap-1">
@@ -208,4 +208,3 @@ export function Header() {
     </header>
   );
 }
-
