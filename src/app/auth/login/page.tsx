@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -9,10 +8,12 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,6 +23,7 @@ export default function LoginPage() {
       title: 'Login Successful (Simulated)',
       description: 'Redirecting to dashboard...',
     });
+    router.push('/admin/dashboard');
   };
 
   const handleGoogleLogin = () => {
@@ -31,6 +33,7 @@ export default function LoginPage() {
       title: 'Login with Google (Simulated)',
       description: 'Redirecting...',
     });
+    router.push('/admin/dashboard');
   };
 
   return (
