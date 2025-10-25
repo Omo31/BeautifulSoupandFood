@@ -32,6 +32,7 @@ export const adminSettingsNavItems = [
     { href: '/settings/homepage', label: 'Homepage' },
     { href: '/settings/footer', label: 'Footer' },
     { href: '/settings/roles', label: 'Roles' },
+    { href: '/settings/custom-orders', label: 'Custom Orders'},
 ];
 
 export const mainNavLinks = [
