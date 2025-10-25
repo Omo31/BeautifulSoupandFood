@@ -30,7 +30,7 @@ export default function LoginPage() {
       description: 'Redirecting you to your dashboard...',
     });
     
-    // Using window.location.href to bypass Next.js router race condition
+    // Using window.location.href to bypass Next.js router race conditions.
     if (email === 'admin@gourmet.com') {
       window.location.href = '/admin/dashboard';
     } else {
