@@ -110,7 +110,7 @@ function CartButton() {
 export function Header() {
   const isMobile = useIsMobile();
   // TODO: Replace with actual auth state
-  const isAuthenticated = true;
+  const isAuthenticated = false;
 
   const mobileNavLinks = [
       ...navLinks,
