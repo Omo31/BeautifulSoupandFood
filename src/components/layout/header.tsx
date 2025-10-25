@@ -10,7 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useCart } from "@/hooks/use-cart";
 import { Badge } from "@/components/ui/badge";
 
@@ -109,6 +109,12 @@ function CartButton() {
 
 export function Header() {
   const isMobile = useIsMobile();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   // TODO: Replace with actual auth state
   const isAuthenticated = false;
 
@@ -179,15 +185,19 @@ export function Header() {
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
       <div className="container flex h-16 items-center justify-between gap-4">
         <div className="flex items-center gap-6">
-          {isMobile ? mobileNav : <Logo />}
-          {!isMobile && desktopNav}
+          {isClient && isMobile ? mobileNav : <Logo />}
+          {isClient && !isMobile && desktopNav}
         </div>
         
-        {isMobile ? <Logo /> : <SearchBar />}
+        {isClient && (isMobile ? <Logo /> : <SearchBar />)}
         
         <div className="flex items-center gap-1">
-          <CartButton />
-          {authButtons}
+          {isClient && (
+            <>
+              <CartButton />
+              {authButtons}
+            </>
+          )}
         </div>
       </div>
     </header>
