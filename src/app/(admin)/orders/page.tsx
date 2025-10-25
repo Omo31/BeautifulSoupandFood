@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { OrderTable } from "@/components/orders/order-table";
-import { mockOrders } from "@/app/(main)/account/orders/page";
+import { mockOrders } from "@/lib/mock-data";
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationNext, PaginationLink } from '@/components/ui/pagination';
 
 const ITEMS_PER_PAGE = 5;
