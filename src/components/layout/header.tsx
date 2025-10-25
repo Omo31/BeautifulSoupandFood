@@ -173,7 +173,7 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between gap-4">
         
         {isClient ? (isMobile ? mobileNav : desktopNav) : (
-          // Placeholder for server-render and initial client render
+          // Render a consistent placeholder on the server and initial client render
           <div className="flex items-center gap-6">
             <Logo />
           </div>
@@ -181,7 +181,7 @@ export function Header() {
         
         <div className="flex items-center gap-1">
             <CartButton />
-            {isClient && isAuthenticated ? (
+             {isClient && isAuthenticated ? (
                 <>
                 <NotificationBell />
                 <Button variant="ghost" size="icon" asChild>
@@ -192,24 +192,24 @@ export function Header() {
                 </Button>
                 </>
             ) : isClient && !isAuthenticated ? (
-                <>
-                <Button variant="ghost" asChild>
-                    <Link href="/auth/login">Login</Link>
-                </Button>
-                <Button asChild>
-                    <Link href="/auth/signup">Sign Up</Link>
-                </Button>
-                </>
+                <div className="flex items-center">
+                    <Button variant="ghost" asChild>
+                        <Link href="/auth/login">Login</Link>
+                    </Button>
+                    <Button asChild>
+                        <Link href="/auth/signup">Sign Up</Link>
+                    </Button>
+                </div>
             ) : (
-              // Another placeholder to match server render
-              <>
-                <Button variant="ghost" asChild>
+              // Consistent placeholder for auth buttons
+              <div className="flex items-center">
+                 <Button variant="ghost" asChild>
                     <Link href="/auth/login">Login</Link>
                 </Button>
                 <Button asChild>
                     <Link href="/auth/signup">Sign Up</Link>
                 </Button>
-              </>
+              </div>
             )}
         </div>
       </div>
