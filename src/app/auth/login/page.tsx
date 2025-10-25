@@ -22,7 +22,7 @@ export default function LoginPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // No need for isClient check here, as form submission can only happen on the client
+    if (!isClient) return;
     
     toast({
       title: 'Login Successful (Simulated)',
@@ -31,14 +31,14 @@ export default function LoginPage() {
     
     // Using window.location.href to bypass Next.js router race conditions.
     if (email === 'admin@gourmet.com') {
-      window.location.href = '/admin/dashboard';
+      window.location.href = '/dashboard';
     } else {
       window.location.href = '/account/profile';
     }
   };
 
   const handleGoogleLogin = () => {
-    // No need for isClient check here, as button clicks can only happen on the client
+    if (!isClient) return;
     
     toast({
       title: 'Login with Google (Simulated)',

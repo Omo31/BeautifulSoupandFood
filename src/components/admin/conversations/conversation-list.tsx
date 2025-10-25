@@ -64,7 +64,7 @@ export function ConversationList() {
   return (
     <div className="space-y-1">
       {conversations.map((convo) => {
-        const href = `/admin/conversations/${convo.id}`;
+        const href = `/conversations/${convo.id}`;
         const isActive = pathname === href;
         return (
           <Link

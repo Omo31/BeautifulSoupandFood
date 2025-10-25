@@ -23,7 +23,7 @@ export default async function ConversationPage({ params }: { params: { id: strin
     <Card className="h-[calc(100vh-8.5rem)] flex flex-col">
        <CardHeader className="flex flex-row items-center gap-4 border-b">
          <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
-          <Link href="/admin/conversations">
+          <Link href="/conversations">
             <ArrowLeft className="h-5 w-5" />
             <span className="sr-only">Back to conversations</span>
           </Link>
