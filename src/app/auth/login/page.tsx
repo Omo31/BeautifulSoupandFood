@@ -9,14 +9,12 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useToast } from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [email, setEmail] = useState('');
   const { toast } = useToast();
-  const router = useRouter();
 
   useEffect(() => {
     setIsClient(true);
@@ -32,10 +30,11 @@ export default function LoginPage() {
       description: 'Redirecting you to your dashboard...',
     });
     
+    // Using window.location.href to bypass Next.js router race condition
     if (email === 'admin@gourmet.com') {
-      router.push('/admin/dashboard');
+      window.location.href = '/admin/dashboard';
     } else {
-      router.push('/account/profile');
+      window.location.href = '/account/profile';
     }
   };
 
@@ -47,7 +46,7 @@ export default function LoginPage() {
       title: 'Login with Google (Simulated)',
       description: 'Redirecting you to your account...',
     });
-    router.push('/account/profile');
+     window.location.href = '/account/profile';
   };
 
   return (
@@ -101,6 +100,14 @@ export default function LoginPage() {
             </div>
             <Button type="submit" className="w-full" disabled={!isClient}>Login</Button>
           </form>
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+            </div>
+          </div>
           <Button variant="outline" className="w-full" onClick={handleGoogleLogin} disabled={!isClient}>Login with Google</Button>
         </CardContent>
         <CardFooter className="text-center text-sm">
