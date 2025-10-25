@@ -15,14 +15,15 @@ import {
   SidebarTrigger,
   SidebarFooter
 } from '@/components/ui/sidebar';
-import { LogOut, Bell } from 'lucide-react';
+import { LogOut, Bell, Menu } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { adminNavItems } from '@/lib/admin-nav';
+import { adminNavItems, accountNavItems } from '@/lib/admin-nav';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast.tsx';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
 
 const mockNotifications = [
@@ -80,9 +81,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     // router.push('/auth/login');
   }
 
+  const mobileNavLinks = [
+    ...adminNavItems,
+    ...accountNavItems
+  ]
+
   return (
     <SidebarProvider>
-      <Sidebar collapsible="icon">
+      <Sidebar>
         <SidebarHeader>
           <Logo />
         </SidebarHeader>
@@ -121,7 +127,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </Sidebar>
       <div className="flex flex-col flex-1">
         <header className="flex h-14 items-center gap-4 border-b bg-background px-6">
-          <SidebarTrigger />
+          <div className="flex items-center gap-2">
+            <SidebarTrigger className="md:hidden"/>
+            <div className="md:hidden"><Logo/></div>
+          </div>
           <h1 className="text-lg font-semibold md:text-xl flex-1">
             {adminNavItems.find(item => pathname.startsWith(item.href))?.label || 'Admin'}
           </h1>
