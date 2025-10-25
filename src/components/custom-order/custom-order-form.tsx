@@ -35,13 +35,22 @@ const formSchema = z.object({
   itemName: z.string().min(2, 'Item name is required.'),
   quantity: z.number().min(1, 'Quantity must be at least 1.'),
   customMeasure: z.string().min(1, 'Please select a measurement unit.'),
+  otherMeasure: z.string().optional(),
   shippingMethod: z.string().min(1, 'Please select a shipping method.'),
   services: z.array(z.string()).optional(),
   notes: z.string().optional(),
+}).refine(data => {
+    if (data.customMeasure === 'Other') {
+        return !!data.otherMeasure && data.otherMeasure.length > 0;
+    }
+    return true;
+}, {
+    message: 'Please specify the unit of measure.',
+    path: ['otherMeasure'],
 });
 
 // Mock data, in a real app this would come from admin settings.
-const customMeasures = ['Grams', 'Kilograms', 'Pieces', 'Bunches', 'Litres'];
+const customMeasures = ['Grams', 'Kilograms', 'Pieces', 'Bunches', 'Litres', 'Other'];
 const additionalServices = [
   { id: 'gift-wrapping', label: 'Gift Wrapping' },
   { id: 'special-packaging', label: 'Special Packaging' },
@@ -67,6 +76,7 @@ export function CustomOrderForm() {
   const quantity = watch('quantity');
   const selectedServices = watch('services') || [];
   const shippingMethod = watch('shippingMethod');
+  const selectedMeasure = watch('customMeasure');
   
   const handleSaveAddress = (address: Address) => {
     setShippingAddress(address);
@@ -176,6 +186,22 @@ export function CustomOrderForm() {
               )}
             />
           </div>
+
+           {selectedMeasure === 'Other' && (
+            <FormField
+                control={form.control}
+                name="otherMeasure"
+                render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Specify Unit</FormLabel>
+                    <FormControl>
+                    <Input placeholder="e.g., Pallet, Crate" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                </FormItem>
+                )}
+            />
+           )}
           
           <FormField
             control={form.control}
