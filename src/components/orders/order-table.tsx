@@ -1,9 +1,9 @@
-
 'use client';
 
+import Link from "next/link";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
@@ -21,6 +21,12 @@ export type Order = {
     name: string;
     email: string;
   };
+  customOrderDetails?: {
+    itemName: string;
+    quantity: number;
+    measure: string;
+    notes: string;
+  }
 };
 
 type OrderTableProps = {
@@ -97,7 +103,12 @@ export function OrderTable({ orders }: OrderTableProps) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuItem onClick={() => handleAction(`Viewing details for order ${order.id}.`)}>View Details</DropdownMenuItem>
+                   <DropdownMenuItem asChild>
+                      <Link href={`/orders/${order.id}`} className="flex items-center">
+                        <Eye className="mr-2 h-4 w-4"/>
+                        View Details
+                      </Link>
+                    </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => handleAction(`Approving order ${order.id}.`)}>Approve</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleAction(`Rejecting order ${order.id}.`)}>Reject</DropdownMenuItem>
