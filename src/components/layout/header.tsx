@@ -155,26 +155,24 @@ export function Header() {
   );
 
   const authButtons = isAuthenticated ? (
-    <div className="flex items-center gap-1">
+    <>
       <NotificationBell />
-      <CartButton />
       <Button variant="ghost" size="icon" asChild>
         <Link href="/account/profile">
           <User />
           <span className="sr-only">My Account</span>
         </Link>
       </Button>
-    </div>
+    </>
   ) : (
-    <div className="flex items-center gap-2">
-      <CartButton />
+    <>
       <Button variant="ghost" asChild>
         <Link href="/auth/login">Login</Link>
       </Button>
       <Button asChild>
         <Link href="/auth/signup">Sign Up</Link>
       </Button>
-    </div>
+    </>
   );
 
   return (
@@ -187,7 +185,10 @@ export function Header() {
         
         {isMobile ? <Logo /> : <SearchBar />}
         
-        {authButtons}
+        <div className="flex items-center gap-1">
+          <CartButton />
+          {authButtons}
+        </div>
       </div>
     </header>
   );
