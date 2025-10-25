@@ -11,73 +11,8 @@ import { EditUserDialog } from '@/components/users/edit-user-dialog';
 import type { User } from '@/components/users/user-table';
 import { downloadCSV } from '@/lib/csv';
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationNext, PaginationLink } from '@/components/ui/pagination';
+import { initialUsers } from '@/lib/mock-data';
 
-
-const initialUsers: User[] = [
-  {
-    id: 'usr1',
-    name: 'Jane Doe',
-    email: 'jane.doe@example.com',
-    role: 'Customer',
-    joined: '2023-10-01',
-    avatar: 'https://picsum.photos/seed/jane-doe/40/40',
-    status: 'Active',
-  },
-  {
-    id: 'usr2',
-    name: 'John Smith',
-    email: 'john.smith@example.com',
-    role: 'Customer',
-    joined: '2023-09-15',
-     avatar: 'https://picsum.photos/seed/john-smith/40/40',
-     status: 'Active',
-  },
-  {
-    id: 'usr3',
-    name: 'Alice Johnson',
-    email: 'alice.j@gourmet.com',
-    role: 'Content Manager',
-    joined: '2023-08-20',
-    avatar: 'https://picsum.photos/seed/alice-j/40/40',
-    status: 'Disabled',
-  },
-    {
-    id: 'usr4',
-    name: 'Admin User',
-    email: 'admin@gourmet.com',
-    role: 'Administrator',
-    joined: '2023-01-15',
-    avatar: 'https://picsum.photos/seed/admin-user/40/40',
-    status: 'Active',
-  },
-   {
-    id: 'usr5',
-    name: 'Bob Brown',
-    email: 'bob.brown@example.com',
-    role: 'Customer',
-    joined: '2023-11-05',
-    avatar: 'https://picsum.photos/seed/bob-brown/40/40',
-    status: 'Active',
-  },
-  {
-    id: 'usr6',
-    name: 'Charlie Davis',
-    email: 'charlie.d@example.com',
-    role: 'Customer',
-    joined: '2023-11-10',
-    avatar: 'https://picsum.photos/seed/charlie-davis/40/40',
-    status: 'Active',
-  },
-  {
-    id: 'usr7',
-    name: 'Diana Evans',
-    email: 'diana.e@gourmet.com',
-    role: 'Support Agent',
-    joined: '2023-07-30',
-    avatar: 'https://picsum.photos/seed/diana-evans/40/40',
-    status: 'Active',
-  },
-];
 
 const ITEMS_PER_PAGE = 5;
 

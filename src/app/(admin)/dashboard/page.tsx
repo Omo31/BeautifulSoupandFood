@@ -1,7 +1,6 @@
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { initialUsers } from "@/app/(admin)/users/page";
-import { mockOrders } from "@/lib/mock-data";
+import { initialUsers, mockOrders } from "@/lib/mock-data";
 
 // In a real app, this data would be fetched and calculated from a live database.
 function getDashboardStats() {
