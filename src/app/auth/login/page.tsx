@@ -22,9 +22,8 @@ export default function LoginPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isClient) return;
-
-    console.log('Logging in...');
+    // No need for isClient check here, as form submission can only happen on the client
+    
     toast({
       title: 'Login Successful (Simulated)',
       description: 'Redirecting you to your dashboard...',
@@ -39,9 +38,8 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
-    if (!isClient) return;
-
-    console.log('Logging in with Google...');
+    // No need for isClient check here, as button clicks can only happen on the client
+    
     toast({
       title: 'Login with Google (Simulated)',
       description: 'Redirecting you to your account...',
