@@ -8,13 +8,13 @@ import { z } from 'zod';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { useRouter } from 'next/navigation';
 
 const signupSchema = z.object({
   firstName: z.string().min(1, 'First name is required.'),
@@ -33,6 +33,7 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = React.useState(false);
   const { toast } = useToast();
   const [isSignedUp, setIsSignedUp] = React.useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
@@ -46,6 +47,12 @@ export default function SignupPage() {
       terms: false,
     },
   });
+
+  React.useEffect(() => {
+    if (isSignedUp) {
+      router.push('/auth/verify-email');
+    }
+  }, [isSignedUp, router]);
 
   const handleNameInputChange = (event: React.ChangeEvent<HTMLInputElement>, field: any) => {
     const { value } = event.target;
@@ -68,29 +75,10 @@ export default function SignupPage() {
     console.log('Signing up with Google...');
     toast({
       title: 'Account Created with Google (Simulated)',
-      description: 'You can now log in.',
+      description: "We're redirecting you to verify your email.",
     });
     setIsSignedUp(true);
   };
-
-
-  if (isSignedUp) {
-    return (
-       <div className="relative flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-           <CardHeader>
-              <CardTitle className="font-headline text-2xl">Account Created</CardTitle>
-              <CardDescription>Your account has been created. In a real app, you would be asked to verify your email.</CardDescription>
-           </CardHeader>
-           <CardContent>
-              <Button asChild className="w-full">
-                <Link href="/auth/login">Proceed to Login</Link>
-              </Button>
-           </CardContent>
-        </Card>
-      </div>
-    )
-  }
 
   return (
     <div className="relative flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
