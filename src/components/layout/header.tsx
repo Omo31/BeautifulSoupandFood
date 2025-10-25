@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, ShoppingCart, User, Bell, Search } from "lucide-react";
 import { Logo } from "@/components/logo";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
@@ -108,109 +107,107 @@ function CartButton() {
   )
 }
 
-export function Header() {
-  const isMobile = useIsMobile();
-  const [isClient, setIsClient] = useState(false);
+function AuthButtons() {
+    const [isClient, setIsClient] = useState(false);
+    
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+    // TODO: Replace with actual auth state
+    const isAuthenticated = false;
 
-  // TODO: Replace with actual auth state
-  const isAuthenticated = false;
+    if (!isClient) {
+        // Render a placeholder or null on the server to prevent mismatch
+        return (
+            <div className="flex items-center">
+                 <div className="h-10 w-20" />
+                 <div className="h-10 w-24" />
+            </div>
+        );
+    }
 
-  const mobileNavLinks = [
-      ...navLinks,
-      { href: "/my-orders", label: "My Orders" },
-      { href: "/wishlist", label: "Wishlist" },
-  ];
-  
-  const desktopNav = (
-      <div className="flex items-center gap-6">
-          <Logo />
-          <nav className="flex items-center gap-2">
-              {navLinks.map((link) => (
-                  <Button key={link.href} variant="link" asChild>
-                  <Link href={link.href}>{link.label}</Link>
-                  </Button>
-              ))}
-          </nav>
-          <SearchBar />
-      </div>
-  );
-
-  const mobileNav = (
-      <>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="icon">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Open navigation menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left">
-              <SheetHeader className="sr-only">
-                <SheetTitle>Navigation Menu</SheetTitle>
-              </SheetHeader>
-              <div className="flex flex-col gap-6 pt-8">
-                <Logo />
-                <nav className="flex flex-col gap-4">
-                  {mobileNavLinks.map((link) => (
-                    <Button key={link.href} variant="ghost" className="justify-start" asChild>
-                      <Link href={link.href}>{link.label}</Link>
-                    </Button>
-                  ))}
-                </nav>
-              </div>
-            </SheetContent>
-          </Sheet>
-          <Logo />
-      </>
-  );
-
-  return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
-      <div className="container flex h-16 items-center justify-between gap-4">
-        
-        {isClient ? (isMobile ? mobileNav : desktopNav) : (
-          // Render a consistent placeholder on the server and initial client render
-          <div className="flex items-center gap-6">
-            <Logo />
-          </div>
-        )}
-        
-        <div className="flex items-center gap-1">
-            <CartButton />
-             {isClient && isAuthenticated ? (
+    return (
+        <div className="flex items-center">
+            {isAuthenticated ? (
                 <>
-                <NotificationBell />
-                <Button variant="ghost" size="icon" asChild>
-                    <Link href="/account/profile">
-                    <User />
-                    <span className="sr-only">My Account</span>
-                    </Link>
-                </Button>
+                    <NotificationBell />
+                    <Button variant="ghost" size="icon" asChild>
+                        <Link href="/account/profile">
+                            <User />
+                            <span className="sr-only">My Account</span>
+                        </Link>
+                    </Button>
                 </>
-            ) : isClient && !isAuthenticated ? (
-                <div className="flex items-center">
+            ) : (
+                <>
                     <Button variant="ghost" asChild>
                         <Link href="/auth/login">Login</Link>
                     </Button>
                     <Button asChild>
                         <Link href="/auth/signup">Sign Up</Link>
                     </Button>
-                </div>
-            ) : (
-              // Consistent placeholder for auth buttons
-              <div className="flex items-center">
-                 <Button variant="ghost" asChild>
-                    <Link href="/auth/login">Login</Link>
-                </Button>
-                <Button asChild>
-                    <Link href="/auth/signup">Sign Up</Link>
-                </Button>
-              </div>
+                </>
             )}
+        </div>
+    );
+}
+
+export function Header() {
+  const mobileNavLinks = [
+      ...navLinks,
+      { href: "/my-orders", label: "My Orders" },
+      { href: "/wishlist", label: "Wishlist" },
+  ];
+  
+  return (
+    <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
+      <div className="container flex h-16 items-center justify-between gap-4">
+        
+        {/* Desktop Nav */}
+        <div className="hidden md:flex items-center gap-6">
+            <Logo />
+            <nav className="flex items-center gap-2">
+                {navLinks.map((link) => (
+                    <Button key={link.href} variant="link" asChild>
+                        <Link href={link.href}>{link.label}</Link>
+                    </Button>
+                ))}
+            </nav>
+            <SearchBar />
+        </div>
+
+        {/* Mobile Nav */}
+        <div className="flex items-center gap-2 md:hidden">
+            <Sheet>
+                <SheetTrigger asChild>
+                <Button variant="outline" size="icon">
+                    <Menu className="h-5 w-5" />
+                    <span className="sr-only">Open navigation menu</span>
+                </Button>
+                </SheetTrigger>
+                <SheetContent side="left">
+                <SheetHeader className="sr-only">
+                    <SheetTitle>Navigation Menu</SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col gap-6 pt-8">
+                    <Logo />
+                    <nav className="flex flex-col gap-4">
+                    {mobileNavLinks.map((link) => (
+                        <Button key={link.href} variant="ghost" className="justify-start" asChild>
+                        <Link href={link.href}>{link.label}</Link>
+                        </Button>
+                    ))}
+                    </nav>
+                </div>
+                </SheetContent>
+            </Sheet>
+            <Logo />
+        </div>
+
+        <div className="flex items-center gap-1">
+            <CartButton />
+            <AuthButtons />
         </div>
       </div>
     </header>
