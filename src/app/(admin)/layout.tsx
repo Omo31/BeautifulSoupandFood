@@ -82,7 +82,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <SidebarProvider>
-      <Sidebar>
+      <Sidebar collapsible="icon">
         <SidebarHeader>
           <Logo />
         </SidebarHeader>
