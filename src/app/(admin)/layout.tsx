@@ -24,6 +24,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast.tsx';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { SidebarSeparator } from '@/components/ui/sidebar';
 
 
 const mockNotifications = [
@@ -108,6 +109,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </SidebarMenuItem>
             ))}
           </SidebarMenu>
+          <SidebarSeparator className='my-4' />
+          <SidebarMenu>
+            {accountNavItems.map((item) => (
+                <SidebarMenuItem key={item.href}>
+                    <Link href={item.href}>
+                        <SidebarMenuButton
+                            isActive={pathname.startsWith(item.href)}
+                            tooltip={item.label}
+                        >
+                            <item.icon />
+                            <span>{item.label}</span>
+                        </SidebarMenuButton>
+                    </Link>
+                </SidebarMenuItem>
+            ))}
+           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
             <div className='flex items-center gap-2'>
