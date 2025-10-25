@@ -14,15 +14,19 @@ import { useRouter } from 'next/navigation';
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [email, setEmail] = useState('');
   const { toast } = useToast();
   const router = useRouter();
 
   useEffect(() => {
     if (isLoggedIn) {
-      // Redirect after state has been updated and component re-rendered
-      router.push('/account/profile');
+      if (email === 'admin@gourmet.com') {
+        router.push('/admin/dashboard');
+      } else {
+        router.push('/account/profile');
+      }
     }
-  }, [isLoggedIn, router]);
+  }, [isLoggedIn, router, email]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +34,7 @@ export default function LoginPage() {
     console.log('Logging in...');
     toast({
       title: 'Login Successful (Simulated)',
-      description: 'Redirecting you to your account...',
+      description: 'Redirecting you to your dashboard...',
     });
     setIsLoggedIn(true);
   };
@@ -42,6 +46,7 @@ export default function LoginPage() {
       title: 'Login with Google (Simulated)',
       description: 'Redirecting you to your account...',
     });
+    // For simplicity, Google login will go to the user dashboard
     setIsLoggedIn(true);
   };
 
@@ -64,7 +69,14 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="m@example.com" required />
+              <Input 
+                id="email" 
+                type="email" 
+                placeholder="m@example.com" 
+                required 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
             <div className="grid gap-2">
               <div className="flex items-center">
