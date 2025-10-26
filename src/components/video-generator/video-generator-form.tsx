@@ -28,9 +28,11 @@ import { Loader2 } from 'lucide-react';
 import { Slider } from '../ui/slider';
 import { Textarea } from '../ui/textarea';
 
+const MAX_DURATION = 24;
+
 const formSchema = z.object({
   topic: z.string().min(10, "Please provide a more detailed topic for the ad."),
-  durationSeconds: z.number().min(5).max(8).default(5),
+  durationSeconds: z.number().min(5).max(MAX_DURATION).default(8),
   aspectRatio: z.enum(['16:9', '9:16']).default('16:9'),
 });
 
@@ -41,8 +43,6 @@ type VideoGeneratorFormProps = {
   setLoadingProgress: (progress: number) => void;
 };
 
-// Estimated time for video generation in seconds
-const ESTIMATED_GENERATION_TIME = 60; 
 
 export function VideoGeneratorForm({ setResult, setLoading, loading, setLoadingProgress }: VideoGeneratorFormProps) {
   const { toast } = useToast();
@@ -60,8 +60,10 @@ export function VideoGeneratorForm({ setResult, setLoading, loading, setLoadingP
     if (loading) {
       setLoadingProgress(0);
       let progress = 0;
+      const duration = form.getValues('durationSeconds');
+      const estimatedTime = duration * 2.5; // Rough estimate: 2.5s per second of video
       interval = setInterval(() => {
-        progress += 100 / ESTIMATED_GENERATION_TIME;
+        progress += 100 / estimatedTime;
         if (progress > 95) { // Don't let it reach 100% on its own
             clearInterval(interval);
         } else {
@@ -70,7 +72,7 @@ export function VideoGeneratorForm({ setResult, setLoading, loading, setLoadingP
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [loading, setLoadingProgress]);
+  }, [loading, setLoadingProgress, form]);
 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -154,13 +156,13 @@ export function VideoGeneratorForm({ setResult, setLoading, loading, setLoadingP
                     <FormLabel>Duration: {durationValue}s</FormLabel>
                     <FormControl>
                         <Slider 
-                            min={5} max={8} step={1}
+                            min={5} max={MAX_DURATION} step={1}
                             defaultValue={[field.value]}
                             onValueChange={(vals) => field.onChange(vals[0])}
                         />
                     </FormControl>
                     <FormDescription>
-                        Set the video length in seconds (5-8s).
+                        Set the video length in seconds (5-{MAX_DURATION}s).
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

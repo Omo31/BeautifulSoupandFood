@@ -4,18 +4,30 @@
  * @fileOverview AI-powered tool to generate branded video ads with voiceover for any given topic.
  *
  * - generateVideoAd - A function that handles the video generation process.
- * - GenerateVideoAdInput - The input type for the generateVideoAd function.
- * - GenerateVideoAdOutput - The return type for the generateVideoAd function.
+ * - GenerateVideoAdInput - The input type for the generateVideoad function.
+ * - GenerateVideoAdOutput - The return type for the generateVideoad function.
  */
 
-import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
-import { googleAI } from '@genkit-ai/google-genai';
+import {ai} from '@/ai/genkit';
+import {z} from 'genkit';
+import {googleAI} from '@genkit-ai/google-genai';
 import wav from 'wav';
+import * as fs from 'fs/promises';
+import * as os from 'os';
+import * as path from 'path';
+import {exec} from 'child_process';
+
+const MAX_DURATION = 24;
+const CLIP_DURATION = 8;
 
 const GenerateVideoAdInputSchema = z.object({
-  topic: z.string().min(10, "Please provide a more detailed topic for the ad."),
-  durationSeconds: z.number().min(5).max(8).default(5).describe('Length of the video in seconds (5-8).'),
+  topic: z.string().min(10, 'Please provide a more detailed topic for the ad.'),
+  durationSeconds: z
+    .number()
+    .min(5)
+    .max(MAX_DURATION)
+    .default(8)
+    .describe(`Length of the video in seconds (5-${MAX_DURATION}).`),
   aspectRatio: z.enum(['16:9', '9:16']).default('16:9').describe('Aspect ratio of the video.'),
 });
 
@@ -33,73 +45,70 @@ export async function generateVideoAd(input: GenerateVideoAdInput): Promise<Gene
   return generateVideoAdFlow(input);
 }
 
-async function getVideoDataUri(videoUrl: string): Promise<string> {
-    const fetch = (await import('node-fetch')).default;
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-        throw new Error('GEMINI_API_KEY environment variable is not set.');
-    }
-    const downloadUrl = `${videoUrl}&key=${apiKey}`;
-
-    const response = await fetch(downloadUrl);
-    if (!response.ok || !response.body) {
-        throw new Error(`Failed to download video: ${response.statusText}`);
-    }
-    
-    const videoBuffer = await response.buffer();
-    return `data:video/mp4;base64,${videoBuffer.toString('base64')}`;
+async function runFfmpeg(command: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    exec(`ffmpeg -y ${command}`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`ffmpeg stderr: ${stderr}`);
+        reject(error);
+      } else {
+        resolve();
+      }
+    });
+  });
 }
 
-async function toWav(
-  pcmData: Buffer,
-  channels = 1,
-  rate = 24000,
-  sampleWidth = 2
-): Promise<string> {
+async function toWav(pcmData: Buffer): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const writer = new wav.Writer({
-      channels,
-      sampleRate: rate,
-      bitDepth: sampleWidth * 8,
+      channels: 1,
+      sampleRate: 24000,
+      bitDepth: 16,
     });
-
-    let bufs = [] as any[];
+    const chunks: Buffer[] = [];
+    writer.on('data', chunk => chunks.push(chunk));
+    writer.on('end', () => resolve(Buffer.concat(chunks)));
     writer.on('error', reject);
-    writer.on('data', function (d) {
-      bufs.push(d);
-    });
-    writer.on('end', function () {
-      resolve(Buffer.concat(bufs).toString('base64'));
-    });
-
     writer.write(pcmData);
     writer.end();
   });
 }
 
-const adScriptPrompt = ai.definePrompt({
-    name: 'adScriptPrompt',
-    input: { schema: z.object({ topic: z.string(), durationSeconds: z.number() }) },
-    output: { schema: z.object({ script: z.string(), videoPrompt: z.string() }) },
-    prompt: `
-        You are a creative director for a gourmet food company called "BeautifulSoup&Food".
-        Your task is to create a short, compelling script for a video ad based on a given topic. The ad will have a voiceover.
-
-        Business Name: BeautifulSoup&Food
-        Website: www.beautifulsoupandfood.com
-
-        Topic: {{{topic}}}
-        Ad Duration: {{{durationSeconds}}} seconds
-
-        Instructions:
-        1. Write a concise and engaging voiceover script that explains the topic clearly and effectively within the given duration. The script should be natural-sounding and persuasive.
-        2. Create a detailed visual prompt for an AI video generator. This prompt should describe the visuals that will accompany the voiceover, creating a cohesive and appetizing video. The style should be clean, modern, and inspiring.
-        3. The ad must conclude by visually showing the business name and website. Make sure your video prompt includes instructions for this.
-
-        Provide only the JSON output with the 'script' and 'videoPrompt'.
-    `,
+const SceneSchema = z.object({
+    sceneNumber: z.number().describe("The sequential number of the scene, starting from 1."),
+    videoPrompt: z.string().describe("A detailed visual prompt for an AI video generator for this specific scene. The style should be clean, modern, and inspiring."),
+    voiceoverScript: z.string().describe("The portion of the voiceover script that corresponds to this scene."),
 });
 
+const AdPlanSchema = z.object({
+  scenes: z.array(SceneSchema),
+  fullScript: z.string().describe("The complete, combined voiceover script for the entire ad."),
+});
+
+
+const adPlanPrompt = ai.definePrompt({
+  name: 'adPlanPrompt',
+  input: {schema: z.object({topic: z.string(), durationSeconds: z.number(), businessName: z.string(), website: z.string(), clipDuration: z.number()})},
+  output: {schema: AdPlanSchema},
+  prompt: `
+        You are a creative director for a gourmet food company called "{{businessName}}".
+        Your task is to create a plan for a short, compelling video ad based on a given topic.
+
+        Business Name: {{businessName}}
+        Website: {{website}}
+
+        Topic: {{{topic}}}
+        Total Ad Duration: {{{durationSeconds}}} seconds
+
+        Instructions:
+        1.  Divide the ad into multiple scenes. Each scene will be a video clip of approximately {{clipDuration}} seconds.
+        2.  For each scene, write a detailed visual prompt for an AI video generator. The prompt should describe the visuals that will accompany the voiceover.
+        3.  For each scene, write the corresponding portion of a concise and engaging voiceover script. The script for each scene should be short enough to be spoken within ~{{clipDuration}} seconds.
+        4.  Combine all scene scripts into a single 'fullScript'.
+        5.  The final scene must conclude by visually showing the business name and website. Make sure the last scene's video prompt includes instructions for this.
+        6.  Provide only the JSON output.
+    `,
+});
 
 const generateVideoAdFlow = ai.defineFlow(
   {
@@ -107,76 +116,113 @@ const generateVideoAdFlow = ai.defineFlow(
     inputSchema: GenerateVideoAdInputSchema,
     outputSchema: GenerateVideoAdOutputSchema,
   },
-  async (input) => {
-    
-    // 1. Generate script and video prompt
-    const { output: scriptAndPrompt } = await adScriptPrompt(input);
-    if (!scriptAndPrompt) {
-        throw new Error('Failed to generate ad script and video prompt.');
-    }
-    const { script, videoPrompt } = scriptAndPrompt;
+  async input => {
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'video-ad-'));
 
-    // 2. Generate video and audio in parallel
-    const [videoResult, audioResult] = await Promise.all([
-        // Generate Video
-        ai.generate({
+    try {
+      // 1. Generate plan
+      const {output: adPlan} = await adPlanPrompt({
+        ...input,
+        businessName: 'BeautifulSoup&Food',
+        website: 'www.beautifulsoupandfood.com',
+        clipDuration: CLIP_DURATION,
+      });
+
+      if (!adPlan?.scenes?.length) {
+        throw new Error('Failed to generate a valid ad plan.');
+      }
+      
+      const {scenes, fullScript} = adPlan;
+
+      // 2. Generate video clips and audio in parallel
+      const generationPromises = scenes.map(async (scene, index) => {
+        const [videoResult, audioResult] = await Promise.all([
+          ai.generate({
             model: googleAI.model('veo-2.0-generate-001'),
-            prompt: videoPrompt,
+            prompt: scene.videoPrompt,
             config: {
-                durationSeconds: input.durationSeconds,
-                aspectRatio: input.aspectRatio,
+              durationSeconds: CLIP_DURATION,
+              aspectRatio: input.aspectRatio,
             },
-        }),
-        // Generate Audio
-        ai.generate({
+          }),
+          ai.generate({
             model: googleAI.model('gemini-2.5-flash-preview-tts'),
             config: {
-                responseModalities: ['AUDIO'],
-                speechConfig: {
-                    voiceConfig: {
-                        prebuiltVoiceConfig: { voiceName: 'Algenib' },
-                    },
-                },
+              responseModalities: ['AUDIO'],
+              speechConfig: {
+                voiceConfig: {prebuiltVoiceConfig: {voiceName: 'Algenib'}},
+              },
             },
-            prompt: script,
-        })
-    ]);
-    
-    let { operation } = videoResult;
+            prompt: scene.voiceoverScript,
+          }),
+        ]);
+        return {videoResult, audioResult, sceneNumber: index};
+      });
 
-    if (!operation) {
-      throw new Error('Expected the model to return an operation for video generation.');
+      const results = await Promise.all(generationPromises);
+
+      // 3. Poll for video completion and process files
+      const processingPromises = results.map(async ({videoResult, audioResult, sceneNumber}) => {
+        let {operation} = videoResult;
+        if (!operation) throw new Error(`Video operation failed for scene ${sceneNumber + 1}.`);
+        if (!audioResult.media) throw new Error(`Audio generation failed for scene ${sceneNumber + 1}.`);
+
+        while (!operation.done) {
+          await new Promise(resolve => setTimeout(resolve, 5000));
+          operation = await ai.checkOperation(operation);
+        }
+
+        if (operation.error) throw new Error(`Video generation failed for scene ${sceneNumber + 1}: ${operation.error.message}`);
+        
+        const videoPart = operation.output?.message?.content.find(p => !!p.media);
+        if (!videoPart?.media?.url) throw new Error(`No video media found for scene ${sceneNumber + 1}.`);
+
+        const fetch = (await import('node-fetch')).default;
+        const apiKey = process.env.GEMINI_API_KEY;
+        if (!apiKey) throw new Error('GEMINI_API_KEY is not set.');
+
+        const videoResponse = await fetch(`${videoPart.media.url}&key=${apiKey}`);
+        if (!videoResponse.ok) throw new Error(`Failed to download video for scene ${sceneNumber + 1}.`);
+        
+        const videoBuffer = await videoResponse.buffer();
+        const videoPath = path.join(tempDir, `scene-${sceneNumber}.mp4`);
+        await fs.writeFile(videoPath, videoBuffer);
+        
+        const pcmBuffer = Buffer.from(audioResult.media.url.substring(audioResult.media.url.indexOf(',') + 1), 'base64');
+        const wavBuffer = await toWav(pcmBuffer);
+        const audioPath = path.join(tempDir, `scene-${sceneNumber}.wav`);
+        await fs.writeFile(audioPath, wavBuffer);
+
+        return {videoPath, audioPath};
+      });
+
+      const filePaths = await Promise.all(processingPromises);
+      
+      // 4. Combine audio and then video
+      const audioListPath = path.join(tempDir, 'audio_list.txt');
+      const audioListContent = filePaths.map(p => `file '${p.audioPath}'`).join('\n');
+      await fs.writeFile(audioListPath, audioListContent);
+
+      const combinedAudioPath = path.join(tempDir, 'combined.wav');
+      await runFfmpeg(`-f concat -safe 0 -i ${audioListPath} ${combinedAudioPath}`);
+
+      const videoListPath = path.join(tempDir, 'video_list.txt');
+      const videoListContent = filePaths.map(p => `file '${p.videoPath}'`).join('\n');
+      await fs.writeFile(videoListPath, videoListContent);
+      
+      const outputPath = path.join(tempDir, 'output.mp4');
+      await runFfmpeg(`-f concat -safe 0 -i ${videoListPath} -i ${combinedAudioPath} -c:v copy -c:a aac -shortest ${outputPath}`);
+
+      const finalVideoBuffer = await fs.readFile(outputPath);
+      const finalAudioBuffer = await fs.readFile(combinedAudioPath);
+
+      return {
+        videoUrl: `data:video/mp4;base64,${finalVideoBuffer.toString('base64')}`,
+        audioUrl: `data:audio/wav;base64,${finalAudioBuffer.toString('base64')}`,
+        script: fullScript,
+      };
+    } finally {
+        await fs.rm(tempDir, { recursive: true, force: true });
     }
-    if (!audioResult.media) {
-      throw new Error('Failed to generate audio for the voiceover.');
-    }
-
-    // 3. Poll for video completion
-    while (!operation.done) {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-      operation = await ai.checkOperation(operation);
-    }
-
-    if (operation.error) {
-      console.error('Video generation failed:', operation.error);
-      throw new Error('Failed to generate video: ' + operation.error.message);
-    }
-
-    const videoPart = operation.output?.message?.content.find((p) => !!p.media);
-    if (!videoPart?.media?.url) {
-      throw new Error('Failed to find the generated video in the model response.');
-    }
-    
-    // 4. Process and prepare outputs
-    const videoPromise = getVideoDataUri(videoPart.media.url);
-    const audioPromise = toWav(Buffer.from(audioResult.media.url.substring(audioResult.media.url.indexOf(',') + 1), 'base64')).then(wav => `data:audio/wav;base64,${wav}`);
-
-    const [videoDataUri, audioDataUri] = await Promise.all([videoPromise, audioPromise]);
-
-    return {
-      videoUrl: videoDataUri,
-      audioUrl: audioDataUri,
-      script: script,
-    };
   }
 );
