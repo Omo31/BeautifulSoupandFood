@@ -134,8 +134,12 @@ const generateVideoAdFlow = ai.defineFlow(
       
       const {scenes, fullScript} = adPlan;
 
-      // 2. Generate video clips and audio in parallel
-      const generationPromises = scenes.map(async (scene, index) => {
+      // 2. Generate video clips and audio sequentially to avoid rate limiting
+      const filePaths = [];
+      for (const [index, scene] of scenes.entries()) {
+        const sceneNumber = index + 1;
+        console.log(`Generating assets for scene ${sceneNumber}...`);
+        
         const [videoResult, audioResult] = await Promise.all([
           ai.generate({
             model: googleAI.model('veo-2.0-generate-001'),
@@ -156,49 +160,44 @@ const generateVideoAdFlow = ai.defineFlow(
             prompt: scene.voiceoverScript,
           }),
         ]);
-        return {videoResult, audioResult, sceneNumber: index};
-      });
 
-      const results = await Promise.all(generationPromises);
-
-      // 3. Poll for video completion and process files
-      const processingPromises = results.map(async ({videoResult, audioResult, sceneNumber}) => {
         let {operation} = videoResult;
-        if (!operation) throw new Error(`Video operation failed for scene ${sceneNumber + 1}.`);
-        if (!audioResult.media) throw new Error(`Audio generation failed for scene ${sceneNumber + 1}.`);
+        if (!operation) throw new Error(`Video operation failed for scene ${sceneNumber}.`);
+        if (!audioResult.media) throw new Error(`Audio generation failed for scene ${sceneNumber}.`);
 
+        console.log(`Polling for video completion for scene ${sceneNumber}...`);
         while (!operation.done) {
           await new Promise(resolve => setTimeout(resolve, 5000));
           operation = await ai.checkOperation(operation);
         }
 
-        if (operation.error) throw new Error(`Video generation failed for scene ${sceneNumber + 1}: ${operation.error.message}`);
+        if (operation.error) throw new Error(`Video generation failed for scene ${sceneNumber}: ${operation.error.message}`);
         
         const videoPart = operation.output?.message?.content.find(p => !!p.media);
-        if (!videoPart?.media?.url) throw new Error(`No video media found for scene ${sceneNumber + 1}.`);
+        if (!videoPart?.media?.url) throw new Error(`No video media found for scene ${sceneNumber}.`);
 
         const fetch = (await import('node-fetch')).default;
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) throw new Error('GEMINI_API_KEY is not set.');
 
+        console.log(`Downloading assets for scene ${sceneNumber}...`);
         const videoResponse = await fetch(`${videoPart.media.url}&key=${apiKey}`);
-        if (!videoResponse.ok) throw new Error(`Failed to download video for scene ${sceneNumber + 1}.`);
+        if (!videoResponse.ok) throw new Error(`Failed to download video for scene ${sceneNumber}.`);
         
         const videoBuffer = await videoResponse.buffer();
-        const videoPath = path.join(tempDir, `scene-${sceneNumber}.mp4`);
+        const videoPath = path.join(tempDir, `scene-${index}.mp4`);
         await fs.writeFile(videoPath, videoBuffer);
         
         const pcmBuffer = Buffer.from(audioResult.media.url.substring(audioResult.media.url.indexOf(',') + 1), 'base64');
         const wavBuffer = await toWav(pcmBuffer);
-        const audioPath = path.join(tempDir, `scene-${sceneNumber}.wav`);
+        const audioPath = path.join(tempDir, `scene-${index}.wav`);
         await fs.writeFile(audioPath, wavBuffer);
 
-        return {videoPath, audioPath};
-      });
+        filePaths.push({ videoPath, audioPath });
+      }
 
-      const filePaths = await Promise.all(processingPromises);
-      
-      // 4. Combine audio and then video
+      // 3. Combine audio and then video
+      console.log('Combining audio and video files...');
       const audioListPath = path.join(tempDir, 'audio_list.txt');
       const audioListContent = filePaths.map(p => `file '${p.audioPath}'`).join('\n');
       await fs.writeFile(audioListPath, audioListContent);
@@ -216,6 +215,7 @@ const generateVideoAdFlow = ai.defineFlow(
       const finalVideoBuffer = await fs.readFile(outputPath);
       const finalAudioBuffer = await fs.readFile(combinedAudioPath);
 
+      console.log('Video generation complete.');
       return {
         videoUrl: `data:video/mp4;base64,${finalVideoBuffer.toString('base64')}`,
         audioUrl: `data:audio/wav;base64,${finalAudioBuffer.toString('base64')}`,
