@@ -19,7 +19,7 @@ export default function VideoGeneratorPage() {
       <div>
         <h1 className="text-2xl font-bold font-headline">AI-Powered Video Ad Generator</h1>
         <p className="text-muted-foreground">
-          Generate a branded video ad for a specific feature of your business.
+          Generate a branded video ad with voiceover for any topic related to your business.
         </p>
       </div>
       <VideoGeneratorForm 

@@ -42,24 +42,20 @@ const flyerPrompt = ai.definePrompt({
   name: 'flyerPrompt',
   input: {schema: GenerateMarketingFlyerInputSchema},
   output: {schema: z.object({flyerText: z.string()})},
-  prompt: `You are a marketing expert specializing in creating promotional flyers and ads.
+  prompt: `You are a marketing expert for "BeautifulSoup&Food", a gourmet food store with a slogan: "Exceptional Quality, Delivered Fresh".
 
-  Create marketing flyer text for the following product:
+  Create compelling marketing flyer text for the following product:
   Product: {{productName}}
   Description: {{productDescription}}
 
-  Use the following store details for branding:
-  Store Name: {{storeName}}
-  Slogan: {{storeSlogan}}
-  Primary Color: {{primaryColor}}
-  Accent Color: {{accentColor}}
-  Headline Font: {{headlineFont}}
-  Body Font: {{bodyFont}}
-  Call to Action: {{callToAction}}
+  The flyer should be engaging and persuasive, reflecting our premium brand identity.
+
+  Key details to include in your response structure:
+  - An attention-grabbing headline.
+  - A short, persuasive body paragraph.
+  - A clear call to action: "{{callToAction}}"
 
   The flyer is for {{flyerType}} use.
-
-  Ensure the flyer text is engaging and persuasive, encouraging customers to take action.
 
   Just provide the flyer text, nothing else.`,
 });
@@ -73,7 +69,7 @@ const generateMarketingFlyerFlow = ai.defineFlow(
   async input => {
     const {output} = await flyerPrompt(input);
 
-    const imageGenerationPrompt = input.imagePrompt || `Generate an image of ${input.productName} from ${input.storeName}, ${input.productDescription}, in the style matching the branding with primary color ${input.primaryColor} and accent color ${input.accentColor}`;
+    const imageGenerationPrompt = input.imagePrompt || `A beautiful, high-quality, appetizing photo of ${input.productName}. The style should be clean, modern, and reflect a premium gourmet brand.`;
     
     const { media } = await ai.generate({
       model: 'googleai/imagen-4.0-fast-generate-001',

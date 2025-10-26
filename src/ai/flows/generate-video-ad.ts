@@ -1,7 +1,7 @@
 'use server';
 
 /**
- * @fileOverview AI-powered tool to generate branded video ads for specific business features.
+ * @fileOverview AI-powered tool to generate branded video ads with voiceover for any given topic.
  *
  * - generateVideoAd - A function that handles the video generation process.
  * - GenerateVideoAdInput - The input type for the generateVideoAd function.
@@ -11,9 +11,10 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 import { googleAI } from '@genkit-ai/google-genai';
+import wav from 'wav';
 
 const GenerateVideoAdInputSchema = z.object({
-  topic: z.enum(['custom-orders', 'about-us']).describe('The topic for the video ad.'),
+  topic: z.string().min(10, "Please provide a more detailed topic for the ad."),
   durationSeconds: z.number().min(5).max(8).default(5).describe('Length of the video in seconds (5-8).'),
   aspectRatio: z.enum(['16:9', '9:16']).default('16:9').describe('Aspect ratio of the video.'),
 });
@@ -22,6 +23,8 @@ export type GenerateVideoAdInput = z.infer<typeof GenerateVideoAdInputSchema>;
 
 const GenerateVideoAdOutputSchema = z.object({
   videoUrl: z.string().describe('The data URI of the generated video.'),
+  audioUrl: z.string().describe('The data URI of the generated audio.'),
+  script: z.string().describe('The generated script for the voiceover.'),
 });
 
 export type GenerateVideoAdOutput = z.infer<typeof GenerateVideoAdOutputSchema>;
@@ -30,7 +33,6 @@ export async function generateVideoAd(input: GenerateVideoAdInput): Promise<Gene
   return generateVideoAdFlow(input);
 }
 
-// Helper function to download video and convert to data URI
 async function getVideoDataUri(videoUrl: string): Promise<string> {
     const fetch = (await import('node-fetch')).default;
     const apiKey = process.env.GEMINI_API_KEY;
@@ -48,25 +50,55 @@ async function getVideoDataUri(videoUrl: string): Promise<string> {
     return `data:video/mp4;base64,${videoBuffer.toString('base64')}`;
 }
 
-const topicPrompts = {
-    'custom-orders': `
-      Create a short, engaging video ad explaining the "Custom Order" feature for an online gourmet food store called "BeautifulSoup&Food".
-      The video should visually communicate the following steps:
-      1. A customer has a special request for a rare or specific food item.
-      2. They fill out a simple "Custom Order" form on the website.
-      3. The "BeautifulSoup&Food" team reviews the request and sends a quote.
-      4. The happy customer receives their unique, high-quality product.
-      The style should be clean, modern, and appetizing.
-      End the video with the business name "BeautifulSoup&Food" and the website "www.beautifulsoupandfood.com" clearly displayed.
+async function toWav(
+  pcmData: Buffer,
+  channels = 1,
+  rate = 24000,
+  sampleWidth = 2
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const writer = new wav.Writer({
+      channels,
+      sampleRate: rate,
+      bitDepth: sampleWidth * 8,
+    });
+
+    let bufs = [] as any[];
+    writer.on('error', reject);
+    writer.on('data', function (d) {
+      bufs.push(d);
+    });
+    writer.on('end', function () {
+      resolve(Buffer.concat(bufs).toString('base64'));
+    });
+
+    writer.write(pcmData);
+    writer.end();
+  });
+}
+
+const adScriptPrompt = ai.definePrompt({
+    name: 'adScriptPrompt',
+    input: { schema: z.object({ topic: z.string(), durationSeconds: z.number() }) },
+    output: { schema: z.object({ script: z.string(), videoPrompt: z.string() }) },
+    prompt: `
+        You are a creative director for a gourmet food company called "BeautifulSoup&Food".
+        Your task is to create a short, compelling script for a video ad based on a given topic. The ad will have a voiceover.
+
+        Business Name: BeautifulSoup&Food
+        Website: www.beautifulsoupandfood.com
+
+        Topic: {{{topic}}}
+        Ad Duration: {{{durationSeconds}}} seconds
+
+        Instructions:
+        1. Write a concise and engaging voiceover script that explains the topic clearly and effectively within the given duration. The script should be natural-sounding and persuasive.
+        2. Create a detailed visual prompt for an AI video generator. This prompt should describe the visuals that will accompany the voiceover, creating a cohesive and appetizing video. The style should be clean, modern, and inspiring.
+        3. The ad must conclude by visually showing the business name and website. Make sure your video prompt includes instructions for this.
+
+        Provide only the JSON output with the 'script' and 'videoPrompt'.
     `,
-    'about-us': `
-      Create an inspiring video ad about the brand "BeautifulSoup&Food".
-      The video should convey a passion for high-quality, artisan, and gourmet food.
-      Showcase a variety of beautiful products like fresh produce, artisan cheeses, and gourmet pantry items.
-      The overall feeling should be premium, trustworthy, and about delivering an exceptional food experience.
-      End the video with the business name "BeautifulSoup&Food" and the website "www.beautifulsoupandfood.com" clearly displayed.
-    `
-};
+});
 
 
 const generateVideoAdFlow = ai.defineFlow(
@@ -76,25 +108,51 @@ const generateVideoAdFlow = ai.defineFlow(
     outputSchema: GenerateVideoAdOutputSchema,
   },
   async (input) => {
-    // Select the prompt based on the chosen topic
-    const prompt = topicPrompts[input.topic];
+    
+    // 1. Generate script and video prompt
+    const { output: scriptAndPrompt } = await adScriptPrompt(input);
+    if (!scriptAndPrompt) {
+        throw new Error('Failed to generate ad script and video prompt.');
+    }
+    const { script, videoPrompt } = scriptAndPrompt;
 
-    let { operation } = await ai.generate({
-      model: googleAI.model('veo-2.0-generate-001'),
-      prompt: prompt,
-      config: {
-        durationSeconds: input.durationSeconds,
-        aspectRatio: input.aspectRatio,
-      },
-    });
+    // 2. Generate video and audio in parallel
+    const [videoResult, audioResult] = await Promise.all([
+        // Generate Video
+        ai.generate({
+            model: googleAI.model('veo-2.0-generate-001'),
+            prompt: videoPrompt,
+            config: {
+                durationSeconds: input.durationSeconds,
+                aspectRatio: input.aspectRatio,
+            },
+        }),
+        // Generate Audio
+        ai.generate({
+            model: googleAI.model('gemini-2.5-flash-preview-tts'),
+            config: {
+                responseModalities: ['AUDIO'],
+                speechConfig: {
+                    voiceConfig: {
+                        prebuiltVoiceConfig: { voiceName: 'Algenib' },
+                    },
+                },
+            },
+            prompt: script,
+        })
+    ]);
+    
+    let { operation } = videoResult;
 
     if (!operation) {
-      throw new Error('Expected the model to return an operation');
+      throw new Error('Expected the model to return an operation for video generation.');
+    }
+    if (!audioResult.media) {
+      throw new Error('Failed to generate audio for the voiceover.');
     }
 
-    // Poll for completion
+    // 3. Poll for video completion
     while (!operation.done) {
-      // Wait for 5 seconds before checking again
       await new Promise((resolve) => setTimeout(resolve, 5000));
       operation = await ai.checkOperation(operation);
     }
@@ -109,10 +167,16 @@ const generateVideoAdFlow = ai.defineFlow(
       throw new Error('Failed to find the generated video in the model response.');
     }
     
-    const videoDataUri = await getVideoDataUri(videoPart.media.url);
-    
+    // 4. Process and prepare outputs
+    const videoPromise = getVideoDataUri(videoPart.media.url);
+    const audioPromise = toWav(Buffer.from(audioResult.media.url.substring(audioResult.media.url.indexOf(',') + 1), 'base64')).then(wav => `data:audio/wav;base64,${wav}`);
+
+    const [videoDataUri, audioDataUri] = await Promise.all([videoPromise, audioPromise]);
+
     return {
       videoUrl: videoDataUri,
+      audioUrl: audioDataUri,
+      script: script,
     };
   }
 );

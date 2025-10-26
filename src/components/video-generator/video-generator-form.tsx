@@ -26,9 +26,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast.tsx';
 import { Loader2 } from 'lucide-react';
 import { Slider } from '../ui/slider';
+import { Textarea } from '../ui/textarea';
 
 const formSchema = z.object({
-  topic: z.enum(['custom-orders', 'about-us']).describe('The topic for the video ad.'),
+  topic: z.string().min(10, "Please provide a more detailed topic for the ad."),
   durationSeconds: z.number().min(5).max(8).default(5),
   aspectRatio: z.enum(['16:9', '9:16']).default('16:9'),
 });
@@ -48,8 +49,8 @@ export function VideoGeneratorForm({ setResult, setLoading, loading, setLoadingP
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      topic: 'custom-orders',
-      durationSeconds: 5,
+      topic: '',
+      durationSeconds: 8,
       aspectRatio: '16:9',
     },
   });
@@ -106,19 +107,14 @@ export function VideoGeneratorForm({ setResult, setLoading, loading, setLoadingP
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Ad Topic</FormLabel>
-                   <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a topic for the ad" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="custom-orders">Custom Order Feature</SelectItem>
-                        <SelectItem value="about-us">About Our Business</SelectItem>
-                      </SelectContent>
-                    </Select>
+                   <FormControl>
+                    <Textarea 
+                      placeholder="e.g., An ad about our weekly special on organic vegetable boxes, highlighting freshness and local sourcing."
+                      {...field}
+                    />
+                   </FormControl>
                   <FormDescription>
-                    Choose a feature to create a promotional video for.
+                    Describe the feature, product, or concept you want to create a promotional video for.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -132,7 +128,7 @@ export function VideoGeneratorForm({ setResult, setLoading, loading, setLoadingP
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Aspect Ratio</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select an aspect ratio" />
