@@ -1,6 +1,5 @@
 
 
-
 export const mockUserRoles = [
   { name: "Administrator", isSuperAdmin: true, permissions: {} },
   { name: "Content Manager", isSuperAdmin: false, permissions: { 'Inventory': ['View', 'Create', 'Edit'] } },
@@ -163,4 +162,30 @@ export const mockTransactions = [
     { id: 'txn3', date: '2023-11-03', description: 'Brevo Subscription', category: 'Marketing', type: 'expense' as const, amount: 8500.00 },
     { id: 'txn4', date: '2023-11-02', description: 'Sale from Order ORD001', category: 'Sales Revenue', type: 'sale' as const, amount: 4350.00 },
     { id: 'txn5', date: '2023-11-01', description: 'Packaging Materials', category: 'Supplies', type: 'expense' as const, amount: 12000.00 },
+];
+
+export const mockPurchaseOrders = [
+    {
+        id: 'PO2023-001',
+        supplier: 'Global Foods Inc.',
+        date: '2023-10-28',
+        status: 'Completed' as const,
+        total: 15230.50,
+        itemCount: 2,
+        items: [
+            { productId: '4', productName: 'Extra Virgin Olive Oil', quantity: 50, cost: 10.50 },
+            { productId: '3', productName: 'Aged Parmesan Wheel', quantity: 20, cost: 18.00 },
+        ]
+    },
+    {
+        id: 'PO2023-002',
+        supplier: 'Local Farm Co-op',
+        date: '2023-11-02',
+        status: 'Pending' as const,
+        total: 8500.00,
+        itemCount: 1,
+        items: [
+            { productId: '2', productName: 'Organic Vegetable Box', quantity: 100, cost: 8.50 },
+        ]
+    }
 ];
