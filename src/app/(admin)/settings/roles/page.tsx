@@ -11,12 +11,7 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle } from 'lucide-react';
 import { AddRoleDialog } from '@/components/roles/add-role-dialog';
 import { useToast } from '@/hooks/use-toast.tsx';
-
-const initialUserRoles = [
-  { name: "Administrator", isSuperAdmin: true, permissions: {} },
-  { name: "Content Manager", isSuperAdmin: false, permissions: { 'Inventory': ['View', 'Create', 'Edit'] } },
-  { name: "Support Agent", isSuperAdmin: false, permissions: { 'Conversations': ['View', 'Edit'], 'Orders': ['View'] } },
-];
+import { mockUserRoles } from '@/lib/mock-data';
 
 const allPermissions = ["View", "Create", "Edit", "Delete"];
 const allModules = adminNavItems.map(item => item.label).filter(label => label !== 'Settings');
@@ -24,7 +19,7 @@ const allModules = adminNavItems.map(item => item.label).filter(label => label !
 type Permissions = { [module: string]: string[] };
 
 export default function AdminRolesSettingsPage() {
-  const [roles, setRoles] = useState(initialUserRoles);
+  const [roles, setRoles] = useState(mockUserRoles);
   const [isAddRoleOpen, setAddRoleOpen] = useState(false);
   const [editingRole, setEditingRole] = useState<string | null>(null);
   const [tempPermissions, setTempPermissions] = useState<Permissions>({});
@@ -41,7 +36,7 @@ export default function AdminRolesSettingsPage() {
     });
   };
 
-  const startEditing = (role: typeof initialUserRoles[0]) => {
+  const startEditing = (role: typeof mockUserRoles[0]) => {
     setEditingRole(role.name);
     setTempPermissions(role.permissions);
   };
@@ -53,6 +48,8 @@ export default function AdminRolesSettingsPage() {
 
   const savePermissions = (roleName: string) => {
     setRoles(roles.map(r => r.name === roleName ? { ...r, permissions: tempPermissions } : r));
+    // In a real app, you would also update this in your database (e.g., Firestore)
+    Object.assign(mockUserRoles.find(r => r.name === roleName)!, { permissions: tempPermissions });
     setEditingRole(null);
     setTempPermissions({});
     toast({
@@ -66,7 +63,9 @@ export default function AdminRolesSettingsPage() {
         toast({ title: 'Error', description: 'A role with this name already exists.', variant: 'destructive'});
         return;
     }
-    setRoles([...roles, { name: newRoleName, isSuperAdmin: false, permissions: {} }]);
+    const newRole = { name: newRoleName, isSuperAdmin: false, permissions: {} };
+    setRoles([...roles, newRole]);
+    mockUserRoles.push(newRole); // Update the central mock data
     toast({ title: 'Role Added', description: `${newRoleName} has been created.`});
   };
 

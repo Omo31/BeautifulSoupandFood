@@ -31,7 +31,7 @@ const formSchema = z.object({
   id: z.string(),
   name: z.string().min(2, 'Name is required.'),
   email: z.string().email('Invalid email address.'),
-  role: z.enum(['Customer', 'Administrator', 'Content Manager', 'Support Agent']),
+  role: z.string().min(1, 'Role is required.'),
   status: z.enum(['Active', 'Disabled']),
 });
 
@@ -40,9 +40,10 @@ type EditUserDialogProps = {
   setIsOpen: (open: boolean) => void;
   user: User;
   onEditUser: (user: User) => void;
+  availableRoles: string[];
 };
 
-export function EditUserDialog({ isOpen, setIsOpen, user, onEditUser }: EditUserDialogProps) {
+export function EditUserDialog({ isOpen, setIsOpen, user, onEditUser, availableRoles }: EditUserDialogProps) {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -113,10 +114,9 @@ export function EditUserDialog({ isOpen, setIsOpen, user, onEditUser }: EditUser
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Customer">Customer</SelectItem>
-                      <SelectItem value="Content Manager">Content Manager</SelectItem>
-                      <SelectItem value="Support Agent">Support Agent</SelectItem>
-                      <SelectItem value="Administrator">Administrator</SelectItem>
+                       {availableRoles.map(role => (
+                          <SelectItem key={role} value={role}>{role}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />

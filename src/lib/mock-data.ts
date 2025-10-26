@@ -1,5 +1,12 @@
 
 
+export const mockUserRoles = [
+  { name: "Administrator", isSuperAdmin: true, permissions: {} },
+  { name: "Content Manager", isSuperAdmin: false, permissions: { 'Inventory': ['View', 'Create', 'Edit'] } },
+  { name: "Support Agent", isSuperAdmin: false, permissions: { 'Conversations': ['View', 'Edit'], 'Orders': ['View'] } },
+  { name: "Customer", isSuperAdmin: false, permissions: {} }, // Adding customer as a role
+];
+
 // Mock data for orders, in a real app this would come from a database.
 export const mockOrders = [
     { 

@@ -14,7 +14,7 @@ export type User = {
   id: string;
   name: string;
   email: string;
-  role: 'Customer' | 'Administrator' | 'Content Manager' | 'Support Agent';
+  role: string;
   joined: string;
   avatar?: string;
   status: 'Active' | 'Disabled';
@@ -24,10 +24,11 @@ type UserTableProps = {
   users: User[];
   onToggleStatus: (userId: string) => void;
   onEdit: (user: User) => void;
+  availableRoles: string[];
 };
 
 
-export function UserTable({ users, onToggleStatus, onEdit }: UserTableProps) {
+export function UserTable({ users, onToggleStatus, onEdit, availableRoles }: UserTableProps) {
   const { toast } = useToast();
 
   const getRoleBadge = (role: User['role']) => {

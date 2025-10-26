@@ -29,16 +29,17 @@ import type { User } from './user-table';
 const formSchema = z.object({
   name: z.string().min(2, 'Name is required.'),
   email: z.string().email('Invalid email address.'),
-  role: z.enum(['Customer', 'Administrator', 'Content Manager', 'Support Agent']),
+  role: z.string().min(1, 'Role is required.'),
 });
 
 type AddUserDialogProps = {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   onAddUser: (user: Omit<User, 'id' | 'joined' | 'avatar' | 'status'>) => void;
+  availableRoles: string[];
 };
 
-export function AddUserDialog({ isOpen, setIsOpen, onAddUser }: AddUserDialogProps) {
+export function AddUserDialog({ isOpen, setIsOpen, onAddUser, availableRoles }: AddUserDialogProps) {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -51,7 +52,7 @@ export function AddUserDialog({ isOpen, setIsOpen, onAddUser }: AddUserDialogPro
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    onAddUser(values);
+    onAddUser(values as Omit<User, 'id' | 'joined' | 'avatar' | 'status'>);
     toast({
       title: 'User Added',
       description: `${values.name} has been added.`,
@@ -110,10 +111,9 @@ export function AddUserDialog({ isOpen, setIsOpen, onAddUser }: AddUserDialogPro
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Customer">Customer</SelectItem>
-                      <SelectItem value="Content Manager">Content Manager</SelectItem>
-                      <SelectItem value="Support Agent">Support Agent</SelectItem>
-                      <SelectItem value="Administrator">Administrator</SelectItem>
+                      {availableRoles.map(role => (
+                          <SelectItem key={role} value={role}>{role}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />

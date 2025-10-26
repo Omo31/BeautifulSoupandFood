@@ -11,7 +11,7 @@ import { EditUserDialog } from '@/components/users/edit-user-dialog';
 import type { User } from '@/components/users/user-table';
 import { downloadCSV } from '@/lib/csv';
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationNext, PaginationLink } from '@/components/ui/pagination';
-import { initialUsers } from '@/lib/mock-data';
+import { initialUsers, mockUserRoles } from '@/lib/mock-data';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -26,6 +26,9 @@ export default function AdminUsersPage() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({ name: '', role: 'all', status: 'all' });
+  
+  // Get role names from the centralized mock data
+  const availableRoles = mockUserRoles.map(r => r.name);
 
   const handleFilterChange = (filterName: string, value: string) => {
     setFilters(prev => ({ ...prev, [filterName]: value }));
@@ -115,10 +118,9 @@ export default function AdminUsersPage() {
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">All Roles</SelectItem>
-                        <SelectItem value="Customer">Customer</SelectItem>
-                        <SelectItem value="Content Manager">Content Manager</SelectItem>
-                        <SelectItem value="Support Agent">Support Agent</SelectItem>
-                        <SelectItem value="Administrator">Administrator</SelectItem>
+                        {availableRoles.map(role => (
+                            <SelectItem key={role} value={role}>{role}</SelectItem>
+                        ))}
                     </SelectContent>
                 </Select>
                 <Select value={filters.status} onValueChange={(value) => handleFilterChange('status', value)}>
@@ -143,7 +145,7 @@ export default function AdminUsersPage() {
         </div>
       </CardHeader>
       <CardContent>
-        <UserTable users={paginatedUsers} onToggleStatus={toggleUserStatus} onEdit={openEditDialog} />
+        <UserTable users={paginatedUsers} onToggleStatus={toggleUserStatus} onEdit={openEditDialog} availableRoles={availableRoles} />
       </CardContent>
       {totalPages > 1 && (
         <CardFooter>
@@ -167,8 +169,8 @@ export default function AdminUsersPage() {
         </CardFooter>
       )}
     </Card>
-    <AddUserDialog isOpen={isAddUserOpen} setIsOpen={setAddUserOpen} onAddUser={handleAddUser} />
-    {selectedUser && <EditUserDialog isOpen={isEditUserOpen} setIsOpen={setEditUserOpen} user={selectedUser} onEditUser={handleEditUser} />}
+    <AddUserDialog isOpen={isAddUserOpen} setIsOpen={setAddUserOpen} onAddUser={handleAddUser} availableRoles={availableRoles} />
+    {selectedUser && <EditUserDialog isOpen={isEditUserOpen} setIsOpen={setEditUserOpen} user={selectedUser} onEditUser={handleEditUser} availableRoles={availableRoles} />}
     </>
   );
 }
