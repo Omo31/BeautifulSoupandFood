@@ -10,6 +10,10 @@ export default function VideoGeneratorPage() {
   const [loading, setLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
 
+  const handleDelete = () => {
+    setResult(null);
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -28,6 +32,7 @@ export default function VideoGeneratorPage() {
         result={result} 
         loading={loading}
         loadingProgress={loadingProgress}
+        onDelete={handleDelete}
       />
     </div>
   );

@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Download } from 'lucide-react';
+import { Download, Trash2 } from 'lucide-react';
 import type { GenerateVideoAdOutput } from '@/ai/flows/generate-video-ad';
 import { useToast } from '@/hooks/use-toast.tsx';
 import { Progress } from '../ui/progress';
@@ -11,9 +11,10 @@ type VideoDisplayProps = {
   result: GenerateVideoAdOutput | null;
   loading: boolean;
   loadingProgress: number;
+  onDelete: () => void;
 };
 
-export function VideoDisplay({ result, loading, loadingProgress }: VideoDisplayProps) {
+export function VideoDisplay({ result, loading, loadingProgress, onDelete }: VideoDisplayProps) {
   const { toast } = useToast();
 
   const handleDownload = () => {
@@ -75,10 +76,14 @@ export function VideoDisplay({ result, loading, loadingProgress }: VideoDisplayP
           />
         </div>
       </CardContent>
-      <CardFooter className="flex gap-2 bg-muted/30 p-4">
-         <Button onClick={handleDownload}>
+      <CardFooter className="flex justify-between bg-muted/30 p-4">
+        <Button onClick={handleDownload}>
           <Download className="mr-2 h-4 w-4" />
           Download Video
+        </Button>
+        <Button variant="destructive" onClick={onDelete}>
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete
         </Button>
       </CardFooter>
     </Card>

@@ -4,16 +4,17 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Download, BarChart2 } from 'lucide-react';
+import { Download, BarChart2, Trash2 } from 'lucide-react';
 import type { GenerateMarketingFlyerOutput } from '@/ai/flows/generate-marketing-flyers';
 import { useToast } from '@/hooks/use-toast.tsx';
 
 type FlyerDisplayProps = {
   result: GenerateMarketingFlyerOutput | null;
   loading: boolean;
+  onDelete: () => void;
 };
 
-export function FlyerDisplay({ result, loading }: FlyerDisplayProps) {
+export function FlyerDisplay({ result, loading, onDelete }: FlyerDisplayProps) {
   const { toast } = useToast();
 
   const handleAction = (message: string) => {
@@ -78,14 +79,20 @@ export function FlyerDisplay({ result, loading }: FlyerDisplayProps) {
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex gap-2 bg-muted/30 p-4">
-         <Button onClick={() => handleAction('Downloading flyer assets.')}>
-          <Download className="mr-2 h-4 w-4" />
-          Download Assets
-        </Button>
-        <Button variant="outline" onClick={() => handleAction('Navigating to performance analytics.')}>
-          <BarChart2 className="mr-2 h-4 w-4" />
-          Monitor Performance
+      <CardFooter className="flex justify-between bg-muted/30 p-4">
+        <div className="flex gap-2">
+            <Button onClick={() => handleAction('Downloading flyer assets.')}>
+            <Download className="mr-2 h-4 w-4" />
+            Download Assets
+            </Button>
+            <Button variant="outline" onClick={() => handleAction('Navigating to performance analytics.')}>
+            <BarChart2 className="mr-2 h-4 w-4" />
+            Monitor Performance
+            </Button>
+        </div>
+        <Button variant="destructive" onClick={onDelete}>
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete
         </Button>
       </CardFooter>
     </Card>

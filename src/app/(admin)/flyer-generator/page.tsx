@@ -9,6 +9,10 @@ export default function FlyerGeneratorPage() {
   const [result, setResult] = useState<GenerateMarketingFlyerOutput | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const handleDelete = () => {
+    setResult(null);
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -18,7 +22,7 @@ export default function FlyerGeneratorPage() {
         </p>
       </div>
       <FlyerForm setResult={setResult} setLoading={setLoading} loading={loading} />
-      <FlyerDisplay result={result} loading={loading} />
+      <FlyerDisplay result={result} loading={loading} onDelete={handleDelete} />
     </div>
   );
 }
