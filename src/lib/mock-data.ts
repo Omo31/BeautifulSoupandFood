@@ -36,11 +36,7 @@ export const mockOrders = [
             notes: 'Looking for high-quality truffles for a special event. Please ensure they are fresh. The gift wrapping is for the vinegar.'
         },
         shippingAddress: {
-            address: '456 Oak Avenue',
-            city: 'Metropolis',
-            state: 'CA',
-            zip: '90210',
-            country: 'USA'
+            address: '456 Oak Avenue, Metropolis, CA 90210, USA'
         }
     },
     { 

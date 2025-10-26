@@ -101,7 +101,7 @@ export function CartSummary() {
                 {shippingAddress ? (
                      <div className="p-3 border rounded-md bg-background text-sm">
                          <p className="font-semibold">Shipping to:</p>
-                         <p className="text-muted-foreground">{shippingAddress.address}, {shippingAddress.city}, {shippingAddress.state} {shippingAddress.zip}</p>
+                         <p className="text-muted-foreground whitespace-pre-wrap">{shippingAddress.address}</p>
                          <Button variant="link" className="p-0 h-auto text-xs" onClick={() => setIsAddressDialogOpen(true)}>
                              Edit or change address
                          </Button>

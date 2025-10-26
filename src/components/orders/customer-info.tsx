@@ -9,10 +9,6 @@ type CustomerInfoProps = {
   customer: Order['customer'];
   shippingAddress?: {
     address: string;
-    city: string;
-    state: string;
-    zip: string;
-    country: string;
   };
 };
 
@@ -51,9 +47,7 @@ export function CustomerInfo({ customer, shippingAddress }: CustomerInfoProps) {
                     Shipping Address
                 </h4>
                 <div className="text-sm text-muted-foreground">
-                    <p>{shippingAddress.address}</p>
-                    <p>{shippingAddress.city}, {shippingAddress.state} {shippingAddress.zip}</p>
-                    <p>{shippingAddress.country}</p>
+                    <p className="whitespace-pre-wrap">{shippingAddress.address}</p>
                 </div>
             </div>
         )}
