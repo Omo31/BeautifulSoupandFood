@@ -1,5 +1,6 @@
 
 
+
 export const mockUserRoles = [
   { name: "Administrator", isSuperAdmin: true, permissions: {} },
   { name: "Content Manager", isSuperAdmin: false, permissions: { 'Inventory': ['View', 'Create', 'Edit'] } },
@@ -68,8 +69,7 @@ export const mockOrders = [
     { 
         id: 'ORD005', 
         date: '2023-10-18', 
-        status: 'Delivered' as const, 
-        total: 12.00, 
+        status: 'Delivered' as const,         total: 12.00, 
         items: 1, 
         customer: { name: 'Charlie Brown', email: 'charlie.b@example.com' } 
     },
@@ -77,7 +77,7 @@ export const mockOrders = [
         id: 'ORD007', 
         date: '2023-11-01', 
         status: 'Delivered' as const, 
-        total: 55.00, 
+        total: 55000.00, 
         items: 3, 
         customer: { name: 'Jane Doe', email: 'jane.doe@example.com' } 
     },
@@ -85,7 +85,7 @@ export const mockOrders = [
         id: 'ORD008', 
         date: '2023-11-02', 
         status: 'Pending' as const, 
-        total: 18.25, 
+        total: 18250.25, 
         items: 1, 
         customer: { name: 'John Smith', email: 'john.smith@example.com' } 
     },
@@ -155,4 +155,12 @@ export const initialUsers = [
     avatar: 'https://picsum.photos/seed/diana-evans/40/40',
     status: 'Active' as const,
   },
+];
+
+export const mockTransactions = [
+    { id: 'txn1', date: '2023-11-05', description: 'Sale from Order ORD007', category: 'Sales Revenue', type: 'sale' as const, amount: 55000.00 },
+    { id: 'txn2', date: '2023-11-04', description: 'Fresh produce supply', category: 'Cost of Goods Sold', type: 'expense' as const, amount: 15230.50 },
+    { id: 'txn3', date: '2023-11-03', description: 'Brevo Subscription', category: 'Marketing', type: 'expense' as const, amount: 8500.00 },
+    { id: 'txn4', date: '2023-11-02', description: 'Sale from Order ORD001', category: 'Sales Revenue', type: 'sale' as const, amount: 4350.00 },
+    { id: 'txn5', date: '2023-11-01', description: 'Packaging Materials', category: 'Supplies', type: 'expense' as const, amount: 12000.00 },
 ];
