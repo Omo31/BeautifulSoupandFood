@@ -146,7 +146,10 @@ export function CustomOrderForm() {
                         type="number"
                         className="text-center"
                         {...field}
-                        onChange={event => field.onChange(event.target.valueAsNumber)}
+                        onChange={event => {
+                            const value = event.target.valueAsNumber;
+                            field.onChange(isNaN(value) ? 1 : value);
+                        }}
                       />
                     </FormControl>
                     <Button
