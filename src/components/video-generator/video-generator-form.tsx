@@ -1,188 +1,70 @@
-'use client';
-
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { GenerateVideoAdInput, generateVideoAd } from '@/ai/flows/generate-video-ad';
-import { Card, CardContent } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast.tsx';
-import { Loader2 } from 'lucide-react';
-import { Slider } from '../ui/slider';
-import { Textarea } from '../ui/textarea';
-
-const MAX_DURATION = 24;
-
-const formSchema = z.object({
-  topic: z.string().min(10, "Please provide a more detailed topic for the ad."),
-  durationSeconds: z.number().min(5).max(MAX_DURATION).default(8),
-  aspectRatio: z.enum(['16:9', '9:16']).default('16:9'),
-});
-
-type VideoGeneratorFormProps = {
-  setResult: (result: any) => void;
-  setLoading: (loading: boolean) => void;
-  loading: boolean;
-  setLoadingProgress: (progress: number) => void;
-};
-
-
-export function VideoGeneratorForm({ setResult, setLoading, loading, setLoadingProgress }: VideoGeneratorFormProps) {
-  const { toast } = useToast();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      topic: '',
-      durationSeconds: 8,
-      aspectRatio: '16:9',
-    },
-  });
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (loading) {
-      setLoadingProgress(0);
-      let progress = 0;
-      const duration = form.getValues('durationSeconds');
-      const estimatedTime = duration * 2.5; // Rough estimate: 2.5s per second of video
-      interval = setInterval(() => {
-        progress += 100 / estimatedTime;
-        if (progress > 95) { // Don't let it reach 100% on its own
-            clearInterval(interval);
-        } else {
-            setLoadingProgress(progress);
-        }
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [loading, setLoadingProgress, form]);
-
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    setLoading(true);
-    setResult(null);
-    try {
-      const result = await generateVideoAd(values as GenerateVideoAdInput);
-      setResult(result);
-      setLoadingProgress(100);
-    } catch (error: any) {
-      console.error('Error generating video:', error);
-      toast({
-        title: 'Error Generating Video',
-        description: error.message || 'Failed to generate video ad. Please try again.',
-        variant: 'destructive',
-      });
-      setLoadingProgress(0);
-    } finally {
-      setLoading(false);
-    }
+{
+  "name": "beautifulsoupandfood",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack -p 9002",
+    "genkit:dev": "genkit start -- tsx src/ai/dev.ts",
+    "genkit:watch": "genkit start -- tsx --watch src/ai/dev.ts",
+    "build": "NODE_ENV=production next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ducanh2912/next-pwa": "^10.2.8",
+    "@genkit-ai/google-genai": "^1.20.0",
+    "@genkit-ai/next": "^1.20.0",
+    "@hookform/resolvers": "^4.1.3",
+    "@radix-ui/react-accordion": "^1.2.3",
+    "@radix-ui/react-alert-dialog": "^1.1.6",
+    "@radix-ui/react-avatar": "^1.1.3",
+    "@radix-ui/react-checkbox": "^1.1.4",
+    "@radix-ui/react-collapsible": "^1.1.11",
+    "@radix-ui/react-dialog": "^1.1.6",
+    "@radix-ui/react-dropdown-menu": "^2.1.6",
+    "@radix-ui/react-label": "^2.1.2",
+    "@radix-ui/react-menubar": "^1.1.6",
+    "@radix-ui/react-popover": "^1.1.6",
+    "@radix-ui/react-progress": "^1.1.2",
+    "@radix-ui/react-radio-group": "^1.2.3",
+    "@radix-ui/react-scroll-area": "^1.2.3",
+    "@radix-ui/react-select": "^2.1.6",
+    "@radix-ui/react-separator": "^1.1.2",
+    "@radix-ui/react-slider": "^1.2.3",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-switch": "^1.1.3",
+    "@radix-ui/react-tabs": "^1.1.3",
+    "@radix-ui/react-toast": "^1.2.6",
+    "@radix-ui/react-tooltip": "^1.1.8",
+    "@sendinblue/client": "^3.3.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^3.6.0",
+    "dotenv": "^16.5.0",
+    "embla-carousel-react": "^8.6.0",
+    "firebase": "^11.9.1",
+    "genkit": "^1.20.0",
+    "lucide-react": "^0.475.0",
+    "next": "15.3.3",
+    "node-fetch": "^3.3.2",
+    "patch-package": "^8.0.0",
+    "react": "^18.3.1",
+    "react-day-picker": "^8.10.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.54.2",
+    "recharts": "^2.15.1",
+    "tailwind-merge": "^3.0.1",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "genkit-cli": "^1.20.0",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
   }
-  
-  const durationValue = form.watch('durationSeconds');
-
-  return (
-    <Card>
-      <CardContent className="p-6">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-
-            <FormField
-              control={form.control}
-              name="topic"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ad Topic</FormLabel>
-                   <FormControl>
-                    <Textarea 
-                      placeholder="e.g., An ad about our weekly special on organic vegetable boxes, highlighting freshness and local sourcing."
-                      {...field}
-                    />
-                   </FormControl>
-                  <FormDescription>
-                    Describe the feature, product, or concept you want to create a promotional video for.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField
-                control={form.control}
-                name="aspectRatio"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Aspect Ratio</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select an aspect ratio" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="16:9">16:9 (YouTube Ad Size)</SelectItem>
-                        <SelectItem value="9:16">9:16 (Vertical)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      Standard size for video ads.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="durationSeconds"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Duration: {durationValue}s</FormLabel>
-                    <FormControl>
-                        <Slider 
-                            min={5} max={MAX_DURATION} step={1}
-                            defaultValue={[field.value]}
-                            onValueChange={(vals) => field.onChange(vals[0])}
-                        />
-                    </FormControl>
-                    <FormDescription>
-                        Set the video length in seconds (5-{MAX_DURATION}s).
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            
-            <Button type="submit" disabled={loading}>
-              {loading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Generating Video...
-                </>
-              ) : (
-                'Generate Video Ad'
-              )}
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
-  );
 }

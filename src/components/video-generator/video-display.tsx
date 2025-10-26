@@ -1,133 +1,70 @@
-'use client';
-
-import { useRef, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Download, Trash2, Volume2 } from 'lucide-react';
-import type { GenerateVideoAdOutput } from '@/ai/flows/generate-video-ad';
-import { useToast } from '@/hooks/use-toast.tsx';
-import { Progress } from '../ui/progress';
-
-type VideoDisplayProps = {
-  result: GenerateVideoAdOutput | null;
-  loading: boolean;
-  loadingProgress: number;
-  onDelete: () => void;
-};
-
-export function VideoDisplay({ result, loading, loadingProgress, onDelete }: VideoDisplayProps) {
-  const { toast } = useToast();
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    const audio = audioRef.current;
-
-    if (video && audio && result) {
-      const playAudio = () => audio.play();
-      const pauseAudio = () => audio.pause();
-      const syncAudioTime = () => {
-        if(Math.abs(video.currentTime - audio.currentTime) > 0.1) {
-             audio.currentTime = video.currentTime;
-        }
-      };
-
-      video.addEventListener('play', playAudio);
-      video.addEventListener('pause', pauseAudio);
-      video.addEventListener('seeking', syncAudioTime);
-      
-      // Cleanup
-      return () => {
-        video.removeEventListener('play', playAudio);
-        video.removeEventListener('pause', pauseAudio);
-        video.removeEventListener('seeking', syncAudioTime);
-      };
-    }
-  }, [result]);
-
-
-  const handleDownload = () => {
-    if (!result) return;
-    const link = document.createElement('a');
-    link.href = result.videoUrl;
-    link.download = `video_ad_${Date.now()}.mp4`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    toast({
-      title: 'Download Started',
-      description: 'Your video ad is being downloaded.',
-    });
-  };
-
-  if (loading) {
-    return (
-      <Card className="mt-8">
-        <CardHeader>
-           <CardTitle className="font-headline text-2xl">Generating Your Video...</CardTitle>
-           <CardDescription>This may take up to a minute. Please be patient.</CardDescription>
-        </CardHeader>
-        <CardContent>
-            <div className="flex flex-col items-center justify-center space-y-4 py-12">
-                <Progress value={loadingProgress} className="w-full" />
-                <p className="text-muted-foreground text-sm">
-                    {loadingProgress < 20 ? "Writing script..." : loadingProgress < 60 ? "Generating video and voiceover..." : "Finalizing and encoding..."}
-                </p>
-            </div>
-        </CardContent>
-      </Card>
-    );
+{
+  "name": "beautifulsoupandfood",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack -p 9002",
+    "genkit:dev": "genkit start -- tsx src/ai/dev.ts",
+    "genkit:watch": "genkit start -- tsx --watch src/ai/dev.ts",
+    "build": "NODE_ENV=production next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ducanh2912/next-pwa": "^10.2.8",
+    "@genkit-ai/google-genai": "^1.20.0",
+    "@genkit-ai/next": "^1.20.0",
+    "@hookform/resolvers": "^4.1.3",
+    "@radix-ui/react-accordion": "^1.2.3",
+    "@radix-ui/react-alert-dialog": "^1.1.6",
+    "@radix-ui/react-avatar": "^1.1.3",
+    "@radix-ui/react-checkbox": "^1.1.4",
+    "@radix-ui/react-collapsible": "^1.1.11",
+    "@radix-ui/react-dialog": "^1.1.6",
+    "@radix-ui/react-dropdown-menu": "^2.1.6",
+    "@radix-ui/react-label": "^2.1.2",
+    "@radix-ui/react-menubar": "^1.1.6",
+    "@radix-ui/react-popover": "^1.1.6",
+    "@radix-ui/react-progress": "^1.1.2",
+    "@radix-ui/react-radio-group": "^1.2.3",
+    "@radix-ui/react-scroll-area": "^1.2.3",
+    "@radix-ui/react-select": "^2.1.6",
+    "@radix-ui/react-separator": "^1.1.2",
+    "@radix-ui/react-slider": "^1.2.3",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-switch": "^1.1.3",
+    "@radix-ui/react-tabs": "^1.1.3",
+    "@radix-ui/react-toast": "^1.2.6",
+    "@radix-ui/react-tooltip": "^1.1.8",
+    "@sendinblue/client": "^3.3.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^3.6.0",
+    "dotenv": "^16.5.0",
+    "embla-carousel-react": "^8.6.0",
+    "firebase": "^11.9.1",
+    "genkit": "^1.20.0",
+    "lucide-react": "^0.475.0",
+    "next": "15.3.3",
+    "node-fetch": "^3.3.2",
+    "patch-package": "^8.0.0",
+    "react": "^18.3.1",
+    "react-day-picker": "^8.10.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.54.2",
+    "recharts": "^2.15.1",
+    "tailwind-merge": "^3.0.1",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "genkit-cli": "^1.20.0",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
   }
-
-  if (!result) {
-    return (
-      <Card className="mt-8 flex flex-col items-center justify-center py-16">
-        <CardContent className="text-center">
-            <p className="text-muted-foreground">Your generated video ad will appear here.</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  return (
-    <Card className="mt-8 overflow-hidden">
-      <CardHeader>
-        <CardTitle className="font-headline text-2xl">Your Generated Video</CardTitle>
-        <CardDescription>Review the generated video ad for your campaign. Unmute the video to hear the voiceover.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-            <div className="md:col-span-3 aspect-video w-full overflow-hidden rounded-lg border bg-black">
-                <video
-                    ref={videoRef}
-                    src={result.videoUrl}
-                    controls
-                    playsInline
-                    className="w-full h-full object-contain"
-                />
-                {result.audioUrl && <audio ref={audioRef} src={result.audioUrl} className="hidden" />}
-            </div>
-            <div className="md:col-span-2">
-                <h3 className="font-semibold flex items-center gap-2 mb-2"><Volume2 className="h-5 w-5" /> Voiceover Script</h3>
-                <div className="prose prose-sm max-w-none h-48 overflow-auto rounded-md border bg-muted/30 p-4">
-                    <p className="whitespace-pre-wrap font-body text-sm text-foreground">
-                        {result.script}
-                    </p>
-                </div>
-            </div>
-        </div>
-      </CardContent>
-      <CardFooter className="flex justify-between bg-muted/30 p-4">
-        <Button onClick={handleDownload}>
-          <Download className="mr-2 h-4 w-4" />
-          Download Video
-        </Button>
-        <Button variant="destructive" onClick={onDelete}>
-            <Trash2 className="mr-2 h-4 w-4" />
-            Delete
-        </Button>
-      </CardFooter>
-    </Card>
-  );
 }
