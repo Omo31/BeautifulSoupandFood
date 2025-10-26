@@ -140,16 +140,16 @@ const generateVideoAdFlow = ai.defineFlow(
         const sceneNumber = index + 1;
         console.log(`Generating assets for scene ${sceneNumber}...`);
         
-        const [videoResult, audioResult] = await Promise.all([
-          ai.generate({
+        const videoResult = await ai.generate({
             model: googleAI.model('veo-2.0-generate-001'),
             prompt: scene.videoPrompt,
             config: {
               durationSeconds: CLIP_DURATION,
               aspectRatio: input.aspectRatio,
             },
-          }),
-          ai.generate({
+        });
+        
+        const audioResult = await ai.generate({
             model: googleAI.model('gemini-2.5-flash-preview-tts'),
             config: {
               responseModalities: ['AUDIO'],
@@ -158,8 +158,7 @@ const generateVideoAdFlow = ai.defineFlow(
               },
             },
             prompt: scene.voiceoverScript,
-          }),
-        ]);
+        });
 
         let {operation} = videoResult;
         if (!operation) throw new Error(`Video operation failed for scene ${sceneNumber}.`);
