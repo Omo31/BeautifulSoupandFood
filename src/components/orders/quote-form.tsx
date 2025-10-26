@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm, useFieldArray } from 'react-hook-form';
@@ -64,12 +65,12 @@ export function QuoteForm({ order }: { order: Order }) {
     name: 'services',
   });
 
-  const watchedItems = watch('items') || [];
-  const watchedServices = watch('services') || [];
-  const shippingFee = watch('shippingFee') || 0;
+  const watchedItems = watch('items');
+  const watchedServices = watch('services');
+  const shippingFee = Number(watch('shippingFee')) || 0;
 
-  const itemsSubtotal = watchedItems.reduce((sum, item) => sum + (Number(item.price) || 0) * item.quantity, 0);
-  const servicesSubtotal = watchedServices.reduce((sum, service) => sum + (Number(service.price) || 0), 0);
+  const itemsSubtotal = (watchedItems || []).reduce((sum, item) => sum + (Number(item.price) || 0) * item.quantity, 0);
+  const servicesSubtotal = (watchedServices || []).reduce((sum, service) => sum + (Number(service.price) || 0), 0);
   const subtotal = itemsSubtotal + servicesSubtotal;
   const serviceCharge = subtotal * SERVICE_CHARGE_RATE;
   const total = subtotal + serviceCharge + shippingFee;
@@ -220,3 +221,5 @@ export function QuoteForm({ order }: { order: Order }) {
     </Card>
   );
 }
+
+    
