@@ -41,7 +41,7 @@ export async function generateMarketingFlyer(input: GenerateMarketingFlyerInput)
 const flyerPrompt = ai.definePrompt({
   name: 'flyerPrompt',
   input: {schema: GenerateMarketingFlyerInputSchema},
-  output: {schema: GenerateMarketingFlyerOutputSchema},
+  output: {schema: z.object({flyerText: z.string()})},
   prompt: `You are a marketing expert specializing in creating promotional flyers and ads.
 
   Create marketing flyer text for the following product:
@@ -61,14 +61,7 @@ const flyerPrompt = ai.definePrompt({
 
   Ensure the flyer text is engaging and persuasive, encouraging customers to take action.
 
-  Output the flyer text and a description of an image to generate for the flyer.
-  Image description should incorporate the product and store branding, and follow the requested style.
-
-  Flyer Text:
-  {{flyerText}}
-
-  Image URL:
-  {{imageUrl}}`,
+  Just provide the flyer text, nothing else.`,
 });
 
 const generateMarketingFlyerFlow = ai.defineFlow(
@@ -80,20 +73,13 @@ const generateMarketingFlyerFlow = ai.defineFlow(
   async input => {
     const {output} = await flyerPrompt(input);
 
-    if (!input.imagePrompt) {
-      // If the user hasn't provided an image prompt, generate a default image using Imagen 4
-      const { media } = await ai.generate({
-        model: 'googleai/imagen-4.0-fast-generate-001',
-        prompt: `Generate an image of ${input.productName} from ${input.storeName}, ${input.productDescription}, in the style matching the branding with primary color ${input.primaryColor} and accent color ${input.accentColor}`,
-      });
-      return { flyerText: output?.flyerText ?? '', imageUrl: media.url };
-    }
-    // Otherwise use the provided image prompt.
+    const imageGenerationPrompt = input.imagePrompt || `Generate an image of ${input.productName} from ${input.storeName}, ${input.productDescription}, in the style matching the branding with primary color ${input.primaryColor} and accent color ${input.accentColor}`;
+    
     const { media } = await ai.generate({
       model: 'googleai/imagen-4.0-fast-generate-001',
-      prompt: input.imagePrompt,
+      prompt: imageGenerationPrompt,
     });
-
+    
     return { flyerText: output?.flyerText ?? '', imageUrl: media.url };
   }
 );
