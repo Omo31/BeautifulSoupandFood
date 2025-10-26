@@ -53,7 +53,7 @@ export function EditUserDialog({ isOpen, setIsOpen, user, onEditUser, availableR
 
   useEffect(() => {
     form.reset(user);
-  }, [user, form]);
+  }, [user, form, isOpen]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     onEditUser({ ...user, ...values });
