@@ -140,6 +140,11 @@ const generateVideoAdFlow = ai.defineFlow(
         const sceneNumber = index + 1;
         console.log(`Generating assets for scene ${sceneNumber}...`);
         
+        // Add a delay between iterations to avoid rate limiting
+        if (index > 0) {
+            await new Promise(resolve => setTimeout(resolve, 5000));
+        }
+
         const videoResult = await ai.generate({
             model: googleAI.model('veo-2.0-generate-001'),
             prompt: scene.videoPrompt,
