@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
@@ -24,29 +24,33 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast.tsx';
-import { Minus, Plus, Home } from 'lucide-react';
+import { Minus, Plus, Home, Trash2 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ShippingAddressDialog } from '../shared/shipping-address-dialog';
 import type { Address } from '../shared/shipping-address-dialog';
 import { cn } from '@/lib/utils';
+import { Separator } from '../ui/separator';
 
-
-const formSchema = z.object({
-  itemName: z.string().min(2, 'Item name is required.'),
-  quantity: z.number().min(1, 'Quantity must be at least 1.'),
-  customMeasure: z.string().min(1, 'Please select a measurement unit.'),
-  otherMeasure: z.string().optional(),
-  shippingMethod: z.string().min(1, 'Please select a shipping method.'),
-  services: z.array(z.string()).optional(),
-  notes: z.string().optional(),
+const itemSchema = z.object({
+    name: z.string().min(2, 'Item name is required.'),
+    quantity: z.number().min(1, 'Quantity must be at least 1.'),
+    measure: z.string().min(1, 'Please select a measurement unit.'),
+    otherMeasure: z.string().optional(),
 }).refine(data => {
-    if (data.customMeasure === 'Other') {
+    if (data.measure === 'Other') {
         return !!data.otherMeasure && data.otherMeasure.length > 0;
     }
     return true;
 }, {
     message: 'Please specify the unit of measure.',
     path: ['otherMeasure'],
+});
+
+const formSchema = z.object({
+  items: z.array(itemSchema).min(1, 'Please add at least one item.'),
+  shippingMethod: z.string().min(1, 'Please select a shipping method.'),
+  services: z.array(z.string()).optional(),
+  notes: z.string().optional(),
 });
 
 // Mock data, in a real app this would come from admin settings.
@@ -65,18 +69,20 @@ export function CustomOrderForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      itemName: '',
-      quantity: 1,
+      items: [{ name: '', quantity: 1, measure: '' }],
       services: [],
       notes: '',
     },
   });
 
-  const { setValue, watch } = form;
-  const quantity = watch('quantity');
+  const { control, watch } = form;
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "items"
+  });
+
   const selectedServices = watch('services') || [];
   const shippingMethod = watch('shippingMethod');
-  const selectedMeasure = watch('customMeasure');
   
   const handleSaveAddress = (address: Address) => {
     setShippingAddress(address);
@@ -110,104 +116,131 @@ export function CustomOrderForm() {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="itemName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Item Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g., Fresh Truffles" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          
+          <div className="space-y-4">
+             <FormLabel>Requested Items</FormLabel>
+            {fields.map((field, index) => (
+                <div key={field.id} className="p-4 border rounded-lg space-y-4 relative">
+                    {fields.length > 1 && (
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="absolute top-2 right-2 h-7 w-7 text-muted-foreground"
+                            onClick={() => remove(index)}
+                        >
+                            <Trash2 className="h-4 w-4" />
+                            <span className="sr-only">Remove Item</span>
+                        </Button>
+                    )}
+                    <FormField
+                        control={control}
+                        name={`items.${index}.name`}
+                        render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Item Name</FormLabel>
+                            <FormControl>
+                            <Input placeholder="e.g., Fresh Truffles" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Quantity</FormLabel>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      className="h-10 w-10"
-                      onClick={() => setValue('quantity', Math.max(1, quantity - 1))}
-                    >
-                      <Minus className="h-4 w-4" />
-                    </Button>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        className="text-center"
-                        {...field}
-                        onChange={event => {
-                            const value = event.target.valueAsNumber;
-                            field.onChange(isNaN(value) ? 1 : value);
-                        }}
-                      />
-                    </FormControl>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      className="h-10 w-10"
-                      onClick={() => setValue('quantity', quantity + 1)}
-                    >
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="customMeasure"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Unit of Measure</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a unit" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {customMeasures.map(unit => (
-                        <SelectItem key={unit} value={unit}>{unit}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <FormField
+                        control={control}
+                        name={`items.${index}.quantity`}
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Quantity</FormLabel>
+                            <div className="flex items-center gap-2">
+                                <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                className="h-10 w-10"
+                                onClick={() => form.setValue(`items.${index}.quantity`, Math.max(1, (field.value || 1) - 1))}
+                                >
+                                <Minus className="h-4 w-4" />
+                                </Button>
+                                <FormControl>
+                                <Input
+                                    type="number"
+                                    className="text-center"
+                                    {...field}
+                                    onChange={event => field.onChange(event.target.value === '' ? 1 : +event.target.value)}
+                                />
+                                </FormControl>
+                                <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                className="h-10 w-10"
+                                onClick={() => form.setValue(`items.${index}.quantity`, (field.value || 0) + 1)}
+                                >
+                                <Plus className="h-4 w-4" />
+                                </Button>
+                            </div>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+                        <FormField
+                        control={control}
+                        name={`items.${index}.measure`}
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Unit of Measure</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select a unit" />
+                                </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                {customMeasures.map(unit => (
+                                    <SelectItem key={unit} value={unit}>{unit}</SelectItem>
+                                ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+                    </div>
+                     {watch(`items.${index}.measure`) === 'Other' && (
+                        <FormField
+                            control={control}
+                            name={`items.${index}.otherMeasure`}
+                            render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Specify Unit</FormLabel>
+                                <FormControl>
+                                <Input placeholder="e.g., Pallet, Crate" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                            )}
+                        />
+                    )}
+                </div>
+            ))}
+            <Button
+                type="button"
+                variant="outline"
+                onClick={() => append({ name: '', quantity: 1, measure: '' })}
+            >
+                <Plus className="mr-2 h-4 w-4" />
+                Add Another Item
+            </Button>
+             {form.formState.errors.items && <p className="text-sm font-medium text-destructive">{form.formState.errors.items.message}</p>}
           </div>
 
-           {selectedMeasure === 'Other' && (
-            <FormField
-                control={form.control}
-                name="otherMeasure"
-                render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Specify Unit</FormLabel>
-                    <FormControl>
-                    <Input placeholder="e.g., Pallet, Crate" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                </FormItem>
-                )}
-            />
-           )}
+          <Separator />
           
           <FormField
-            control={form.control}
+            control={control}
             name="services"
             render={() => (
               <FormItem>
@@ -220,7 +253,7 @@ export function CustomOrderForm() {
                 {additionalServices.map((item) => (
                   <FormField
                     key={item.id}
-                    control={form.control}
+                    control={control}
                     name="services"
                     render={({ field }) => {
                       return (
@@ -254,9 +287,30 @@ export function CustomOrderForm() {
               </FormItem>
             )}
           />
+          
+           {selectedServices.length > 0 && (
+            <FormField
+              control={control}
+              name="notes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Additional Notes</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Provide more details about your selected services..." {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Please provide any extra details related to the services you've selected.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
+          <Separator />
 
           <FormField
-              control={form.control}
+              control={control}
               name="shippingMethod"
               render={({ field }) => (
                 <FormItem>
@@ -295,25 +349,6 @@ export function CustomOrderForm() {
                     </Button>
                  )}
              </div>
-          )}
-
-          {selectedServices.length > 0 && (
-            <FormField
-              control={form.control}
-              name="notes"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Additional Notes</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Provide more details about your selected services..." {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Please provide any extra details related to the services you've selected.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           )}
           
           <div className="flex justify-end">
