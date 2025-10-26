@@ -3,6 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import type { Order } from './order-table';
+import { Separator } from '../ui/separator';
 
 export function OrderDetails({ order }: { order: Order }) {
 
@@ -37,21 +38,39 @@ export function OrderDetails({ order }: { order: Order }) {
             <CardContent>
                 {order.isCustom && order.customOrderDetails ? (
                     <div className="space-y-4">
-                        <h3 className="font-semibold text-lg">Custom Item Request</h3>
-                        <div className="grid grid-cols-2 gap-4 p-4 border rounded-md bg-muted/50">
-                            <div>
-                                <p className="text-sm text-muted-foreground">Item Name</p>
-                                <p className="font-medium">{order.customOrderDetails.itemName}</p>
+                        <h3 className="font-semibold text-lg">Custom Request Details</h3>
+                        
+                        {order.customOrderDetails.items.length > 0 && (
+                            <div className='space-y-2'>
+                                <h4 className="font-medium">Requested Items</h4>
+                                <div className="space-y-2 rounded-md border bg-muted/50 p-4">
+                                {order.customOrderDetails.items.map(item => (
+                                    <div key={item.id} className="flex justify-between">
+                                        <span>{item.name}</span>
+                                        <span className="text-muted-foreground">{item.quantity} x {item.measure}</span>
+                                    </div>
+                                ))}
+                                </div>
                             </div>
-                             <div>
-                                <p className="text-sm text-muted-foreground">Quantity / Measure</p>
-                                <p className="font-medium">{order.customOrderDetails.quantity} {order.customOrderDetails.measure}</p>
+                        )}
+
+                        {order.customOrderDetails.services.length > 0 && (
+                             <div className='space-y-2'>
+                                <h4 className="font-medium">Requested Services</h4>
+                                 <div className="space-y-2 rounded-md border bg-muted/50 p-4">
+                                    {order.customOrderDetails.services.map(service => (
+                                        <div key={service.id} className="flex justify-between">
+                                            <span>{service.label}</span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
+                        
                         {order.customOrderDetails.notes && (
-                             <div>
-                                <p className="text-sm text-muted-foreground">Customer Notes</p>
-                                <p className="font-medium whitespace-pre-wrap">{order.customOrderDetails.notes}</p>
+                            <div className='space-y-2'>
+                                <h4 className="font-medium">Customer Notes</h4>
+                                <p className="text-sm text-muted-foreground whitespace-pre-wrap border p-4 rounded-md">{order.customOrderDetails.notes}</p>
                             </div>
                         )}
                     </div>

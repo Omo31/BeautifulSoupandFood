@@ -5,7 +5,7 @@ export const mockOrders = [
     { 
         id: 'ORD001', 
         date: '2023-10-26', 
-        status: 'Delivered', 
+        status: 'Delivered' as const, 
         total: 43.50, 
         items: 2, 
         customer: { name: 'Jane Doe', email: 'jane.doe@example.com' } 
@@ -13,16 +13,20 @@ export const mockOrders = [
     { 
         id: 'ORD006', 
         date: '2023-10-27', 
-        status: 'Awaiting Confirmation', 
+        status: 'Awaiting Confirmation' as const, 
         total: 0.00, 
-        items: 1, 
+        items: 3, 
         isCustom: true, 
         customer: { name: 'John Smith', email: 'john.smith@example.com' },
         customOrderDetails: {
-            itemName: 'Fresh Black Truffles',
-            quantity: 500,
-            measure: 'Grams',
-            notes: 'Looking for high-quality truffles for a special event. Please ensure they are fresh.'
+            items: [
+                { id: 'item1', name: 'Fresh Black Truffles', quantity: 500, measure: 'Grams' },
+                { id: 'item2', name: 'Aged Balsamic Vinegar', quantity: 1, measure: 'Bottle' },
+            ],
+            services: [
+                { id: 'gift-wrapping', label: 'Gift Wrapping' }
+            ],
+            notes: 'Looking for high-quality truffles for a special event. Please ensure they are fresh. The gift wrapping is for the vinegar.'
         },
         shippingAddress: {
             address: '456 Oak Avenue',
@@ -35,7 +39,7 @@ export const mockOrders = [
     { 
         id: 'ORD002', 
         date: '2023-10-24', 
-        status: 'Pending', 
+        status: 'Pending' as const, 
         total: 85.00, 
         items: 1, 
         isCustom: true, 
@@ -44,7 +48,7 @@ export const mockOrders = [
     { 
         id: 'ORD003', 
         date: '2023-10-22', 
-        status: 'Rejected', 
+        status: 'Rejected' as const, 
         total: 22.00, 
         items: 1, 
         customer: { name: 'Bob Williams', email: 'bob.w@example.com' } 
@@ -52,7 +56,7 @@ export const mockOrders = [
     { 
         id: 'ORD004', 
         date: '2023-10-20', 
-        status: 'Delivered', 
+        status: 'Delivered' as const, 
         total: 15.75, 
         items: 1, 
         needsReview: true, 
@@ -61,7 +65,7 @@ export const mockOrders = [
     { 
         id: 'ORD005', 
         date: '2023-10-18', 
-        status: 'Delivered', 
+        status: 'Delivered' as const, 
         total: 12.00, 
         items: 1, 
         customer: { name: 'Charlie Brown', email: 'charlie.b@example.com' } 
@@ -69,7 +73,7 @@ export const mockOrders = [
     { 
         id: 'ORD007', 
         date: '2023-11-01', 
-        status: 'Delivered', 
+        status: 'Delivered' as const, 
         total: 55.00, 
         items: 3, 
         customer: { name: 'Jane Doe', email: 'jane.doe@example.com' } 
@@ -77,7 +81,7 @@ export const mockOrders = [
     { 
         id: 'ORD008', 
         date: '2023-11-02', 
-        status: 'Pending', 
+        status: 'Pending' as const, 
         total: 18.25, 
         items: 1, 
         customer: { name: 'John Smith', email: 'john.smith@example.com' } 
@@ -89,63 +93,63 @@ export const initialUsers = [
     id: 'usr1',
     name: 'Jane Doe',
     email: 'jane.doe@example.com',
-    role: 'Customer',
+    role: 'Customer' as const,
     joined: '2023-10-01',
     avatar: 'https://picsum.photos/seed/jane-doe/40/40',
-    status: 'Active',
+    status: 'Active' as const,
   },
   {
     id: 'usr2',
     name: 'John Smith',
     email: 'john.smith@example.com',
-    role: 'Customer',
+    role: 'Customer' as const,
     joined: '2023-09-15',
      avatar: 'https://picsum.photos/seed/john-smith/40/40',
-     status: 'Active',
+     status: 'Active' as const,
   },
   {
     id: 'usr3',
     name: 'Alice Johnson',
     email: 'alice.j@gourmet.com',
-    role: 'Content Manager',
+    role: 'Content Manager' as const,
     joined: '2023-08-20',
     avatar: 'https://picsum.photos/seed/alice-j/40/40',
-    status: 'Disabled',
+    status: 'Disabled' as const,
   },
     {
     id: 'usr4',
     name: 'Admin User',
     email: 'admin@gourmet.com',
-    role: 'Administrator',
+    role: 'Administrator' as const,
     joined: '2023-01-15',
     avatar: 'https://picsum.photos/seed/admin-user/40/40',
-    status: 'Active',
+    status: 'Active' as const,
   },
    {
     id: 'usr5',
     name: 'Bob Brown',
     email: 'bob.brown@example.com',
-    role: 'Customer',
+    role: 'Customer' as const,
     joined: '2023-11-05',
     avatar: 'https://picsum.photos/seed/bob-brown/40/40',
-    status: 'Active',
+    status: 'Active' as const,
   },
   {
     id: 'usr6',
     name: 'Charlie Davis',
     email: 'charlie.d@example.com',
-    role: 'Customer',
+    role: 'Customer' as const,
     joined: '2023-11-10',
     avatar: 'https://picsum.photos/seed/charlie-davis/40/40',
-    status: 'Active',
+    status: 'Active' as const,
   },
   {
     id: 'usr7',
     name: 'Diana Evans',
     email: 'diana.e@gourmet.com',
-    role: 'Support Agent',
+    role: 'Support Agent' as const,
     joined: '2023-07-30',
     avatar: 'https://picsum.photos/seed/diana-evans/40/40',
-    status: 'Active',
+    status: 'Active' as const,
   },
 ];

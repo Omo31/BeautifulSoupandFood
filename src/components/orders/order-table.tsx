@@ -9,6 +9,18 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { useToast } from "@/hooks/use-toast.tsx";
 
+export type CustomOrderItem = {
+  id: string;
+  name: string;
+  quantity: number;
+  measure: string;
+};
+
+export type CustomOrderService = {
+    id: string;
+    label: string;
+}
+
 export type Order = {
   id: string;
   date: string;
@@ -22,10 +34,9 @@ export type Order = {
     email: string;
   };
   customOrderDetails?: {
-    itemName: string;
-    quantity: number;
-    measure: string;
-    notes: string;
+    items: CustomOrderItem[];
+    services: CustomOrderService[];
+    notes?: string;
   }
 };
 
