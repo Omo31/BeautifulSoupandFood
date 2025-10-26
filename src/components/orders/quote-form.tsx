@@ -64,15 +64,15 @@ export function QuoteForm({ order }: { order: Order }) {
     name: 'services',
   });
 
-  const watchedItems = watch('items');
-  const watchedServices = watch('services');
-  const shippingFee = watch('shippingFee');
+  const watchedItems = watch('items') || [];
+  const watchedServices = watch('services') || [];
+  const shippingFee = watch('shippingFee') || 0;
 
-  const itemsSubtotal = watchedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const servicesSubtotal = watchedServices.reduce((sum, service) => sum + service.price, 0);
+  const itemsSubtotal = watchedItems.reduce((sum, item) => sum + (Number(item.price) || 0) * item.quantity, 0);
+  const servicesSubtotal = watchedServices.reduce((sum, service) => sum + (Number(service.price) || 0), 0);
   const subtotal = itemsSubtotal + servicesSubtotal;
   const serviceCharge = subtotal * SERVICE_CHARGE_RATE;
-  const total = subtotal + serviceCharge + (shippingFee || 0);
+  const total = subtotal + serviceCharge + shippingFee;
 
   const onSubmit = (values: z.infer<typeof quoteSchema>) => {
     // In a real app, you would send this quote to the backend to update the order and notify the customer.
@@ -130,7 +130,7 @@ export function QuoteForm({ order }: { order: Order }) {
                      <div className="col-span-6 sm:col-span-4 flex flex-col items-end">
                         <FormLabel>Line Total</FormLabel>
                         <p className="font-mono text-lg font-semibold h-10 flex items-center">
-                            ₦{(watchedItems[index].price * watchedItems[index].quantity).toFixed(2)}
+                            ₦{((Number(watchedItems?.[index]?.price) || 0) * (watchedItems?.[index]?.quantity || 0)).toFixed(2)}
                         </p>
                     </div>
                 </div>
@@ -203,7 +203,7 @@ export function QuoteForm({ order }: { order: Order }) {
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Shipping</span>
-                <span>₦{(shippingFee || 0).toFixed(2)}</span>
+                <span>₦{shippingFee.toFixed(2)}</span>
               </div>
               <Separator />
               <div className="flex justify-between font-bold text-lg">
