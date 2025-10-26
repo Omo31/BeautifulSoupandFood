@@ -208,8 +208,11 @@ const generateVideoAdFlow = ai.defineFlow(
       const videoListContent = filePaths.map(p => `file '${p.videoPath}'`).join('\n');
       await fs.writeFile(videoListPath, videoListContent);
       
+      const silentCombinedVideoPath = path.join(tempDir, 'silent_combined.mp4');
+      await runFfmpeg(`-f concat -safe 0 -i ${videoListPath} -c copy ${silentCombinedVideoPath}`);
+
       const outputPath = path.join(tempDir, 'output.mp4');
-      await runFfmpeg(`-f concat -safe 0 -i ${videoListPath} -i ${combinedAudioPath} -c:v copy -c:a aac -shortest ${outputPath}`);
+      await runFfmpeg(`-i ${silentCombinedVideoPath} -i ${combinedAudioPath} -c:v copy -c:a aac -shortest ${outputPath}`);
 
       const finalVideoBuffer = await fs.readFile(outputPath);
       const finalAudioBuffer = await fs.readFile(combinedAudioPath);
