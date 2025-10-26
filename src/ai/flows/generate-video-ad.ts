@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -121,6 +122,7 @@ const generateVideoAdFlow = ai.defineFlow(
 
     try {
       // 1. Generate plan
+      console.log('Generating ad plan...');
       const {output: adPlan} = await adPlanPrompt({
         ...input,
         businessName: 'BeautifulSoup&Food',
@@ -134,18 +136,18 @@ const generateVideoAdFlow = ai.defineFlow(
       
       const {scenes, fullScript} = adPlan;
 
-      // 2. Generate video clips and audio sequentially to avoid rate limiting
-      const filePaths = [];
+      // 2. Generate video clips sequentially to avoid rate limiting
+      console.log('Generating video clips...');
+      const videoPaths: string[] = [];
       for (const [index, scene] of scenes.entries()) {
         const sceneNumber = index + 1;
-        console.log(`Generating assets for scene ${sceneNumber}...`);
+        console.log(`Generating video for scene ${sceneNumber}...`);
         
-        // Add a delay between iterations to avoid rate limiting
         if (index > 0) {
             await new Promise(resolve => setTimeout(resolve, 5000));
         }
 
-        const videoResult = await ai.generate({
+        let { operation } = await ai.generate({
             model: googleAI.model('veo-2.0-generate-001'),
             prompt: scene.videoPrompt,
             config: {
@@ -154,20 +156,7 @@ const generateVideoAdFlow = ai.defineFlow(
             },
         });
         
-        const audioResult = await ai.generate({
-            model: googleAI.model('gemini-2.5-flash-preview-tts'),
-            config: {
-              responseModalities: ['AUDIO'],
-              speechConfig: {
-                voiceConfig: {prebuiltVoiceConfig: {voiceName: 'Algenib'}},
-              },
-            },
-            prompt: scene.voiceoverScript,
-        });
-
-        let {operation} = videoResult;
         if (!operation) throw new Error(`Video operation failed for scene ${sceneNumber}.`);
-        if (!audioResult.media) throw new Error(`Audio generation failed for scene ${sceneNumber}.`);
 
         console.log(`Polling for video completion for scene ${sceneNumber}...`);
         while (!operation.done) {
@@ -184,33 +173,53 @@ const generateVideoAdFlow = ai.defineFlow(
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) throw new Error('GEMINI_API_KEY is not set.');
 
-        console.log(`Downloading assets for scene ${sceneNumber}...`);
+        console.log(`Downloading video for scene ${sceneNumber}...`);
         const videoResponse = await fetch(`${videoPart.media.url}&key=${apiKey}`);
         if (!videoResponse.ok) throw new Error(`Failed to download video for scene ${sceneNumber}.`);
         
         const videoBuffer = await videoResponse.buffer();
         const videoPath = path.join(tempDir, `scene-${index}.mp4`);
         await fs.writeFile(videoPath, videoBuffer);
-        
-        const pcmBuffer = Buffer.from(audioResult.media.url.substring(audioResult.media.url.indexOf(',') + 1), 'base64');
-        const wavBuffer = await toWav(pcmBuffer);
-        const audioPath = path.join(tempDir, `scene-${index}.wav`);
-        await fs.writeFile(audioPath, wavBuffer);
-
-        filePaths.push({ videoPath, audioPath });
+        videoPaths.push(videoPath);
       }
 
-      // 3. Combine audio and then video
+      // 3. Generate audio clips in parallel
+      console.log('Generating audio clips...');
+      const audioBuffers = await Promise.all(scenes.map(scene => 
+        ai.generate({
+            model: googleAI.model('gemini-2.5-flash-preview-tts'),
+            config: {
+              responseModalities: ['AUDIO'],
+              speechConfig: {
+                voiceConfig: {prebuiltVoiceConfig: {voiceName: 'Algenib'}},
+              },
+            },
+            prompt: scene.voiceoverScript,
+        })
+      ));
+
+      console.log('Processing audio files...');
+      const audioPaths: string[] = [];
+      for (const [index, audioResult] of audioBuffers.entries()) {
+          if (!audioResult.media) throw new Error(`Audio generation failed for scene ${index + 1}.`);
+          const pcmBuffer = Buffer.from(audioResult.media.url.substring(audioResult.media.url.indexOf(',') + 1), 'base64');
+          const wavBuffer = await toWav(pcmBuffer);
+          const audioPath = path.join(tempDir, `scene-${index}.wav`);
+          await fs.writeFile(audioPath, wavBuffer);
+          audioPaths.push(audioPath);
+      }
+
+      // 4. Combine audio and then video
       console.log('Combining audio and video files...');
       const audioListPath = path.join(tempDir, 'audio_list.txt');
-      const audioListContent = filePaths.map(p => `file '${p.audioPath}'`).join('\n');
+      const audioListContent = audioPaths.map(p => `file '${p}'`).join('\n');
       await fs.writeFile(audioListPath, audioListContent);
 
       const combinedAudioPath = path.join(tempDir, 'combined.wav');
       await runFfmpeg(`-f concat -safe 0 -i ${audioListPath} ${combinedAudioPath}`);
 
       const videoListPath = path.join(tempDir, 'video_list.txt');
-      const videoListContent = filePaths.map(p => `file '${p.videoPath}'`).join('\n');
+      const videoListContent = videoPaths.map(p => `file '${p}'`).join('\n');
       await fs.writeFile(videoListPath, videoListContent);
       
       const silentCombinedVideoPath = path.join(tempDir, 'silent_combined.mp4');
@@ -233,3 +242,5 @@ const generateVideoAdFlow = ai.defineFlow(
     }
   }
 );
+
+    
