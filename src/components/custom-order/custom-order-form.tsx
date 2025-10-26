@@ -275,13 +275,15 @@ export function CustomOrderForm() {
             />
 
           {shippingMethod === 'set-shipping-fee' && (
-             <div className={cn('space-y-2', shippingAddress && 'cursor-pointer' )} onClick={() => shippingAddress && setIsAddressDialogOpen(true)}>
+             <div className="space-y-2">
                 <FormLabel>Shipping Address</FormLabel>
                  {shippingAddress ? (
-                     <div className="p-3 border rounded-md bg-muted/50 hover:border-primary/50 text-sm">
+                     <div className="p-3 border rounded-md bg-muted/50 text-sm">
                          <p className="font-semibold text-foreground">Ship to:</p>
                          <p className="text-muted-foreground">{shippingAddress.address}, {shippingAddress.city}, {shippingAddress.state} {shippingAddress.zip}</p>
-                         <p className="text-xs text-primary mt-1">Click to edit or change address</p>
+                         <Button variant="link" className="p-0 h-auto text-xs mt-1" onClick={() => setIsAddressDialogOpen(true)}>
+                             Edit or change address
+                         </Button>
                      </div>
                  ) : (
                     <Button type="button" variant="outline" className="w-full" onClick={() => setIsAddressDialogOpen(true)}>
