@@ -281,7 +281,7 @@ export function CustomOrderForm() {
                      <div className="p-3 border rounded-md bg-muted/50 hover:border-primary/50 text-sm">
                          <p className="font-semibold text-foreground">Ship to:</p>
                          <p className="text-muted-foreground">{shippingAddress.address}, {shippingAddress.city}, {shippingAddress.state} {shippingAddress.zip}</p>
-                         <p className="text-xs text-primary mt-1">Click to edit address</p>
+                         <p className="text-xs text-primary mt-1">Click to edit or change address</p>
                      </div>
                  ) : (
                     <Button type="button" variant="outline" className="w-full" onClick={() => setIsAddressDialogOpen(true)}>

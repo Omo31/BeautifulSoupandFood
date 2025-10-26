@@ -103,7 +103,7 @@ export function CartSummary() {
                          <p className="font-semibold">Shipping to:</p>
                          <p className="text-muted-foreground">{shippingAddress.address}, {shippingAddress.city}, {shippingAddress.state} {shippingAddress.zip}</p>
                          <Button variant="link" className="p-0 h-auto text-xs" onClick={() => setIsAddressDialogOpen(true)}>
-                             Change address
+                             Edit or change address
                          </Button>
                      </div>
                 ) : (
