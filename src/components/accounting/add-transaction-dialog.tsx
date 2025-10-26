@@ -38,7 +38,16 @@ const formSchema = z.object({
   description: z.string().min(2, 'Description is required.'),
   amount: z.coerce.number().min(0.01, 'Amount must be greater than 0.'),
   category: z.string().min(1, 'Category is required.'),
+  otherCategory: z.string().optional(),
   type: z.literal('expense'),
+}).refine(data => {
+    if (data.category === 'Other') {
+        return !!data.otherCategory && data.otherCategory.length > 0;
+    }
+    return true;
+}, {
+    message: 'Please specify the category.',
+    path: ['otherCategory'],
 });
 
 export type Transaction = z.infer<typeof formSchema> & { id: string };
@@ -70,17 +79,32 @@ export function AddTransactionDialog({ isOpen, setIsOpen, onAddTransaction }: Ad
       amount: 0,
       category: '',
       type: 'expense',
+      otherCategory: '',
     },
   });
+
+  const selectedCategory = form.watch('category');
   
   useEffect(() => {
     if (isOpen) {
-        form.reset();
+        form.reset({
+            date: new Date(),
+            description: '',
+            amount: 0,
+            category: '',
+            type: 'expense',
+            otherCategory: '',
+        });
     }
   }, [isOpen, form]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    onAddTransaction(values);
+    const finalValues = { ...values };
+    if (finalValues.category === 'Other') {
+        finalValues.category = finalValues.otherCategory || 'Other';
+    }
+    
+    onAddTransaction(finalValues);
     toast({
       title: 'Expense Added',
       description: `The expense for "${values.description}" has been recorded.`,
@@ -193,6 +217,22 @@ export function AddTransactionDialog({ isOpen, setIsOpen, onAddTransaction }: Ad
                     </FormItem>
                     )}
                 />
+
+                {selectedCategory === 'Other' && (
+                     <FormField
+                        control={form.control}
+                        name="otherCategory"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Specify Category</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="e.g., Bank Charges" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                )}
             </form>
             </Form>
          </div>
