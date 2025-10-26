@@ -13,7 +13,7 @@ import Link from "next/link";
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast.tsx';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { useRouter } from 'next/navigation';
 
 const signupSchema = z.object({
@@ -162,6 +162,9 @@ export default function SignupPage() {
                     <FormControl>
                       <Textarea placeholder="Enter your full address" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      This will be your default shipping address.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
