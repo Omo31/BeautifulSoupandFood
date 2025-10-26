@@ -119,11 +119,11 @@ export function CartSummary() {
         <div className="flex flex-col items-end gap-2">
           <div className="flex justify-between w-full max-w-sm">
             <span>Subtotal</span>
-            <span>${cartTotal.toFixed(2)}</span>
+            <span>₦{cartTotal.toFixed(2)}</span>
           </div>
           <div className="flex justify-between w-full max-w-sm text-sm text-muted-foreground">
             <span>Service Charge (6%)</span>
-            <span>${serviceCharge.toFixed(2)}</span>
+            <span>₦{serviceCharge.toFixed(2)}</span>
           </div>
           <div className="flex justify-between w-full max-w-sm text-sm text-muted-foreground">
             <span>Shipping Fee</span>
@@ -134,7 +134,7 @@ export function CartSummary() {
           <Separator className="my-2 max-w-sm" />
           <div className="flex justify-between w-full max-w-sm font-bold text-lg">
             <span>Total</span>
-            <span>${total.toFixed(2)}</span>
+            <span>₦{total.toFixed(2)}</span>
           </div>
           <Button
             size="lg"

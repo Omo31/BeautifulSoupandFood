@@ -22,7 +22,7 @@ export function CartItem({ item }: { item: CartItemType }) {
       <div className="flex-1">
         <h3 className="font-semibold">{item.name}</h3>
         <p className="text-sm text-muted-foreground">
-          ${item.price.toFixed(2)}
+          ₦{item.price.toFixed(2)}
         </p>
         <div className="mt-2 flex items-center gap-2">
           <Button
@@ -46,7 +46,7 @@ export function CartItem({ item }: { item: CartItemType }) {
         </div>
       </div>
       <div className="flex flex-col items-end gap-2 self-end sm:self-center">
-        <p className="font-bold text-lg">${(item.price * item.quantity).toFixed(2)}</p>
+        <p className="font-bold text-lg">₦{(item.price * item.quantity).toFixed(2)}</p>
         <div className="flex gap-1">
           <Button
             variant="ghost"

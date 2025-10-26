@@ -76,7 +76,7 @@ export function OrderList({ orders, emptyMessage = "You have no past orders." }:
                                 <p className="font-medium">{order.items} item(s)</p>
                                 {order.isCustom && <Badge variant="outline" className="mt-1">Custom Order</Badge>}
                             </div>
-                            <p className="text-xl font-semibold">${order.total.toFixed(2)}</p>
+                            <p className="text-xl font-semibold">₦{order.total.toFixed(2)}</p>
                         </div>
                     </CardContent>
                     <CardFooter className="flex gap-2 flex-wrap">

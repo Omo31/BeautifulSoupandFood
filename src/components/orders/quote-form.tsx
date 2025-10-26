@@ -119,7 +119,7 @@ export function QuoteForm({ order }: { order: Order }) {
                                 <FormLabel>Price / Unit</FormLabel>
                                 <FormControl>
                                 <div className="relative">
-                                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-muted-foreground text-sm">$</span>
+                                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-muted-foreground text-sm">₦</span>
                                     <Input type="number" step="0.01" {...field} className="pl-6" />
                                 </div>
                                 </FormControl>
@@ -130,7 +130,7 @@ export function QuoteForm({ order }: { order: Order }) {
                      <div className="col-span-6 sm:col-span-4 flex flex-col items-end">
                         <FormLabel>Line Total</FormLabel>
                         <p className="font-mono text-lg font-semibold h-10 flex items-center">
-                            ${(watchedItems[index].price * watchedItems[index].quantity).toFixed(2)}
+                            ₦{(watchedItems[index].price * watchedItems[index].quantity).toFixed(2)}
                         </p>
                     </div>
                 </div>
@@ -153,7 +153,7 @@ export function QuoteForm({ order }: { order: Order }) {
                                 <FormLabel>Price</FormLabel>
                                 <FormControl>
                                  <div className="relative">
-                                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-muted-foreground text-sm">$</span>
+                                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-muted-foreground text-sm">₦</span>
                                     <Input type="number" step="0.01" {...field} className="pl-6" />
                                  </div>
                                 </FormControl>
@@ -172,7 +172,7 @@ export function QuoteForm({ order }: { order: Order }) {
                     <FormLabel>Shipping Fee</FormLabel>
                     <FormControl>
                         <div className="relative">
-                            <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-muted-foreground text-sm">$</span>
+                            <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-muted-foreground text-sm">₦</span>
                             <Input type="number" step="0.01" {...field} className="pl-6" />
                         </div>
                     </FormControl>
@@ -186,29 +186,29 @@ export function QuoteForm({ order }: { order: Order }) {
               <Separator />
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Items Total</span>
-                <span>${itemsSubtotal.toFixed(2)}</span>
+                <span>₦{itemsSubtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Services Total</span>
-                <span>${servicesSubtotal.toFixed(2)}</span>
+                <span>₦{servicesSubtotal.toFixed(2)}</span>
               </div>
               <Separator className='my-1' />
               <div className="flex justify-between text-sm font-medium">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
+                <span>₦{subtotal.toFixed(2)}</span>
               </div>
                <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Service Charge (6%)</span>
-                <span>${serviceCharge.toFixed(2)}</span>
+                <span>₦{serviceCharge.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Shipping</span>
-                <span>${(shippingFee || 0).toFixed(2)}</span>
+                <span>₦{(shippingFee || 0).toFixed(2)}</span>
               </div>
               <Separator />
               <div className="flex justify-between font-bold text-lg">
                 <span>Grand Total</span>
-                <span>${total.toFixed(2)}</span>
+                <span>₦{total.toFixed(2)}</span>
               </div>
             </div>
           </CardContent>

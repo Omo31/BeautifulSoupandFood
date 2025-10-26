@@ -25,7 +25,7 @@ export function SavedItem({ item }: { item: CartItemType }) {
             <CardTitle className="text-base font-headline mb-1 hover:text-primary">
                 <Link href={`/shop/${item.id}`}>{item.name}</Link>
             </CardTitle>
-            <p className="text-lg font-semibold text-primary">${item.price.toFixed(2)}</p>
+            <p className="text-lg font-semibold text-primary">₦{item.price.toFixed(2)}</p>
         </CardContent>
       <CardFooter className="p-2 pt-0 flex flex-col gap-2 items-stretch">
         <Button size="sm" onClick={() => moveToCart(item.id)}>

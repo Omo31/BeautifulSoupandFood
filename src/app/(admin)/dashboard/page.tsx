@@ -42,7 +42,7 @@ export default function AdminDashboardPage() {
             <CardTitle>Total Revenue</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold">${stats.totalRevenue.toFixed(2)}</p>
+            <p className="text-3xl font-bold">₦{stats.totalRevenue.toFixed(2)}</p>
             <p className="text-xs text-muted-foreground">+{stats.revenueChange}% from last month</p>
           </CardContent>
         </Card>

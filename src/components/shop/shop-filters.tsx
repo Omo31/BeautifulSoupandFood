@@ -89,14 +89,14 @@ function FiltersContent({ filters: appliedFilters, setFilters: setAppliedFilters
           <h3 className="font-semibold mb-2">Price Range</h3>
           <Slider
             min={0}
-            max={100}
-            step={5}
+            max={100000}
+            step={1000}
             value={localFilters.priceRange}
             onValueChange={handlePriceChange}
           />
           <div className="flex justify-between text-sm text-muted-foreground mt-2">
-            <span>${localFilters.priceRange[0]}</span>
-            <span>${localFilters.priceRange[1]}</span>
+            <span>₦{localFilters.priceRange[0]}</span>
+            <span>₦{localFilters.priceRange[1]}</span>
           </div>
         </div>
 

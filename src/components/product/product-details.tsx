@@ -85,7 +85,7 @@ export function ProductDetails({ product }: { product: Product }) {
 
         <p className="text-muted-foreground text-lg">{product.description}</p>
         
-        <p className="text-4xl font-bold text-primary">${product.price.toFixed(2)}</p>
+        <p className="text-4xl font-bold text-primary">₦{product.price.toFixed(2)}</p>
 
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">

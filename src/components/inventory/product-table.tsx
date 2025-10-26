@@ -66,7 +66,7 @@ export function ProductTable({ products }: { products: Product[] }) {
             </TableCell>
             <TableCell className="font-medium">{product.name}</TableCell>
             <TableCell>{getStockStatus(product.stock, product.lowStockThreshold)}</TableCell>
-            <TableCell>${product.price.toFixed(2)}</TableCell>
+            <TableCell>₦{product.price.toFixed(2)}</TableCell>
             <TableCell className="hidden md:table-cell">{product.stock}</TableCell>
             <TableCell className="hidden md:table-cell">
               <Badge variant="outline">{product.category}</Badge>

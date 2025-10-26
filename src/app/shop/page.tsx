@@ -34,7 +34,7 @@ export default function ShopPage() {
 
   const [filters, setFilters] = useState({
     categories: [] as string[],
-    priceRange: [0, 100] as [number, number],
+    priceRange: [0, 100000] as [number, number],
     stockStatus: [] as string[],
   });
 
@@ -45,7 +45,7 @@ export default function ShopPage() {
     
     const matchesCategory = filters.categories.length === 0 || filters.categories.includes(product.category);
 
-    const matchesPrice = product.price >= filters.priceRange[0] && product.price <= filters.priceRange[1];
+    const matchesPrice = product.price * 1000 >= filters.priceRange[0] && product.price * 1000 <= filters.priceRange[1];
 
     const matchesStock = filters.stockStatus.length === 0 || 
         (filters.stockStatus.includes('in-stock') && product.stock > 0) ||

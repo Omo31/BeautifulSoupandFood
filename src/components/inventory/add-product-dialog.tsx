@@ -239,7 +239,7 @@ export function AddProductDialog({ isOpen, setIsOpen, onAddProduct }: AddProduct
                         <FormItem>
                             <FormLabel>Price</FormLabel>
                             <FormControl>
-                            <Input type="number" step="0.01" placeholder="9.99" {...field} />
+                            <Input type="number" step="0.01" placeholder="99.99" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
