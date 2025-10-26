@@ -44,17 +44,19 @@ const formSchema = z.object({
   date: z.date({ required_error: 'A date is required.' }),
   supplier: z.string().min(2, 'Supplier name is required.'),
   items: z.array(poItemSchema).min(1, 'At least one item is required.'),
-  status: z.enum(['Pending', 'Completed', 'Cancelled']).default('Pending'),
+  status: z.enum(['Pending', 'Completed', 'Cancelled', 'Draft']).default('Pending'),
 });
 
 type AddPurchaseOrderDialogProps = {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  onAddPurchaseOrder: (po: Omit<PurchaseOrder, 'id'>) => void;
+  onAddPurchaseOrder: (po: Omit<PurchaseOrder, 'id'>, status: 'Draft' | 'Pending') => void;
+  editingPO?: Omit<PurchaseOrder, 'id'> | null;
 };
 
-export function AddPurchaseOrderDialog({ isOpen, setIsOpen, onAddPurchaseOrder }: AddPurchaseOrderDialogProps) {
+export function AddPurchaseOrderDialog({ isOpen, setIsOpen, onAddPurchaseOrder, editingPO }: AddPurchaseOrderDialogProps) {
   const { toast } = useToast();
+  const isEditing = !!editingPO;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -66,7 +68,7 @@ export function AddPurchaseOrderDialog({ isOpen, setIsOpen, onAddPurchaseOrder }
     },
   });
 
-  const { control, watch } = form;
+  const { control, watch, reset } = form;
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'items',
@@ -79,32 +81,37 @@ export function AddPurchaseOrderDialog({ isOpen, setIsOpen, onAddPurchaseOrder }
 
   useEffect(() => {
     if (isOpen) {
-        form.reset({
-            date: new Date(),
-            supplier: '',
-            items: [{ productId: '', productName: '', quantity: 1, cost: 0 }],
-            status: 'Pending',
-        });
+        if (isEditing && editingPO) {
+            reset({
+                ...editingPO,
+                date: new Date(editingPO.date),
+            });
+        } else {
+            reset({
+                date: new Date(),
+                supplier: '',
+                items: [{ productId: '', productName: '', quantity: 1, cost: 0 }],
+                status: 'Pending',
+            });
+        }
     }
-  }, [isOpen, form]);
+  }, [isOpen, isEditing, editingPO, reset]);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    const poData = {
-        ...values,
-        total,
-        itemCount,
-    }
-    onAddPurchaseOrder(poData);
-    setIsOpen(false);
+  function handleSave(status: 'Draft' | 'Pending') {
+    form.handleSubmit((values) => {
+        const poData = { ...values, total, itemCount };
+        onAddPurchaseOrder(poData, status);
+        setIsOpen(false);
+    })();
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="max-w-2xl grid-rows-[auto_1fr_auto] max-h-[90svh] p-0">
         <DialogHeader className="p-6 pb-0">
-          <DialogTitle>Create New Purchase Order</DialogTitle>
+          <DialogTitle>{isEditing ? 'Edit Purchase Order' : 'Create New Purchase Order'}</DialogTitle>
           <DialogDescription>
-            Record a new order made to a supplier to restock your inventory.
+            {isEditing ? 'Update the details of this draft PO.' : 'Record a new order made to a supplier to restock your inventory.'}
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="h-full">
@@ -258,10 +265,8 @@ export function AddPurchaseOrderDialog({ isOpen, setIsOpen, onAddPurchaseOrder }
                 Total: ₦{total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
             <div className="flex gap-2">
-                <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
-                    Cancel
-                </Button>
-                <Button type="submit" onClick={form.handleSubmit(onSubmit)}>Create Purchase Order</Button>
+                <Button type="button" variant="outline" onClick={() => handleSave('Draft')}>{isEditing ? 'Save Changes' : 'Save as Draft'}</Button>
+                <Button type="submit" onClick={() => handleSave('Pending')}>{isEditing ? 'Save and Finalize' : 'Create PO'}</Button>
             </div>
         </DialogFooter>
       </DialogContent>

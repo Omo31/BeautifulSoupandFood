@@ -19,13 +19,19 @@ export type PurchaseOrder = {
   id: string;
   supplier: string;
   date: string;
-  status: 'Pending' | 'Completed' | 'Cancelled';
+  status: 'Pending' | 'Completed' | 'Cancelled' | 'Draft';
   total: number;
   itemCount: number;
   items: POItem[];
 };
 
-export function PurchaseOrderTable({ purchaseOrders }: { purchaseOrders: PurchaseOrder[] }) {
+type PurchaseOrderTableProps = { 
+    purchaseOrders: PurchaseOrder[];
+    onEdit: (po: PurchaseOrder) => void;
+};
+
+
+export function PurchaseOrderTable({ purchaseOrders, onEdit }: PurchaseOrderTableProps) {
   const { toast } = useToast();
 
   const handleAction = (message: string) => {
@@ -43,6 +49,8 @@ export function PurchaseOrderTable({ purchaseOrders }: { purchaseOrders: Purchas
         return <Badge variant="secondary">Pending</Badge>;
       case 'Cancelled':
         return <Badge variant="destructive">Cancelled</Badge>;
+       case 'Draft':
+        return <Badge variant="outline">Draft</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -81,8 +89,9 @@ export function PurchaseOrderTable({ purchaseOrders }: { purchaseOrders: Purchas
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuItem onClick={() => handleAction(`Viewing details for ${po.id}`)}>View Details</DropdownMenuItem>
+                  {po.status === 'Draft' && <DropdownMenuItem onClick={() => onEdit(po)}>Edit</DropdownMenuItem>}
                   {po.status === 'Pending' && <DropdownMenuItem onClick={() => handleAction(`Marking ${po.id} as completed.`)}>Mark as Completed</DropdownMenuItem>}
-                  {po.status === 'Pending' && <DropdownMenuItem onClick={() => handleAction(`Cancelling ${po.id}.`)}>Cancel</DropdownMenuItem>}
+                  {po.status !== 'Completed' && po.status !== 'Cancelled' && <DropdownMenuItem onClick={() => handleAction(`Cancelling ${po.id}.`)}>Cancel</DropdownMenuItem>}
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>

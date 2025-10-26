@@ -25,6 +25,7 @@ const ITEMS_PER_PAGE = 5;
 export default function PurchaseOrdersPage() {
   const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrder[]>(mockPurchaseOrders);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingPO, setEditingPO] = useState<PurchaseOrder | null>(null);
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
@@ -62,17 +63,43 @@ export default function PurchaseOrdersPage() {
     setCurrentPage(page);
   };
 
-  const handleAddPurchaseOrder = (newPO: Omit<PurchaseOrder, 'id'>) => {
-    const poWithId: PurchaseOrder = {
-      ...newPO,
-      id: `PO${new Date().getFullYear()}-${String(purchaseOrders.length + 1).padStart(3, '0')}`,
-    };
-    setPurchaseOrders(prev => [poWithId, ...prev]);
-    toast({
-      title: 'Purchase Order Created',
-      description: `PO ${poWithId.id} for ${poWithId.supplier} has been created.`,
-    });
+  const handleOpenNewDialog = () => {
+    setEditingPO(null);
+    setIsDialogOpen(true);
   };
+
+  const handleOpenEditDialog = (po: PurchaseOrder) => {
+    setEditingPO(po);
+    setIsDialogOpen(true);
+  };
+
+  const handleAddOrUpdatePurchaseOrder = (poData: Omit<PurchaseOrder, 'id'>, status: 'Draft' | 'Pending') => {
+    const newStatus = editingPO ? status : poData.status;
+
+    if (editingPO) {
+        // Update existing PO
+        const updatedPO = { ...editingPO, ...poData, status: status, date: format(poData.date, 'yyyy-MM-dd') };
+        setPurchaseOrders(prev => prev.map(p => p.id === editingPO.id ? updatedPO : p));
+        toast({
+            title: 'Purchase Order Updated',
+            description: `PO ${updatedPO.id} has been updated.`,
+        });
+    } else {
+        // Add new PO
+        const poWithId: PurchaseOrder = {
+        ...poData,
+        id: `PO${new Date().getFullYear()}-${String(purchaseOrders.length + 1).padStart(3, '0')}`,
+        status: status,
+        date: format(poData.date, 'yyyy-MM-dd'),
+        };
+        setPurchaseOrders(prev => [poWithId, ...prev]);
+        toast({
+        title: 'Purchase Order Created',
+        description: `PO ${poWithId.id} has been saved as ${status}.`,
+        });
+    }
+  };
+
 
   return (
     <>
@@ -84,7 +111,7 @@ export default function PurchaseOrdersPage() {
                     Filters
                 </Button>
             </CollapsibleTrigger>
-             <Button onClick={() => setIsDialogOpen(true)}>
+             <Button onClick={handleOpenNewDialog}>
                 <PlusCircle className="mr-2 h-4 w-4" />
                 New Purchase Order
             </Button>
@@ -103,8 +130,9 @@ export default function PurchaseOrdersPage() {
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">All Statuses</SelectItem>
-                        <SelectItem value="Completed">Completed</SelectItem>
+                        <SelectItem value="Draft">Draft</SelectItem>
                         <SelectItem value="Pending">Pending</SelectItem>
+                        <SelectItem value="Completed">Completed</SelectItem>
                         <SelectItem value="Cancelled">Cancelled</SelectItem>
                     </SelectContent>
                 </Select>
@@ -158,7 +186,7 @@ export default function PurchaseOrdersPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <PurchaseOrderTable purchaseOrders={paginatedPurchaseOrders} />
+          <PurchaseOrderTable purchaseOrders={paginatedPurchaseOrders} onEdit={handleOpenEditDialog} />
         </CardContent>
         {totalPages > 1 && (
             <CardFooter>
@@ -185,10 +213,9 @@ export default function PurchaseOrdersPage() {
       <AddPurchaseOrderDialog 
         isOpen={isDialogOpen}
         setIsOpen={setIsDialogOpen}
-        onAddPurchaseOrder={handleAddPurchaseOrder}
+        onAddPurchaseOrder={handleAddOrUpdatePurchaseOrder}
+        editingPO={editingPO}
       />
     </>
   );
 }
-
-    

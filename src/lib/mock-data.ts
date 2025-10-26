@@ -187,5 +187,16 @@ export const mockPurchaseOrders = [
         items: [
             { productId: '2', productName: 'Organic Vegetable Box', quantity: 100, cost: 8.50 },
         ]
+    },
+     {
+        id: 'PO2023-003',
+        supplier: 'Artisan Bakers Ltd.',
+        date: '2023-11-08',
+        status: 'Draft' as const,
+        total: 4500.00,
+        itemCount: 1,
+        items: [
+            { productId: '1', productName: 'Artisan Sourdough', quantity: 100, cost: 4.50 },
+        ]
     }
 ];
