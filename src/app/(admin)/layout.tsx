@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -171,8 +172,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <SheetHeader>
                       <SheetTitle><Logo /></SheetTitle>
                   </SheetHeader>
-                  <ScrollArea className="flex-1 -mx-6 px-6">
-                    <nav className="flex flex-col gap-4 pt-4">
+                  <ScrollArea className="h-[calc(100vh-4rem)]">
+                    <nav className="flex flex-col gap-4 pt-4 pr-4">
                         {[...adminNavItems, ...mainNavLinks, ...accountNavItems].map((item) => (
                             <Button
                                 key={item.href}
