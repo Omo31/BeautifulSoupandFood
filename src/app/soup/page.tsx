@@ -15,6 +15,7 @@ const soupProducts = [
     image: PlaceHolderImages.find((img) => img.id === 'product-7')!,
     rating: 4.7, 
     reviewCount: 38,
+    category: 'Soup',
   },
   {
     id: '8',
@@ -24,6 +25,17 @@ const soupProducts = [
     image: PlaceHolderImages.find((img) => img.id === 'product-8')!,
     rating: 4.8, 
     reviewCount: 45,
+    category: 'Soup',
+  },
+  { 
+    id: '11', 
+    name: 'Butternut Squash Soup', 
+    price: 8.00, 
+    stock: 12, 
+    category: 'Soup', 
+    image: {id: '11', imageUrl: 'https://picsum.photos/seed/butternut-soup/400/300', imageHint: 'butternut soup'},
+    rating: 4.6,
+    reviewCount: 22,
   },
 ];
 
