@@ -19,7 +19,7 @@ import { LogOut, Bell, Menu } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { adminNavItems, accountNavItems, mainNavLinks } from '@/lib/nav-links';
+import { adminNavItems, mainNavLinks } from '@/lib/nav-links';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast.tsx';
@@ -124,23 +124,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </SidebarMenuItem>
                 ))}
             </SidebarMenu>
-            <SidebarSeparator className='my-4' />
-            <SidebarMenu>
-                <p className="text-xs text-muted-foreground px-4 py-2">My Account</p>
-                {accountNavItems.map((item) => (
-                    <SidebarMenuItem key={item.href}>
-                        <Link href={item.href}>
-                            <SidebarMenuButton
-                                isActive={pathname.startsWith(item.href)}
-                                tooltip={item.label}
-                            >
-                                <item.icon />
-                                <span>{item.label}</span>
-                            </SidebarMenuButton>
-                        </Link>
-                    </SidebarMenuItem>
-                ))}
-            </SidebarMenu>
             </SidebarContent>
         </ScrollArea>
         <SidebarFooter>
@@ -174,7 +157,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   </SheetHeader>
                   <ScrollArea className="h-[calc(100vh-4rem)]">
                     <nav className="flex flex-col gap-4 pt-4 pr-4">
-                        {[...adminNavItems, ...mainNavLinks, ...accountNavItems].map((item) => (
+                        {[...adminNavItems, ...mainNavLinks].map((item) => (
                             <Button
                                 key={item.href}
                                 variant={pathname.startsWith(item.href) ? 'default': 'ghost'}
@@ -197,7 +180,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="hidden md:block"><Logo/></div>
           </div>
           <h1 className="text-lg font-semibold md:text-xl flex-1">
-            {[...adminNavItems, ...mainNavLinks, ...accountNavItems].find(item => pathname.startsWith(item.href))?.label || 'Admin'}
+            {[...adminNavItems, ...mainNavLinks].find(item => pathname.startsWith(item.href))?.label || 'Admin'}
           </h1>
           <AdminNotificationBell />
         </header>
