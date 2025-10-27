@@ -1,11 +1,11 @@
 'use server';
 
-import * as SibApiV3Sdk from '@sendinblue/client';
+import * as Brevo from '@getbrevo/brevo';
 
-let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+let apiInstance = new Brevo.TransactionalEmailsApi();
 
 if (process.env.BREVO_API_KEY) {
-    apiInstance.setApiKey(SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY);
+    apiInstance.setApiKey(Brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY);
 }
 
 const FROM_EMAIL = 'support@beautifulsoupandfood.com';
@@ -24,7 +24,7 @@ async function sendEmail(data: EmailData) {
     return { success: true, message: 'Email sending is disabled (missing API key).' };
   }
 
-  let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+  let sendSmtpEmail = new Brevo.SendSmtpEmail();
 
   sendSmtpEmail.subject = data.subject;
   sendSmtpEmail.htmlContent = data.html;

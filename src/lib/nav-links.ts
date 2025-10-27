@@ -18,6 +18,7 @@ import {
   Pencil,
   Bell,
   ClipboardList,
+  Video,
 } from 'lucide-react';
 
 export const adminNavItems = [
@@ -28,6 +29,7 @@ export const adminNavItems = [
   { href: '/conversations', label: 'Conversations', icon: MessageSquare },
   { href: '/inventory', label: 'Inventory', icon: Package },
   { href: '/flyer-generator', label: 'Flyer Generator', icon: Megaphone },
+  { href: '/video-generator', label: 'Video Generator', icon: Video },
   { href: '/analytics', label: 'Analytics', icon: BarChart },
   { href: '/accounting', label: 'Accounting', icon: Book },
   { href: '/settings/homepage', label: 'Settings', icon: Settings },
@@ -55,6 +57,4 @@ export const accountNavItems = [
 
 export const mobileNavLinks = [
   ...mainNavLinks,
-  { href: "/account/orders", label: "My Orders", icon: ShoppingCart },
-  { href: "/wishlist", label: "Wishlist", icon: Heart },
 ];

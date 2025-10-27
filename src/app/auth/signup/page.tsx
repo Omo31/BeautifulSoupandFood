@@ -144,7 +144,7 @@ export default function SignupPage() {
                   <FormItem>
                     <FormLabel>Phone Number</FormLabel>
                      <div className="flex items-center">
-                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-background text-sm text-muted-foreground">+234</span>
+                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-background text-sm text-muted-foreground h-10">+234</span>
                         <FormControl>
                             <Input type="tel" placeholder="8012345678" {...field} className="rounded-l-none" />
                         </FormControl>
