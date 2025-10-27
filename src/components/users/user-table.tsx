@@ -9,6 +9,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast.tsx";
+import { format } from "date-fns";
 
 export type User = {
   id: string;
@@ -83,7 +84,7 @@ export function UserTable({ users, onToggleStatus, onEdit, availableRoles }: Use
             </TableCell>
             <TableCell>{getStatusBadge(user.status)}</TableCell>
             <TableCell>{getRoleBadge(user.role)}</TableCell>
-            <TableCell className="hidden md:table-cell">{new Date(user.joined).toLocaleDateString()}</TableCell>
+            <TableCell className="hidden md:table-cell">{format(new Date(user.joined), 'dd/MM/yyyy')}</TableCell>
             <TableCell>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

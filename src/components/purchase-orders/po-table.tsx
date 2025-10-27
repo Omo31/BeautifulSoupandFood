@@ -7,6 +7,7 @@ import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useToast } from '@/hooks/use-toast.tsx';
+import { format } from "date-fns";
 
 export type POItem = {
     productId: string;
@@ -75,7 +76,7 @@ export function PurchaseOrderTable({ purchaseOrders, onEdit }: PurchaseOrderTabl
           <TableRow key={po.id}>
             <TableCell className="font-medium">{po.id}</TableCell>
             <TableCell>{po.supplier}</TableCell>
-            <TableCell>{new Date(po.date).toLocaleDateString()}</TableCell>
+            <TableCell>{format(new Date(po.date), 'dd/MM/yyyy')}</TableCell>
             <TableCell>{getStatusBadge(po.status)}</TableCell>
             <TableCell className="text-right">₦{po.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
             <TableCell>

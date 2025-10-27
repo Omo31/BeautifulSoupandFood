@@ -10,6 +10,7 @@ import { Download, PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AddTransactionDialog } from '@/components/accounting/add-transaction-dialog';
 import type { Transaction } from '@/components/accounting/add-transaction-dialog';
+import { format } from 'date-fns';
 
 export default function AdminAccountingPage() {
     const [transactions, setTransactions] = useState(mockTransactions);
@@ -96,7 +97,7 @@ export default function AdminAccountingPage() {
                         <TableBody>
                         {transactions.map(t => (
                             <TableRow key={t.id}>
-                                <TableCell>{new Date(t.date).toLocaleDateString()}</TableCell>
+                                <TableCell>{format(new Date(t.date), 'dd/MM/yyyy')}</TableCell>
                                 <TableCell className="font-medium">{t.description}</TableCell>
                                 <TableCell><Badge variant="outline">{t.category}</Badge></TableCell>
                                 <TableCell>

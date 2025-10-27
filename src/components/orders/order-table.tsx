@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from "next/link";
@@ -8,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { useToast } from "@/hooks/use-toast.tsx";
+import { format } from "date-fns";
 
 export type CustomOrderItem = {
   id: string;
@@ -102,7 +104,7 @@ export function OrderTable({ orders }: OrderTableProps) {
                 </div>
             </TableCell>
             <TableCell>{getStatusBadge(order.status)}</TableCell>
-            <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
+            <TableCell>{format(new Date(order.date), 'dd/MM/yyyy')}</TableCell>
             <TableCell className="text-right">₦{order.total.toFixed(2)}</TableCell>
             <TableCell>
               <DropdownMenu>

@@ -1,8 +1,10 @@
+
 'use client';
 
 import { Star, UserCircle } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import { format } from 'date-fns';
 
 type Review = {
   id: string;
@@ -30,7 +32,7 @@ export function ProductReviews({ reviews }: { reviews: Review[] }) {
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <p className="font-semibold">{review.author}</p>
-                    <p className="text-sm text-muted-foreground">{new Date(review.date).toLocaleDateString()}</p>
+                    <p className="text-sm text-muted-foreground">{format(new Date(review.date), 'dd MMMM yyyy')}</p>
                   </div>
                   <div className="flex items-center gap-1 mt-1">
                     {[...Array(5)].map((_, i) => (

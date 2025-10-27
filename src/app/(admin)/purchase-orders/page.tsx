@@ -150,11 +150,11 @@ export default function PurchaseOrdersPage() {
                       {filters.dateRange?.from ? (
                         filters.dateRange.to ? (
                           <>
-                            {format(filters.dateRange.from, "LLL dd, y")} -{" "}
-                            {format(filters.dateRange.to, "LLL dd, y")}
+                            {format(filters.dateRange.from, "PPP")} -{" "}
+                            {format(filters.dateRange.to, "PPP")}
                           </>
                         ) : (
-                          format(filters.dateRange.from, "LLL dd, y")
+                          format(filters.dateRange.from, "PPP")
                         )
                       ) : (
                         <span>Pick a date range</span>

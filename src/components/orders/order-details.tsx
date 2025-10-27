@@ -1,9 +1,11 @@
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import type { Order } from './order-table';
 import { Separator } from '../ui/separator';
+import { format } from 'date-fns';
 
 export function OrderDetails({ order }: { order: Order }) {
 
@@ -29,7 +31,7 @@ export function OrderDetails({ order }: { order: Order }) {
                     <div>
                         <CardTitle className="text-2xl">Order {order.id}</CardTitle>
                         <CardDescription>
-                            Date: {new Date(order.date).toLocaleDateString()}
+                            Date: {format(new Date(order.date), 'PPP')}
                         </CardDescription>
                     </div>
                     {getStatusBadge(order.status)}

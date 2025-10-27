@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast.tsx";
+import { format } from "date-fns";
 
 type Order = {
     id: string;
@@ -64,7 +65,7 @@ export function OrderList({ orders, emptyMessage = "You have no past orders." }:
                         <div>
                             <CardTitle className="text-lg">Order {order.id}</CardTitle>
                             <CardDescription>
-                                Date: {new Date(order.date).toLocaleDateString()}
+                                Date: {format(new Date(order.date), 'PPP')}
                             </CardDescription>
                         </div>
                          {getStatusBadge(order.status)}

@@ -15,12 +15,13 @@ import { initialUsers, mockUserRoles } from '@/lib/mock-data';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { format } from 'date-fns';
 
 
 const ITEMS_PER_PAGE = 5;
 
 export default function AdminUsersPage() {
-  const [users, setUsers] = useState(initialUsers);
+  const [users, setUsers] = useState(initialUsers.map(user => ({...user, joined: format(new Date(user.joined), 'yyyy-MM-dd')})));
   const [isAddUserOpen, setAddUserOpen] = useState(false);
   const [isEditUserOpen, setEditUserOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -62,7 +63,7 @@ export default function AdminUsersPage() {
     const user = {
       ...newUser,
       id: `usr${users.length + 1}`,
-      joined: new Date().toISOString().split('T')[0],
+      joined: format(new Date(), 'yyyy-MM-dd'),
       avatar: `https://picsum.photos/seed/${newUser.name.split(' ').join('-')}/40/40`,
       status: 'Active'
     } as User;
