@@ -72,6 +72,7 @@ function AdminNotificationBell() {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { toast } = useToast();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
   const handleLogout = () => {
     toast({
@@ -159,7 +160,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </Sidebar>
       <div className="flex flex-col flex-1">
         <header className="flex h-14 items-center gap-4 border-b bg-background px-6">
-          <Sheet>
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
               <Button variant="outline" size="icon" className="md:hidden">
                   <Menu className="h-5 w-5" />
@@ -173,7 +174,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <ScrollArea className="flex-1 -mx-6 px-6">
                     <nav className="flex flex-col gap-4 pt-4">
                         {[...adminNavItems, ...mainNavLinks, ...accountNavItems].map((item) => (
-                            <Button key={item.href} variant={pathname.startsWith(item.href) ? 'default': 'ghost'} className="justify-start" asChild>
+                            <Button
+                                key={item.href}
+                                variant={pathname.startsWith(item.href) ? 'default': 'ghost'}
+                                className="justify-start"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                asChild
+                            >
                                 <Link href={item.href}>
                                     <item.icon className='mr-2 h-4 w-4' />
                                     {item.label}
