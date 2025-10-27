@@ -19,7 +19,7 @@ import { LogOut, Bell, Menu } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { adminNavItems, mainNavLinks } from '@/lib/nav-links';
+import { adminNavItems, mainNavLinks, accountNavItems } from '@/lib/nav-links';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast.tsx';
@@ -93,6 +93,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <ScrollArea className="flex-1">
             <SidebarContent>
             <SidebarMenu>
+                <p className="text-xs text-muted-foreground px-4 py-2">Admin</p>
                 {adminNavItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
                     <Link href={item.href}>
@@ -105,6 +106,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </SidebarMenuButton>
                     </Link>
                 </SidebarMenuItem>
+                ))}
+            </SidebarMenu>
+            <SidebarSeparator className='my-4' />
+            <SidebarMenu>
+                <p className="text-xs text-muted-foreground px-4 py-2">My Account</p>
+                {accountNavItems.map((item) => (
+                    <SidebarMenuItem key={item.href}>
+                        <Link href={item.href}>
+                            <SidebarMenuButton
+                                isActive={pathname.startsWith(item.href)}
+                                tooltip={item.label}
+                            >
+                                <item.icon />
+                                <span>{item.label}</span>
+                            </SidebarMenuButton>
+                        </Link>
+                    </SidebarMenuItem>
                 ))}
             </SidebarMenu>
             <SidebarSeparator className='my-4' />
