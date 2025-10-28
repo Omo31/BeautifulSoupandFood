@@ -15,7 +15,7 @@ import {
   SidebarTrigger,
   SidebarFooter
 } from '@/components/ui/sidebar';
-import { LogOut, Bell, Menu } from 'lucide-react';
+import { LogOut, Bell, Menu, ShoppingCart } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -26,6 +26,8 @@ import { useToast } from '@/hooks/use-toast.tsx';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { SidebarSeparator } from '@/components/ui/sidebar';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useCart } from '@/hooks/use-cart';
+import { Badge } from '@/components/ui/badge';
 
 
 const mockNotifications = [
@@ -68,6 +70,28 @@ function AdminNotificationBell() {
             </PopoverContent>
         </Popover>
     );
+}
+
+function CartButton() {
+  const { cartCount } = useCart();
+  return (
+    <Button variant="ghost" size="icon" asChild>
+      <Link href="/cart">
+        <div className="relative">
+          <ShoppingCart />
+          {cartCount > 0 && (
+            <Badge 
+              variant="destructive"
+              className="absolute -top-2 -right-2 h-5 w-5 p-0 flex items-center justify-center text-xs"
+            >
+              {cartCount}
+            </Badge>
+          )}
+        </div>
+        <span className="sr-only">Cart</span>
+      </Link>
+    </Button>
+  )
 }
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -200,6 +224,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <h1 className="text-lg font-semibold md:text-xl flex-1">
             {[...adminNavItems, ...mainNavLinks].find(item => pathname.startsWith(item.href))?.label || 'Admin'}
           </h1>
+          <CartButton />
           <AdminNotificationBell />
         </header>
         <main className="flex-1 p-6">{children}</main>
