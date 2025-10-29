@@ -6,8 +6,9 @@ import { mockOrders, initialUsers } from "@/lib/mock-data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, ShoppingCart, Users, Activity } from "lucide-react";
+import { DollarSign, ShoppingCart, Users, Activity, Target } from "lucide-react";
 import Image from "next/image";
+import { Progress } from "@/components/ui/progress";
 
 // In a real app, this data would be fetched and computed from a database.
 const getAnalyticsData = () => {
@@ -34,6 +35,9 @@ const getAnalyticsData = () => {
         { id: '8', name: 'Chicken Noodle Soup', sales: 85, image: PlaceHolderImages.find(img => img.id === 'product-8')! },
         { id: '7', name: 'Tomato Basil Soup', sales: 75, image: PlaceHolderImages.find(img => img.id === 'product-7')! },
     ];
+
+    const monthlyGoal = 200000;
+    const goalProgress = (totalSales / monthlyGoal) * 100;
     
     return {
         totalSales,
@@ -41,7 +45,9 @@ const getAnalyticsData = () => {
         averageOrderValue,
         totalCustomers,
         orderStatusCounts,
-        topProducts
+        topProducts,
+        monthlyGoal,
+        goalProgress
     };
 };
 
@@ -93,8 +99,8 @@ export default function AdminAnalyticsPage() {
             </Card>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-             <Card>
+        <div className="grid gap-4 md:grid-cols-3">
+             <Card className="md:col-span-2">
                 <CardHeader>
                     <CardTitle>Top Selling Products</CardTitle>
                     <CardDescription>
@@ -126,40 +132,46 @@ export default function AdminAnalyticsPage() {
                 </CardContent>
             </Card>
 
-             <Card>
-                <CardHeader>
-                    <CardTitle>Order Status Overview</CardTitle>
-                    <CardDescription>
-                        A summary of orders across all statuses.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                     <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Status</TableHead>
-                                <TableHead className="text-right">Count</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {Object.entries(data.orderStatusCounts).map(([status, count]) => (
-                                <TableRow key={status}>
-                                    <TableCell>
-                                        <Badge variant={
-                                            status === 'Delivered' ? 'default' :
-                                            status === 'Rejected' ? 'destructive' :
-                                            'secondary'
-                                        } className={
-                                            status === 'Delivered' ? 'bg-green-100 text-green-800' : ''
-                                        }>{status}</Badge>
-                                    </TableCell>
-                                    <TableCell className="text-right font-medium">{count}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </CardContent>
-            </Card>
+            <div className="space-y-4">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Monthly Goal</CardTitle>
+                        <CardDescription>Progress towards your monthly sales target.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                        <Progress value={data.goalProgress} aria-label={`${data.goalProgress.toFixed(0)}% of goal reached`} />
+                        <p className="text-sm font-medium text-muted-foreground text-center">
+                            <span className="text-primary font-bold">{data.goalProgress.toFixed(1)}%</span> of ₦{data.monthlyGoal.toLocaleString()} goal
+                        </p>
+                    </CardContent>
+                </Card>
+
+                 <Card>
+                    <CardHeader>
+                        <CardTitle>Order Status Overview</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                         <Table>
+                            <TableBody>
+                                {Object.entries(data.orderStatusCounts).map(([status, count]) => (
+                                    <TableRow key={status}>
+                                        <TableCell>
+                                            <Badge variant={
+                                                status === 'Delivered' ? 'default' :
+                                                status === 'Rejected' ? 'destructive' :
+                                                'secondary'
+                                            } className={
+                                                status === 'Delivered' ? 'bg-green-100 text-green-800' : ''
+                                            }>{status}</Badge>
+                                        </TableCell>
+                                        <TableCell className="text-right font-medium">{count}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     </div>
   );
