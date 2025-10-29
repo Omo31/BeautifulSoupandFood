@@ -11,15 +11,16 @@ export const mockUserRoles = [
 
 const generateRecentOrders = () => {
     const orders = [];
+    const statuses = ['Delivered', 'Pending', 'Awaiting Confirmation', 'Rejected'] as const;
     for (let i = 0; i < 15; i++) {
         const date = subDays(new Date(), Math.floor(Math.random() * 7));
-        const status = ['Delivered', 'Pending', 'Awaiting Confirmation', 'Rejected'][Math.floor(Math.random() * 4)] as 'Delivered' | 'Pending' | 'Awaiting Confirmation' | 'Rejected';
+        const status = statuses[i % 4];
         orders.push({
             id: `ORD${String(100 + i).padStart(3, '0')}`,
             date: formatISO(date),
             status: status,
-            total: Math.random() * 100 + 10,
-            items: Math.floor(Math.random() * 5) + 1,
+            total: (i + 1) * 12.50, // Use a consistent value instead of random
+            items: (i % 5) + 1,
             customer: { name: `Customer ${i + 1}`, email: `customer${i + 1}@example.com` }
         });
     }
