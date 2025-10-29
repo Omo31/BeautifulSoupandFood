@@ -108,6 +108,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     // router.push('/auth/login');
   }
 
+  const allNavItems = [...adminNavItems, ...accountNavItems, ...mainNavLinks];
+
   return (
     <SidebarProvider>
       <Sidebar>
@@ -199,7 +201,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   </SheetHeader>
                   <ScrollArea className="h-[calc(100vh-4rem)]">
                     <nav className="flex flex-col gap-4 pt-4 pr-4">
-                        {[...adminNavItems, ...mainNavLinks].map((item) => (
+                        {[...adminNavItems, ...accountNavItems, ...mainNavLinks].map((item) => (
                             <Button
                                 key={item.href}
                                 variant={pathname.startsWith(item.href) ? 'default': 'ghost'}
@@ -222,7 +224,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="hidden md:block"><Logo/></div>
           </div>
           <h1 className="text-lg font-semibold md:text-xl flex-1">
-            {[...adminNavItems, ...mainNavLinks].find(item => pathname.startsWith(item.href))?.label || 'Admin'}
+            {allNavItems.find(item => pathname.startsWith(item.href))?.label || 'Admin'}
           </h1>
           <CartButton />
           <AdminNotificationBell />

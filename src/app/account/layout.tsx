@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { accountNavItems } from "@/lib/admin-nav";
+import { accountNavItems } from "@/lib/nav-links";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
