@@ -1,70 +1,105 @@
-{
-  "name": "beautifulsoupandfood",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack -p 9002",
-    "genkit:dev": "genkit start -- tsx src/ai/dev.ts",
-    "genkit:watch": "genkit start -- tsx --watch src/ai/dev.ts",
-    "build": "NODE_ENV=production next build",
-    "start": "next start",
-    "lint": "next lint",
-    "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@ducanh2912/next-pwa": "^10.2.8",
-    "@genkit-ai/google-genai": "^1.20.0",
-    "@genkit-ai/next": "^1.20.0",
-    "@hookform/resolvers": "^4.1.3",
-    "@radix-ui/react-accordion": "^1.2.3",
-    "@radix-ui/react-alert-dialog": "^1.1.6",
-    "@radix-ui/react-avatar": "^1.1.3",
-    "@radix-ui/react-checkbox": "^1.1.4",
-    "@radix-ui/react-collapsible": "^1.1.11",
-    "@radix-ui/react-dialog": "^1.1.6",
-    "@radix-ui/react-dropdown-menu": "^2.1.6",
-    "@radix-ui/react-label": "^2.1.2",
-    "@radix-ui/react-menubar": "^1.1.6",
-    "@radix-ui/react-popover": "^1.1.6",
-    "@radix-ui/react-progress": "^1.1.2",
-    "@radix-ui/react-radio-group": "^1.2.3",
-    "@radix-ui/react-scroll-area": "^1.2.3",
-    "@radix-ui/react-select": "^2.1.6",
-    "@radix-ui/react-separator": "^1.1.2",
-    "@radix-ui/react-slider": "^1.2.3",
-    "@radix-ui/react-slot": "^1.2.3",
-    "@radix-ui/react-switch": "^1.1.3",
-    "@radix-ui/react-tabs": "^1.1.3",
-    "@radix-ui/react-toast": "^1.2.6",
-    "@radix-ui/react-tooltip": "^1.1.8",
-    "@sendinblue/client": "^3.3.1",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "date-fns": "^3.6.0",
-    "dotenv": "^16.5.0",
-    "embla-carousel-react": "^8.6.0",
-    "firebase": "^11.9.1",
-    "genkit": "^1.20.0",
-    "lucide-react": "^0.475.0",
-    "next": "15.3.3",
-    "node-fetch": "^3.3.2",
-    "patch-package": "^8.0.0",
-    "react": "^18.3.1",
-    "react-day-picker": "^8.10.1",
-    "react-dom": "^18.3.1",
-    "react-hook-form": "^7.54.2",
-    "recharts": "^2.15.1",
-    "tailwind-merge": "^3.0.1",
-    "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.24.2"
-  },
-  "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "genkit-cli": "^1.20.0",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+'use client';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Download, Film, Trash2 } from 'lucide-react';
+import type { GenerateVideoAdOutput } from '@/ai/flows/generate-video-ad';
+import { useToast } from '@/hooks/use-toast.tsx';
+import { Progress } from '../ui/progress';
+
+type VideoDisplayProps = {
+  result: GenerateVideoAdOutput | null;
+  loading: boolean;
+  onDelete: () => void;
+  progress: number;
+};
+
+export function VideoDisplay({ result, loading, onDelete, progress }: VideoDisplayProps) {
+  const { toast } = useToast();
+
+  const handleAction = (message: string) => {
+    toast({
+      title: 'Action Triggered (Simulated)',
+      description: message,
+    });
+  };
+  
+  const downloadDataURI = (dataURI: string, filename: string) => {
+    const link = document.createElement('a');
+    link.href = dataURI;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
+
+  if (loading) {
+    return (
+      <Card className="mt-8">
+        <CardHeader>
+          <CardTitle className="font-headline text-2xl">Generating Your Video Ad...</CardTitle>
+          <CardDescription>The AI is working its magic. This may take up to a minute.</CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="w-full max-w-md space-y-4">
+                <Progress value={progress} />
+                <p className="text-sm text-muted-foreground">{Math.round(progress)}% complete</p>
+                <p className="text-sm animate-pulse">Generating script... creating scenes... rendering video...</p>
+            </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!result) {
+    return (
+      <Card className="mt-8 flex flex-col items-center justify-center py-20 text-center">
+        <CardContent>
+            <Film className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground">Your generated video ad will appear here.</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="mt-8 overflow-hidden">
+      <CardHeader>
+        <CardTitle className="font-headline text-2xl">Your Generated Video Ad</CardTitle>
+        <CardDescription>Review the generated video and voiceover script.</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="relative aspect-video w-full overflow-hidden rounded-lg border bg-black">
+          <video
+            src={result.videoUrl}
+            controls
+            className="w-full h-full"
+          />
+        </div>
+         <div className="prose prose-sm max-w-none rounded-md border bg-muted/30 p-4">
+            <h3 className="font-headline text-lg not-prose mb-2">Generated Script</h3>
+            <pre className="whitespace-pre-wrap font-body text-sm text-foreground bg-transparent p-0 m-0">
+              {result.script}
+            </pre>
+          </div>
+      </CardContent>
+      <CardFooter className="flex justify-between bg-muted/30 p-4">
+        <div className="flex gap-2">
+            <Button onClick={() => downloadDataURI(result.videoUrl, 'video_ad.mp4')}>
+              <Download className="mr-2 h-4 w-4" />
+              Download Video
+            </Button>
+            <Button variant="outline" onClick={() => downloadDataURI(result.audioUrl, 'voiceover.wav')}>
+              <Download className="mr-2 h-4 w-4" />
+              Download Audio
+            </Button>
+        </div>
+        <Button variant="destructive" onClick={onDelete}>
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete
+        </Button>
+      </CardFooter>
+    </Card>
+  );
 }
