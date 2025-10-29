@@ -2,7 +2,6 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   SidebarProvider,
@@ -23,7 +22,7 @@ import { useToast } from '@/hooks/use-toast.tsx';
 import { useRouter } from 'next/navigation';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
+import Link from 'next/link';
 
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -88,7 +87,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               {children}
           </main>
         </div>
-        <Footer />
       </div>
     </SidebarProvider>
   );
