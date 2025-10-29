@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { DollarSign, ShoppingCart, Users, Activity, Target } from "lucide-react";
 import Image from "next/image";
 import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
 
 // In a real app, this data would be fetched and computed from a database.
 const getAnalyticsData = () => {
@@ -51,8 +52,17 @@ const getAnalyticsData = () => {
     };
 };
 
+const statusColors: Record<string, string> = {
+    Delivered: "bg-green-500",
+    Pending: "bg-yellow-500",
+    "Awaiting Confirmation": "bg-blue-500",
+    Rejected: "bg-red-500",
+};
+
 export default function AdminAnalyticsPage() {
     const data = getAnalyticsData();
+
+    const maxStatusCount = Math.max(...Object.values(data.orderStatusCounts), 1);
 
   return (
     <div className="space-y-6">
@@ -150,25 +160,21 @@ export default function AdminAnalyticsPage() {
                     <CardHeader>
                         <CardTitle>Order Status Overview</CardTitle>
                     </CardHeader>
-                    <CardContent>
-                         <Table>
-                            <TableBody>
-                                {Object.entries(data.orderStatusCounts).map(([status, count]) => (
-                                    <TableRow key={status}>
-                                        <TableCell>
-                                            <Badge variant={
-                                                status === 'Delivered' ? 'default' :
-                                                status === 'Rejected' ? 'destructive' :
-                                                'secondary'
-                                            } className={
-                                                status === 'Delivered' ? 'bg-green-100 text-green-800' : ''
-                                            }>{status}</Badge>
-                                        </TableCell>
-                                        <TableCell className="text-right font-medium">{count}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                    <CardContent className="space-y-4">
+                       {Object.entries(data.orderStatusCounts).map(([status, count]) => (
+                            <div key={status} className="space-y-1">
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="font-medium">{status}</span>
+                                    <span className="text-muted-foreground">{count}</span>
+                                </div>
+                                <div className="w-full bg-muted rounded-full h-2.5">
+                                    <div 
+                                        className={cn("h-2.5 rounded-full", statusColors[status] || "bg-gray-400")} 
+                                        style={{ width: `${(count / maxStatusCount) * 100}%` }}
+                                    ></div>
+                                </div>
+                            </div>
+                        ))}
                     </CardContent>
                 </Card>
             </div>
