@@ -6,11 +6,10 @@ import { mockOrders, initialUsers } from "@/lib/mock-data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, ShoppingCart, Users, Activity, Target, TrendingUp } from "lucide-react";
+import { DollarSign, ShoppingCart, Users, Activity, Target } from "lucide-react";
 import Image from "next/image";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { format, subDays, formatISO } from 'date-fns';
 
 // In a real app, this data would be fetched and computed from a database.
 const getAnalyticsData = () => {
@@ -40,20 +39,6 @@ const getAnalyticsData = () => {
 
     const monthlyGoal = 200000;
     const goalProgress = (totalSales / monthlyGoal) * 100;
-
-    const salesLast7Days = Array.from({ length: 7 }).map((_, i) => {
-      const date = subDays(new Date(), i);
-      const dateStr = formatISO(date, { representation: 'date' });
-      const deliveredOrdersOnDate = mockOrders
-        .filter(o => o.status === 'Delivered' && formatISO(new Date(o.date), { representation: 'date' }) === dateStr);
-      
-      const dailySales = deliveredOrdersOnDate.reduce((sum, order) => sum + order.total, 0);
-      return {
-        date: format(date, 'MMM d'),
-        day: format(date, 'eee'),
-        sales: dailySales,
-      };
-    }).reverse();
     
     return {
         totalSales,
@@ -64,7 +49,6 @@ const getAnalyticsData = () => {
         topProducts,
         monthlyGoal,
         goalProgress,
-        salesLast7Days,
     };
 };
 
@@ -79,7 +63,6 @@ export default function AdminAnalyticsPage() {
     const data = getAnalyticsData();
 
     const maxStatusCount = Math.max(...Object.values(data.orderStatusCounts), 1);
-    const maxDailySales = Math.max(...data.salesLast7Days.map(d => d.sales), 1);
 
   return (
     <div className="space-y-6">
@@ -125,32 +108,6 @@ export default function AdminAnalyticsPage() {
                 </CardContent>
             </Card>
         </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5" />
-              Sales Trends
-            </CardTitle>
-            <CardDescription>Revenue from delivered orders in the last 7 days.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex h-48 items-end gap-2 text-xs">
-              {data.salesLast7Days.map((day) => (
-                <div key={day.date} className="group relative flex flex-1 flex-col justify-end text-center">
-                  <div className="absolute bottom-full mb-1 w-full rounded-md bg-card p-1 text-card-foreground shadow-lg opacity-0 transition-opacity group-hover:opacity-100">
-                    ₦{day.sales.toLocaleString()}
-                  </div>
-                  <div
-                    className="rounded-t-lg bg-primary transition-colors hover:bg-primary/90"
-                    style={{ height: `${(day.sales / maxDailySales) * 100}%` }}
-                  />
-                  <div className="mt-1 font-medium">{day.day}</div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
 
         <div className="grid gap-4 md:grid-cols-3">
              <Card className="md:col-span-2">
