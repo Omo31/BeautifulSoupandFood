@@ -29,7 +29,6 @@ export const adminNavItems = [
   { href: '/conversations', label: 'Conversations', icon: MessageSquare },
   { href: '/inventory', label: 'Inventory', icon: Package },
   { href: '/flyer-generator', label: 'Flyer Generator', icon: Megaphone },
-  { href: '/video-generator', label: 'Video Generator', icon: Video },
   { href: '/accounting', label: 'Accounting', icon: Book },
   { href: '/settings/homepage', label: 'Settings', icon: Settings },
 ];
