@@ -18,7 +18,6 @@ import {
   Pencil,
   Bell,
   ClipboardList,
-  Video,
 } from 'lucide-react';
 
 export const adminNavItems = [
@@ -28,7 +27,6 @@ export const adminNavItems = [
   { href: '/users', label: 'Users', icon: Users },
   { href: '/conversations', label: 'Conversations', icon: MessageSquare },
   { href: '/inventory', label: 'Inventory', icon: Package },
-  { href: '/flyer-generator', label: 'Flyer Generator', icon: Megaphone },
   { href: '/accounting', label: 'Accounting', icon: Book },
   { href: '/settings/homepage', label: 'Settings', icon: Settings },
 ];
