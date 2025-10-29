@@ -14,16 +14,38 @@ import {
   SidebarMenuButton,
   SidebarFooter
 } from '@/components/ui/sidebar';
-import { LogOut } from 'lucide-react';
+import { LogOut, Search } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { adminNavItems } from '@/lib/admin-nav';
+import { adminNavItems, mainNavLinks } from '@/lib/admin-nav';
 import { useToast } from '@/hooks/use-toast.tsx';
 import { useRouter } from 'next/navigation';
-import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Input } from '@/components/ui/input';
+
+function SearchBar() {
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const query = formData.get('search') as string;
+    router.push(`/shop?q=${encodeURIComponent(query)}`);
+  };
+
+  return (
+    <form onSubmit={handleSearch} className="relative w-full max-w-md">
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <Input
+        type="search"
+        name="search"
+        placeholder="Search for products..."
+        className="w-full bg-background pl-9"
+      />
+    </form>
+  )
+}
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -41,7 +63,26 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <SidebarProvider>
       <div className="flex min-h-screen flex-col">
-        <Header />
+        <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
+            <div className="container flex h-16 items-center justify-between gap-4">
+                <div className="hidden md:flex items-center gap-6">
+                    <Logo />
+                    <nav className="flex items-center gap-2">
+                        {mainNavLinks.map((link) => (
+                            <Button key={link.href} variant="link" asChild>
+                                <Link href={link.href}>{link.label}</Link>
+                            </Button>
+                        ))}
+                    </nav>
+                </div>
+                <div className="hidden md:block">
+                  <SearchBar />
+                </div>
+                 <div className="flex items-center gap-1">
+                    {/* Placeholder for Cart, Bell, Profile icons */}
+                </div>
+            </div>
+        </header>
         <div className="flex flex-1">
           <Sidebar>
             <SidebarHeader>
@@ -83,11 +124,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </Button>
             </SidebarFooter>
           </Sidebar>
-          <main className="flex-1 p-6">
+          <main className="flex-1 p-6 bg-muted/30">
               {children}
           </main>
         </div>
-        <Footer />
+        <footer className="border-t">
+          <div className="container py-4 text-center text-sm text-muted-foreground">
+             &copy; {new Date().getFullYear()} BeautifulSoup&Food. All rights reserved.
+          </div>
+        </footer>
       </div>
     </SidebarProvider>
   );
