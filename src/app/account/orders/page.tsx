@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { ListFilter } from "lucide-react";
+import { ListFilter, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OrderList } from "@/components/my-orders/order-list";
@@ -11,6 +11,7 @@ import { Pagination, PaginationContent, PaginationItem, PaginationNext, Paginati
 import { OrderFilterDialog, type OrderFilters } from '@/components/my-orders/order-filter-dialog';
 import { DateRange } from 'react-day-picker';
 import { mockOrders } from '@/lib/mock-data';
+import { useRouter } from 'next/navigation';
 
 
 const ITEMS_PER_PAGE = 4;
@@ -20,6 +21,7 @@ export default function MyOrdersPage() {
   const [currentTab, setCurrentTab] = useState('all');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState<OrderFilters>({ statuses: [], dateRange: undefined });
+  const router = useRouter();
 
   const deliveredOrders = mockOrders.filter(o => o.status === 'Delivered');
   const pendingOrders = mockOrders.filter(o => ['Pending', 'Awaiting Confirmation'].includes(o.status));
@@ -75,6 +77,11 @@ export default function MyOrdersPage() {
 
 
   return (
+      <div className="space-y-4">
+        <Button variant="ghost" onClick={() => router.back()}>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Go back
+        </Button>
       <Card>
         <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div>
@@ -142,5 +149,6 @@ export default function MyOrdersPage() {
             currentFilters={filters}
         />
       </Card>
+      </div>
   );
 }

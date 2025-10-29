@@ -23,8 +23,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Camera } from 'lucide-react';
+import { Camera, ArrowLeft } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
+import { useRouter } from 'next/navigation';
 
 const profileSchema = z.object({
   firstName: z.string().min(1, 'First name is required.'),
@@ -36,6 +37,7 @@ const profileSchema = z.object({
 
 export default function AccountProfilePage() {
   const { toast } = useToast();
+  const router = useRouter();
 
   // In a real app, these values would be fetched from the logged-in user's data.
   const currentUser = {
@@ -62,95 +64,101 @@ export default function AccountProfilePage() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>My Profile</CardTitle>
-        <CardDescription>
-          Manage your personal information and account settings.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <div className="flex items-center gap-4">
-                <div className="relative">
-                    <Avatar className="h-20 w-20">
-                        <AvatarImage src={currentUser.avatarUrl} alt="User Avatar" />
-                        <AvatarFallback>{currentUser.firstName?.[0]}{currentUser.lastName?.[0]}</AvatarFallback>
-                    </Avatar>
-                    <Button size="icon" variant="outline" className="absolute -bottom-2 -right-2 rounded-full h-8 w-8">
-                        <Camera className="h-4 w-4" />
-                        <span className="sr-only">Change Photo</span>
-                    </Button>
-                </div>
-                <div>
-                    <h3 className="text-xl font-bold">{currentUser.firstName} {currentUser.lastName}</h3>
-                    <p className="text-sm text-muted-foreground">{currentUser.email}</p>
-                </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
-                control={form.control}
-                name="firstName"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>First Name</FormLabel>
-                    <FormControl>
-                        <Input placeholder="John" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
-                />
-                 <FormField
-                control={form.control}
-                name="lastName"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Last Name</FormLabel>
-                    <FormControl>
-                        <Input placeholder="Doe" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
-                />
-            </div>
-             <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Phone Number</FormLabel>
-                     <div className="flex items-center">
-                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-background text-sm text-muted-foreground h-10">+234</span>
-                        <FormControl>
-                            <Input type="tel" placeholder="8012345678" {...field} className="rounded-l-none" />
-                        </FormControl>
+    <div className="space-y-4">
+        <Button variant="ghost" onClick={() => router.back()}>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Go back
+        </Button>
+        <Card>
+        <CardHeader>
+            <CardTitle>My Profile</CardTitle>
+            <CardDescription>
+            Manage your personal information and account settings.
+            </CardDescription>
+        </CardHeader>
+        <CardContent>
+            <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <div className="flex items-center gap-4">
+                    <div className="relative">
+                        <Avatar className="h-20 w-20">
+                            <AvatarImage src={currentUser.avatarUrl} alt="User Avatar" />
+                            <AvatarFallback>{currentUser.firstName?.[0]}{currentUser.lastName?.[0]}</AvatarFallback>
+                        </Avatar>
+                        <Button size="icon" variant="outline" className="absolute -bottom-2 -right-2 rounded-full h-8 w-8">
+                            <Camera className="h-4 w-4" />
+                            <span className="sr-only">Change Photo</span>
+                        </Button>
                     </div>
-                    <FormMessage />
-                    </FormItem>
-                )}
-                />
-            <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Address</FormLabel>
-                    <FormControl>
-                        <Textarea placeholder="Enter your full address" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
-            />
+                    <div>
+                        <h3 className="text-xl font-bold">{currentUser.firstName} {currentUser.lastName}</h3>
+                        <p className="text-sm text-muted-foreground">{currentUser.email}</p>
+                    </div>
+                </div>
 
-            <Button type="submit">Save Changes</Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                    control={form.control}
+                    name="firstName"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>First Name</FormLabel>
+                        <FormControl>
+                            <Input placeholder="John" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                    <FormField
+                    control={form.control}
+                    name="lastName"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Last Name</FormLabel>
+                        <FormControl>
+                            <Input placeholder="Doe" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                </div>
+                <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Phone Number</FormLabel>
+                        <div className="flex items-center">
+                            <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-background text-sm text-muted-foreground h-10">+234</span>
+                            <FormControl>
+                                <Input type="tel" placeholder="8012345678" {...field} className="rounded-l-none" />
+                            </FormControl>
+                        </div>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Address</FormLabel>
+                        <FormControl>
+                            <Textarea placeholder="Enter your full address" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <Button type="submit">Save Changes</Button>
+            </form>
+            </Form>
+        </CardContent>
+        </Card>
+    </div>
   );
 }

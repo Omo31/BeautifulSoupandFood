@@ -23,6 +23,8 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast.tsx';
 import { Separator } from '@/components/ui/separator';
+import { ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const notificationsSchema = z.object({
   email: z.object({
@@ -34,6 +36,7 @@ const notificationsSchema = z.object({
 
 export default function AccountNotificationsPage() {
   const { toast } = useToast();
+  const router = useRouter();
 
   // In a real app, these values would be fetched from the user's settings.
   const currentUserSettings = {
@@ -59,103 +62,109 @@ export default function AccountNotificationsPage() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Notification Settings</CardTitle>
-        <CardDescription>
-          Manage how you receive notifications from us.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <div>
-              <h3 className="mb-4 text-lg font-medium">Email Notifications</h3>
-              <div className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="email.orderUpdates"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                      <div className="space-y-0.5">
-                        <FormLabel className="text-base">
-                          Order Updates
-                        </FormLabel>
-                        <FormDescription>
-                          Receive emails about your order status, shipping, and delivery.
-                        </FormDescription>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email.promotions"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                      <div className="space-y-0.5">
-                        <FormLabel className="text-base">
-                          Promotions & News
-                        </FormLabel>
-                        <FormDescription>
-                          Receive occasional newsletters with new products and special offers.
-                        </FormDescription>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email.accountActivity"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                      <div className="space-y-0.5">
-                        <FormLabel className="text-base">
-                          Account Activity
-                        </FormLabel>
-                        <FormDescription>
-                          Receive security alerts for activities like password changes.
-                        </FormDescription>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                          aria-readonly
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-            
-            <Separator />
-            
-            {/* Placeholder for Push Notifications */}
-            <div>
-              <h3 className="mb-4 text-lg font-medium text-muted-foreground">Push Notifications</h3>
-              <div className="space-y-4 rounded-lg border p-4 text-center text-muted-foreground">
-                 <p className="text-sm">Push notification settings will be available soon.</p>
-              </div>
-            </div>
+    <div className="space-y-4">
+        <Button variant="ghost" onClick={() => router.back()}>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Go back
+        </Button>
+        <Card>
+        <CardHeader>
+            <CardTitle>Notification Settings</CardTitle>
+            <CardDescription>
+            Manage how you receive notifications from us.
+            </CardDescription>
+        </CardHeader>
+        <CardContent>
+            <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <div>
+                <h3 className="mb-4 text-lg font-medium">Email Notifications</h3>
+                <div className="space-y-4">
+                    <FormField
+                    control={form.control}
+                    name="email.orderUpdates"
+                    render={({ field }) => (
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                            <FormLabel className="text-base">
+                            Order Updates
+                            </FormLabel>
+                            <FormDescription>
+                            Receive emails about your order status, shipping, and delivery.
+                            </FormDescription>
+                        </div>
+                        <FormControl>
+                            <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            />
+                        </FormControl>
+                        </FormItem>
+                    )}
+                    />
+                    <FormField
+                    control={form.control}
+                    name="email.promotions"
+                    render={({ field }) => (
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                            <FormLabel className="text-base">
+                            Promotions & News
+                            </FormLabel>
+                            <FormDescription>
+                            Receive occasional newsletters with new products and special offers.
+                            </FormDescription>
+                        </div>
+                        <FormControl>
+                            <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            />
+                        </FormControl>
+                        </FormItem>
+                    )}
+                    />
+                    <FormField
+                    control={form.control}
+                    name="email.accountActivity"
+                    render={({ field }) => (
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                            <FormLabel className="text-base">
+                            Account Activity
+                            </FormLabel>
+                            <FormDescription>
+                            Receive security alerts for activities like password changes.
+                            </FormDescription>
+                        </div>
+                        <FormControl>
+                            <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            aria-readonly
+                            />
+                        </FormControl>
+                        </FormItem>
+                    )}
+                    />
+                </div>
+                </div>
+                
+                <Separator />
+                
+                {/* Placeholder for Push Notifications */}
+                <div>
+                <h3 className="mb-4 text-lg font-medium text-muted-foreground">Push Notifications</h3>
+                <div className="space-y-4 rounded-lg border p-4 text-center text-muted-foreground">
+                    <p className="text-sm">Push notification settings will be available soon.</p>
+                </div>
+                </div>
 
-            <Button type="submit">Save Preferences</Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+                <Button type="submit">Save Preferences</Button>
+            </form>
+            </Form>
+        </CardContent>
+        </Card>
+    </div>
   );
 }
