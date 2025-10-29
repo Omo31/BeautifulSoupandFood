@@ -109,8 +109,8 @@ function AuthButtons() {
         setIsClient(true);
     }, []);
 
-    // TODO: Replace with actual auth state
-    const isAuthenticated = true;
+    // TODO: Replace with actual auth state check
+    const isAuthenticated = true; 
 
     if (!isClient) {
         // Render a placeholder on the server to prevent hydration mismatch
