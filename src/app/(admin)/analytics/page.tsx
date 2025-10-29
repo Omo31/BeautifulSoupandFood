@@ -4,10 +4,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { mockOrders, initialUsers } from "@/lib/mock-data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { DollarSign, ShoppingCart, Users, Activity, Target } from "lucide-react";
-import Image from "next/image";
+import { DollarSign, ShoppingCart, Users, Activity } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 
@@ -30,20 +27,17 @@ const getAnalyticsData = () => {
 
     // This is a simplified mock of top products.
     const topProducts = [
-        { id: "1", name: "Artisan Sourdough", sales: 150, image: PlaceHolderImages.find(img => img.id === 'product-1')!, category: 'Shop' },
-        { id: "4", name: "Extra Virgin Olive Oil", sales: 120, image: PlaceHolderImages.find(img => img.id === 'product-4')!, category: 'Shop' },
-        { id: "2", name: "Organic Vegetable Box", sales: 90, image: PlaceHolderImages.find(img => img.id === 'product-2')!, category: 'Shop' },
-        { id: '8', name: 'Chicken Noodle Soup', sales: 85, image: PlaceHolderImages.find(img => img.id === 'product-8')!, category: 'Soup' },
-        { id: '7', name: 'Tomato Basil Soup', sales: 75, image: PlaceHolderImages.find(img => img.id === 'product-7')!, category: 'Soup' },
+        { id: "1", name: "Artisan Sourdough", sales: 150, category: 'Shop' },
+        { id: "4", name: "Extra Virgin Olive Oil", sales: 120, category: 'Shop' },
+        { id: "2", name: "Organic Vegetable Box", sales: 90, category: 'Shop' },
+        { id: '8', name: 'Chicken Noodle Soup', sales: 85, category: 'Soup' },
+        { id: '7', name: 'Tomato Basil Soup', sales: 75, category: 'Soup' },
     ];
     
     const salesByCategory = topProducts.reduce((acc, product) => {
         if (!acc[product.category]) {
             acc[product.category] = 0;
         }
-        // This is a mock calculation. In a real app, you'd use actual sales data.
-        // For now, let's pretend product.sales is the revenue for that product.
-        // A more realistic mock would be to link orders to products.
         const mockRevenue = product.sales * (product.category === 'Shop' ? 15 : 8);
         acc[product.category] += mockRevenue;
         return acc;
@@ -78,6 +72,7 @@ export default function AdminAnalyticsPage() {
 
     const maxStatusCount = Math.max(...Object.values(data.orderStatusCounts), 1);
     const maxCategorySale = Math.max(...Object.values(data.salesByCategory), 1);
+    const maxProductSales = Math.max(...data.topProducts.map(p => p.sales), 1);
 
   return (
     <div className="space-y-6">
@@ -133,27 +128,22 @@ export default function AdminAnalyticsPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Product</TableHead>
-                                <TableHead className="text-right">Sales</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {data.topProducts.map(product => (
-                                <TableRow key={product.id}>
-                                    <TableCell>
-                                        <div className="flex items-center gap-3">
-                                            <Image src={product.image.imageUrl} alt={product.name} width={40} height={40} className="rounded-md object-cover" />
-                                            <span className="font-medium">{product.name}</span>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="text-right">{product.sales}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                    <div className="space-y-4">
+                        {data.topProducts.map(product => (
+                            <div key={product.id} className="space-y-1">
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="font-medium">{product.name}</span>
+                                    <span className="text-muted-foreground">{product.sales} sales</span>
+                                </div>
+                                <div className="w-full bg-muted rounded-full h-4">
+                                    <div 
+                                        className="h-4 rounded-full bg-accent"
+                                        style={{ width: `${(product.sales / maxProductSales) * 100}%` }}
+                                    ></div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </CardContent>
             </Card>
 
