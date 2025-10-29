@@ -47,8 +47,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <SidebarHeader>
               <Logo />
             </SidebarHeader>
-            <ScrollArea className="flex-1">
-                <SidebarContent>
+            <SidebarContent>
+              <ScrollArea className="flex-1">
                 <SidebarMenu>
                     <p className="text-xs text-muted-foreground px-4 py-2">Admin</p>
                     {adminNavItems.map((item) => (
@@ -65,8 +65,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </SidebarMenuItem>
                     ))}
                 </SidebarMenu>
-                </SidebarContent>
-            </ScrollArea>
+              </ScrollArea>
+            </SidebarContent>
             <SidebarFooter>
                 <div className='flex items-center gap-2'>
                   <Avatar className='h-8 w-8'>
