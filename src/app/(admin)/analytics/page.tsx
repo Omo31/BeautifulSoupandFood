@@ -30,12 +30,25 @@ const getAnalyticsData = () => {
 
     // This is a simplified mock of top products.
     const topProducts = [
-        { id: "1", name: "Artisan Sourdough", sales: 150, image: PlaceHolderImages.find(img => img.id === 'product-1')! },
-        { id: "4", name: "Extra Virgin Olive Oil", sales: 120, image: PlaceHolderImages.find(img => img.id === 'product-4')! },
-        { id: "2", name: "Organic Vegetable Box", sales: 90, image: PlaceHolderImages.find(img => img.id === 'product-2')! },
-        { id: '8', name: 'Chicken Noodle Soup', sales: 85, image: PlaceHolderImages.find(img => img.id === 'product-8')! },
-        { id: '7', name: 'Tomato Basil Soup', sales: 75, image: PlaceHolderImages.find(img => img.id === 'product-7')! },
+        { id: "1", name: "Artisan Sourdough", sales: 150, image: PlaceHolderImages.find(img => img.id === 'product-1')!, category: 'Shop' },
+        { id: "4", name: "Extra Virgin Olive Oil", sales: 120, image: PlaceHolderImages.find(img => img.id === 'product-4')!, category: 'Shop' },
+        { id: "2", name: "Organic Vegetable Box", sales: 90, image: PlaceHolderImages.find(img => img.id === 'product-2')!, category: 'Shop' },
+        { id: '8', name: 'Chicken Noodle Soup', sales: 85, image: PlaceHolderImages.find(img => img.id === 'product-8')!, category: 'Soup' },
+        { id: '7', name: 'Tomato Basil Soup', sales: 75, image: PlaceHolderImages.find(img => img.id === 'product-7')!, category: 'Soup' },
     ];
+    
+    const salesByCategory = topProducts.reduce((acc, product) => {
+        if (!acc[product.category]) {
+            acc[product.category] = 0;
+        }
+        // This is a mock calculation. In a real app, you'd use actual sales data.
+        // For now, let's pretend product.sales is the revenue for that product.
+        // A more realistic mock would be to link orders to products.
+        const mockRevenue = product.sales * (product.category === 'Shop' ? 15 : 8);
+        acc[product.category] += mockRevenue;
+        return acc;
+    }, {} as Record<string, number>);
+
 
     const monthlyGoal = 200000;
     const goalProgress = (totalSales / monthlyGoal) * 100;
@@ -49,6 +62,7 @@ const getAnalyticsData = () => {
         topProducts,
         monthlyGoal,
         goalProgress,
+        salesByCategory
     };
 };
 
@@ -63,6 +77,7 @@ export default function AdminAnalyticsPage() {
     const data = getAnalyticsData();
 
     const maxStatusCount = Math.max(...Object.values(data.orderStatusCounts), 1);
+    const maxCategorySale = Math.max(...Object.values(data.salesByCategory), 1);
 
   return (
     <div className="space-y-6">
@@ -179,6 +194,30 @@ export default function AdminAnalyticsPage() {
                 </Card>
             </div>
         </div>
+        <Card>
+            <CardHeader>
+                <CardTitle>Sales by Category</CardTitle>
+                <CardDescription>A breakdown of revenue from different product categories.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="space-y-4">
+                    {Object.entries(data.salesByCategory).map(([category, sales]) => (
+                        <div key={category} className="space-y-1">
+                            <div className="flex justify-between items-center text-sm font-medium">
+                                <span>{category}</span>
+                                <span>₦{sales.toLocaleString()}</span>
+                            </div>
+                            <div className="w-full bg-muted rounded-full h-4">
+                                <div 
+                                    className="h-4 rounded-full bg-primary"
+                                    style={{ width: `${(sales / maxCategorySale) * 100}%` }}
+                                ></div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </CardContent>
+        </Card>
     </div>
   );
 }
