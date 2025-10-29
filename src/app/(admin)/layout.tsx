@@ -109,7 +109,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   const allNavItems = [...adminNavItems, ...accountNavItems, ...mainNavLinks];
-  const isAccountPage = accountNavItems.some(item => pathname.startsWith(item.href));
 
   return (
     <SidebarProvider>
@@ -231,18 +230,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <AdminNotificationBell />
         </header>
         <main className="flex-1 p-6">
-          {isAccountPage ? (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-              <aside className="md:col-span-1 hidden md:block">
-                  {/* This space can be used for account-specific sidebars if needed later */}
-              </aside>
-              <main className="md:col-span-3">
-                  {children}
-              </main>
-            </div>
-          ) : (
-            children
-          )}
+          {children}
         </main>
       </div>
     </SidebarProvider>
