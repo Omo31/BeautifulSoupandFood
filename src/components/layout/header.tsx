@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, ShoppingCart, User, Bell, Search } from "lucide-react";
+import { Menu, ShoppingCart, User, Bell, Search, LogOut } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
@@ -13,7 +13,10 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useCart } from "@/hooks/use-cart";
 import { Badge } from "@/components/ui/badge";
-import { mainNavLinks, mobileNavLinks } from "@/lib/nav-links";
+import { mainNavLinks, mobileNavLinks, accountNavItems } from "@/lib/nav-links";
+import { usePathname } from "next/navigation";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { useToast } from "@/hooks/use-toast";
 
 const mockNotifications = [
     { id: 1, title: "Your order has shipped!", description: "Order #12345 is on its way.", time: "5m ago" },
@@ -102,37 +105,91 @@ function CartButton() {
   )
 }
 
+function UserMenu() {
+    const { toast } = useToast();
+    const router = useRouter();
+
+    const handleLogout = () => {
+        toast({
+            title: 'Logged Out (Simulated)',
+            description: "You have been successfully logged out.",
+        });
+        // In a real app, you'd clear auth state here.
+        router.push('/auth/login');
+    };
+    
+    return (
+        <Popover>
+            <PopoverTrigger asChild>
+                <Button variant="ghost" size="icon">
+                    <User />
+                    <span className="sr-only">My Account</span>
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-64 mr-4">
+                <div className="flex items-center gap-3 p-2">
+                    <Avatar className='h-9 w-9'>
+                        <AvatarImage src="https://picsum.photos/seed/user-avatar/40/40" />
+                        <AvatarFallback>U</AvatarFallback>
+                    </Avatar>
+                    <div>
+                        <p className="font-semibold text-sm">User</p>
+                        <p className="text-xs text-muted-foreground">user@example.com</p>
+                    </div>
+                </div>
+                <Separator />
+                <div className="flex flex-col p-1">
+                     {accountNavItems.map((item) => (
+                        <Button
+                            key={item.href}
+                            variant="ghost"
+                            className="justify-start gap-2"
+                            asChild
+                        >
+                            <Link href={item.href}>
+                                <item.icon className="h-4 w-4" />
+                                {item.label}
+                            </Link>
+                        </Button>
+                    ))}
+                </div>
+                <Separator />
+                <Button variant="ghost" className="w-full justify-start gap-2 p-1" onClick={handleLogout}>
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                </Button>
+            </PopoverContent>
+        </Popover>
+    )
+}
+
 function AuthButtons() {
     const [isClient, setIsClient] = useState(false);
-    
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const pathname = usePathname();
+
     useEffect(() => {
         setIsClient(true);
-    }, []);
+        // This is a simulation. In a real app, you'd check a real auth state (e.g., from a cookie or context).
+        setIsAuthenticated(pathname.startsWith('/account') || pathname.startsWith('/dashboard'));
+    }, [pathname]);
 
-    // TODO: Replace with actual auth state check
-    const isAuthenticated = false; 
 
     if (!isClient) {
-        // Render a placeholder on the server to prevent hydration mismatch
         return (
-            <div className="flex items-center gap-1">
-                 <div className="h-10 w-20" />
+             <div className="flex items-center gap-1">
                  <div className="h-10 w-24" />
             </div>
         );
     }
 
     return (
-        <div className="flex items-center gap-1">
+        <div className="flex items-center">
+            <CartButton />
             {isAuthenticated ? (
                 <>
                     <NotificationBell />
-                    <Button variant="ghost" size="icon" asChild>
-                        <Link href="/account/profile">
-                            <User />
-                            <span className="sr-only">My Account</span>
-                        </Link>
-                    </Button>
+                    <UserMenu />
                 </>
             ) : (
                 <>
@@ -196,7 +253,6 @@ export function Header() {
         </div>
 
         <div className="flex items-center">
-            <CartButton />
             <AuthButtons />
         </div>
       </div>
