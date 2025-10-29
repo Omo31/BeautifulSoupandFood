@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useCart } from "@/hooks/use-cart";
 import { Badge } from "@/components/ui/badge";
-import { mainNavLinks, mobileNavLinks, accountNavItems } from "@/lib/nav-links";
+import { adminNavItems, mainNavLinks, mobileNavLinks, accountNavItems } from "@/lib/nav-links";
 import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useToast } from "@/hooks/use-toast.tsx";
@@ -112,11 +112,11 @@ function UserMenu() {
 
     const handleLogout = () => {
         toast({
-            title: 'Logged Out (Simulated)',
+            title: 'Logged Out',
             description: "You have been successfully logged out.",
         });
         // In a real app, you'd clear auth state here.
-        router.push('/auth/login');
+        router.push('/');
     };
     
     return (
@@ -178,9 +178,9 @@ function AuthButtons() {
     if (!isClient) {
         // Render a skeleton or placeholder on the server and during initial client render
         return (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
                 <CartButton />
-                <Skeleton className="h-10 w-20" />
+                <Skeleton className="h-10 w-10" />
                 <Skeleton className="h-10 w-24" />
             </div>
         );
