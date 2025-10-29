@@ -1,5 +1,7 @@
 
 
+import { format, subDays, formatISO } from 'date-fns';
+
 export const mockUserRoles = [
   { name: "Administrator", isSuperAdmin: true, permissions: {} },
   { name: "Content Manager", isSuperAdmin: false, permissions: { 'Inventory': ['View', 'Create', 'Edit'] } },
@@ -7,8 +9,27 @@ export const mockUserRoles = [
   { name: "Customer", isSuperAdmin: false, permissions: {} }, // Adding customer as a role
 ];
 
+const generateRecentOrders = () => {
+    const orders = [];
+    for (let i = 0; i < 15; i++) {
+        const date = subDays(new Date(), Math.floor(Math.random() * 7));
+        const status = ['Delivered', 'Pending', 'Awaiting Confirmation', 'Rejected'][Math.floor(Math.random() * 4)] as 'Delivered' | 'Pending' | 'Awaiting Confirmation' | 'Rejected';
+        orders.push({
+            id: `ORD${String(100 + i).padStart(3, '0')}`,
+            date: formatISO(date),
+            status: status,
+            total: Math.random() * 100 + 10,
+            items: Math.floor(Math.random() * 5) + 1,
+            customer: { name: `Customer ${i + 1}`, email: `customer${i + 1}@example.com` }
+        });
+    }
+    return orders;
+};
+
+
 // Mock data for orders, in a real app this would come from a database.
 export const mockOrders = [
+    ...generateRecentOrders(),
     { 
         id: 'ORD001', 
         date: '2023-10-26', 
@@ -74,17 +95,17 @@ export const mockOrders = [
     },
     { 
         id: 'ORD007', 
-        date: '2023-11-01', 
+        date: formatISO(subDays(new Date(), 2)),
         status: 'Delivered' as const, 
-        total: 55000.00, 
+        total: 550.00, 
         items: 3, 
         customer: { name: 'Jane Doe', email: 'jane.doe@example.com' } 
     },
     { 
         id: 'ORD008', 
-        date: '2023-11-02', 
+        date: formatISO(subDays(new Date(), 1)),
         status: 'Pending' as const, 
-        total: 18250.25, 
+        total: 182.25, 
         items: 1, 
         customer: { name: 'John Smith', email: 'john.smith@example.com' } 
     },
