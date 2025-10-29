@@ -16,7 +16,8 @@ import { Badge } from "@/components/ui/badge";
 import { mainNavLinks, mobileNavLinks, accountNavItems } from "@/lib/nav-links";
 import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast.tsx";
+import { Skeleton } from "../ui/skeleton";
 
 const mockNotifications = [
     { id: 1, title: "Your order has shipped!", description: "Order #12345 is on its way.", time: "5m ago" },
@@ -171,20 +172,22 @@ function AuthButtons() {
     useEffect(() => {
         setIsClient(true);
         // This is a simulation. In a real app, you'd check a real auth state (e.g., from a cookie or context).
-        setIsAuthenticated(pathname.startsWith('/account') || pathname.startsWith('/dashboard'));
+        setIsAuthenticated(pathname.startsWith('/account') || pathname.startsWith('/admin') || pathname.startsWith('/dashboard'));
     }, [pathname]);
 
-
     if (!isClient) {
+        // Render a skeleton or placeholder on the server and during initial client render
         return (
-             <div className="flex items-center gap-1">
-                 <div className="h-10 w-24" />
+            <div className="flex items-center gap-2">
+                <CartButton />
+                <Skeleton className="h-10 w-20" />
+                <Skeleton className="h-10 w-24" />
             </div>
         );
     }
 
     return (
-        <div className="flex items-center">
+        <div className="flex items-center gap-1">
             <CartButton />
             {isAuthenticated ? (
                 <>
