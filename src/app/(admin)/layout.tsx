@@ -18,24 +18,24 @@ import { LogOut } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { adminNavItems, mainNavLinks, accountNavItems } from '@/lib/nav-links';
+import { adminNavItems } from '@/lib/admin-nav';
 import { useToast } from '@/hooks/use-toast.tsx';
-import { SidebarSeparator } from '@/components/ui/sidebar';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { toast } = useToast();
+  const router = useRouter();
 
   const handleLogout = () => {
     toast({
       title: 'Logged Out (Simulated)',
       description: "You have been successfully logged out.",
     });
-    // In a real app, you'd redirect to the login page here.
-    // router.push('/auth/login');
+    router.push('/');
   }
 
   return (
@@ -63,40 +63,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         </SidebarMenuButton>
                         </Link>
                     </SidebarMenuItem>
-                    ))}
-                </SidebarMenu>
-                <SidebarSeparator className='my-4' />
-                <SidebarMenu>
-                    <p className="text-xs text-muted-foreground px-4 py-2">My Account</p>
-                    {accountNavItems.map((item) => (
-                        <SidebarMenuItem key={item.href}>
-                            <Link href={item.href}>
-                                <SidebarMenuButton
-                                    isActive={pathname.startsWith(item.href)}
-                                    tooltip={item.label}
-                                >
-                                    <item.icon />
-                                    <span>{item.label}</span>
-                                </SidebarMenuButton>
-                            </Link>
-                        </SidebarMenuItem>
-                    ))}
-                </SidebarMenu>
-                <SidebarSeparator className='my-4' />
-                <SidebarMenu>
-                    <p className="text-xs text-muted-foreground px-4 py-2">Storefront</p>
-                    {mainNavLinks.map((item) => (
-                        <SidebarMenuItem key={item.href}>
-                            <Link href={item.href}>
-                                <SidebarMenuButton
-                                    isActive={pathname.startsWith(item.href)}
-                                    tooltip={item.label}
-                                >
-                                    <item.icon />
-                                    <span>{item.label}</span>
-                                </SidebarMenuButton>
-                            </Link>
-                        </SidebarMenuItem>
                     ))}
                 </SidebarMenu>
                 </SidebarContent>
