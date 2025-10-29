@@ -9,12 +9,14 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useToast } from '@/hooks/use-toast.tsx';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [email, setEmail] = useState('');
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     setIsClient(true);
@@ -29,11 +31,10 @@ export default function LoginPage() {
       description: 'Redirecting you to your dashboard...',
     });
     
-    // Using window.location.href to bypass Next.js router race conditions.
     if (email === 'admin@gourmet.com') {
-      window.location.href = '/dashboard';
+      router.push('/dashboard');
     } else {
-      window.location.href = '/account/profile';
+      router.push('/account/profile');
     }
   };
 
@@ -44,7 +45,7 @@ export default function LoginPage() {
       title: 'Login with Google (Simulated)',
       description: 'Redirecting you to your account...',
     });
-     window.location.href = '/account/profile';
+     router.push('/account/profile');
   };
 
   return (
