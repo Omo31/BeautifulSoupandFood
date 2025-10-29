@@ -6,7 +6,6 @@ import {
   Users,
   ShoppingCart,
   Package,
-  Megaphone,
   BarChart,
   Book,
   Settings,
